@@ -6,26 +6,17 @@ const log = debug('mongodb-rag:core');
 
 class MongoRAG {
     constructor(config) {
-        // Validate required config
         if (!config.embedding?.apiKey) {
-            throw new Error('OpenAI API key is required in config.embedding.apiKey');
+            throw new Error('Embedding API key is required in config.embedding.apiKey');
         }
 
         this.config = {
             mongoUrl: config.mongoUrl,
-            database: config.database,
-            collection: config.collection,
-            chunking: {
-                strategy: config.chunking?.strategy || 'sliding',
-                options: {
-                    maxChunkSize: config.chunking?.maxChunkSize || 500,
-                    overlap: config.chunking?.overlap || 50,
-                    ...config.chunking?.options
-                }
-            },
+            defaultDatabase: config.database,
+            defaultCollection: config.collection,
             embedding: {
                 provider: config.embedding?.provider || 'openai',
-                apiKey: config.embedding.apiKey, // Explicitly copy the API key
+                apiKey: config.embedding.apiKey,
                 model: config.embedding?.model || 'text-embedding-3-small',
                 batchSize: config.embedding?.batchSize || 100,
                 dimensions: config.embedding?.dimensions || 1536
@@ -33,180 +24,101 @@ class MongoRAG {
             search: {
                 similarityMetric: config.search?.similarityMetric || 'cosine',
                 minScore: config.search?.minScore || 0.7,
-                maxResults: config.search?.maxResults || 5,
-                ...config.search?.options
+                maxResults: config.search?.maxResults || 5
             }
         };
 
-        console.log('MongoRAG initialized with config:', {
-            ...this.config,
-            embedding: {
-                ...this.config.embedding,
-                apiKey: this.config.embedding.apiKey ? 'Present' : 'Missing'
-            }
-        });
-
         this.client = null;
-        this.collection = null;
         this.indexManager = null;
-        this.embeddingProvider = null;
     }
 
     async connect() {
         if (!this.client) {
             try {
-                console.log('Connecting to MongoDB...');
+                log('Connecting to MongoDB...');
                 this.client = new MongoClient(this.config.mongoUrl);
                 await this.client.connect();
-                console.log('Successfully connected to MongoDB');
-
-                this.collection = this.client.db(this.config.database)
-                    .collection(this.config.collection);
-
-                this.indexManager = new IndexManager(this.collection, {
-                    dimensions: this.config.embedding.dimensions,
-                    similarity: this.config.search.similarityMetric
-                });
-
-                await this.indexManager.ensureIndexes();
-                console.log('Indexes verified');
+                log('Connected to MongoDB');
             } catch (error) {
-                console.error('Error connecting to MongoDB:', error);
+                console.error('MongoDB Connection Error:', error);
                 throw error;
             }
         }
     }
 
-    async close() {
-        if (this.client) {
-            await this.client.close();
-            this.client = null;
-            this.collection = null;
-            this.indexManager = null;
-            log('Disconnected from MongoDB');
+    async _getCollection(database, collection) {
+        await this.connect();
+
+        // Use provided database/collection, or fallback to defaults
+        const dbName = database || this.config.defaultDatabase;
+        const colName = collection || this.config.defaultCollection;
+
+        if (!dbName || !colName) {
+            throw new Error('Database and collection must be specified either in the config or as parameters.');
         }
+
+        log(`Using database: ${dbName}, collection: ${colName}`);
+        return this.client.db(dbName).collection(colName);
     }
 
     async ingestBatch(documents, options = {}) {
-        await this.connect();
-        console.log(`Starting batch ingestion of ${documents.length} documents`);
+        const { database, collection } = options;
+        const col = await this._getCollection(database, collection);
+        log(`Ingesting into ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection} - ${documents.length} documents`);
 
         try {
-            const chunks = await this._chunkDocuments(documents);
-            console.log(`Created ${chunks.length} chunks`);
-
-            const embeddedChunks = await this._embedChunks(chunks);
-            console.log(`Generated embeddings for ${embeddedChunks.length} chunks`);
-
-            await this.collection.insertMany(embeddedChunks);
-            console.log(`Successfully stored documents in MongoDB`);
-
-            return {
-                processed: documents.length,
-                failed: 0,
-                errors: [],
-                stats: {
-                    chunksCreated: chunks.length,
-                    embeddingsGenerated: embeddedChunks.length
-                }
-            };
+            const embeddedDocs = await this._embedDocuments(documents);
+            await col.insertMany(embeddedDocs);
+            log('Documents inserted successfully');
+            return { processed: documents.length, failed: 0 };
         } catch (error) {
-            console.error('Error during batch ingestion:', error);
-            return {
-                processed: 0,
-                failed: documents.length,
-                errors: [{ error: error.message }],
-                stats: {
-                    chunksCreated: 0,
-                    embeddingsGenerated: 0
-                }
-            };
+            console.error('Batch Ingestion Error:', error);
+            return { processed: 0, failed: documents.length };
         }
     }
 
-    async ingest(documents) {
-        await this.connect();
-
-        const chunks = await this._chunkDocuments(documents);
-        const embeddedChunks = await this._embedChunks(chunks);
-
-        await this.collection.insertMany(embeddedChunks);
-        log(`Ingested ${documents.length} documents`);
-
-        return embeddedChunks;
-    }
-
     async search(query, options = {}) {
-        await this.connect();
-
+        const { database, collection, maxResults = 5 } = options;
+        const col = await this._getCollection(database, collection);
         const embedding = await this._getEmbedding(query);
-        const searchOptions = { ...this.config.search, ...options };
 
-        const aggregation = this.indexManager.buildSearchQuery(
-            embedding,
-            options.filter,
-            {
-                maxResults: searchOptions.maxResults,
-                includeMetadata: options.includeMetadata
-            }
-        );
+        const indexManager = new IndexManager(col, {
+            dimensions: this.config.embedding.dimensions
+        });
 
-        const results = await this.collection.aggregate(aggregation).toArray();
+        const aggregation = indexManager.buildSearchQuery(embedding, {}, { maxResults });
 
-        return results
-            .filter(r => r.score >= searchOptions.minScore)
-            .map(r => ({
-                content: r.content,
-                documentId: r.documentId,
-                metadata: r.metadata,
-                score: r.score
-            }));
-    }
+        log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
+        const results = await col.aggregate(aggregation).toArray();
 
-    async _chunkDocuments(documents) {
-        // Placeholder for chunking implementation
-        return documents.map(doc => ({
-            documentId: doc.id,
-            content: doc.content,
-            metadata: doc.metadata
+        return results.map(r => ({
+            content: r.content,
+            documentId: r.documentId,
+            metadata: r.metadata,
+            score: r.score
         }));
     }
 
-    async _embedChunks(chunks) {
+    async _embedDocuments(documents) {
         await this._initializeEmbeddingProvider();
-        const texts = chunks.map(chunk => chunk.content);
+        const texts = documents.map(doc => doc.content);
         const embeddings = await this.embeddingProvider.getEmbeddings(texts);
 
-        return chunks.map((chunk, i) => ({
-            ...chunk,
+        return documents.map((doc, i) => ({
+            ...doc,
             embedding: embeddings[i]
         }));
-    }
-
-    async _getEmbedding(text) {
-        await this._initializeEmbeddingProvider();
-        const [embedding] = await this.embeddingProvider.getEmbeddings([text]);
-        return embedding;
     }
 
     async _initializeEmbeddingProvider() {
         if (!this.embeddingProvider) {
             const { provider, apiKey, ...options } = this.config.embedding;
-    
-            console.log(`Initializing embedding provider: ${provider}`);
-    
+            log(`Initializing embedding provider: ${provider}`);
+
             switch (provider) {
                 case 'openai':
                     const OpenAIEmbeddingProvider = (await import('../providers/OpenAIEmbeddingProvider.js')).default;
                     this.embeddingProvider = new OpenAIEmbeddingProvider({ apiKey, ...options });
-                    break;
-                case 'anthropic':
-                    const AnthropicEmbeddingProvider = (await import('../providers/AnthropicEmbeddingProvider.js')).default;
-                    this.embeddingProvider = new AnthropicEmbeddingProvider({ apiKey, ...options });
-                    break;
-                case 'deepseek':
-                    const DeepSeekEmbeddingProvider = (await import('../providers/DeepSeekEmbeddingProvider.js')).default;
-                    this.embeddingProvider = new DeepSeekEmbeddingProvider({ apiKey, ...options });
                     break;
                 default:
                     throw new Error(`Unknown embedding provider: ${provider}`);
@@ -214,6 +126,12 @@ class MongoRAG {
         }
     }
 
+    async close() {
+        if (this.client) {
+            await this.client.close();
+            log('MongoDB connection closed');
+        }
+    }
 }
 
 export default MongoRAG;

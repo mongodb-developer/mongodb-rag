@@ -1,41 +1,43 @@
-// src/core/MongoRAG.test.js
 import { jest, describe, expect, test, beforeEach, afterEach } from '@jest/globals';
-import { MongoClient } from "mongodb";
-import MongoRAG from "./MongoRAG.js";
+import MongoRAG from '../../src/core/MongoRAG.js';
 
-// Mock MongoDB
-jest.mock("mongodb", () => ({
-  MongoClient: jest.fn(() => ({
-    connect: jest.fn().mockResolvedValue(undefined),
-    db: jest.fn().mockReturnValue({
-      collection: jest.fn(() => ({
-        insertMany: jest.fn().mockResolvedValue({ insertedCount: 2 }),
-        aggregate: jest.fn().mockReturnValue({
-          toArray: jest.fn().mockResolvedValue([]),
-        }),
-        createIndex: jest.fn().mockResolvedValue("index-name"),
-        listIndexes: jest.fn().mockReturnValue({
-          toArray: jest.fn().mockResolvedValue([]),
-        }),
-      })),
-    }),
-    close: jest.fn().mockResolvedValue(undefined),
-  })),
+// Mock MongoDB client
+const mockCollection = {
+  insertMany: jest.fn().mockResolvedValue({ insertedCount: 2 }),
+  aggregate: jest.fn().mockReturnValue({
+    toArray: jest.fn().mockResolvedValue([])
+  })
+};
+
+const mockDb = {
+  collection: jest.fn().mockReturnValue(mockCollection)
+};
+
+const mockClient = {
+  connect: jest.fn().mockResolvedValue(undefined),
+  db: jest.fn().mockReturnValue(mockDb),
+  close: jest.fn().mockResolvedValue(undefined)
+};
+
+// Mock MongoClient
+jest.unstable_mockModule('mongodb', () => ({
+  MongoClient: jest.fn().mockImplementation(() => mockClient)
 }));
 
-describe("MongoRAG", () => {
+describe('MongoRAG', () => {
   let rag;
-
+  
   beforeEach(() => {
+    jest.clearAllMocks();
     rag = new MongoRAG({
-      mongoUrl: "mongodb://mock:27017",
-      database: "test",
-      collection: "documents",
+      mongoUrl: 'mongodb://mock:27017',
+      database: 'defaultDB',
+      collection: 'defaultCollection',
       embedding: {
-        provider: "openai",
-        apiKey: "test-key",
-        dimensions: 1536,
-      },
+        provider: 'openai',
+        apiKey: 'test-key',
+        dimensions: 1536
+      }
     });
   });
 
@@ -43,26 +45,29 @@ describe("MongoRAG", () => {
     await rag.close();
   });
 
-  test("should initialize with correct config", () => {
-    expect(rag.config.chunking.strategy).toBe("sliding");
-    expect(rag.config.embedding.provider).toBe("openai");
-    expect(rag.config.embedding.apiKey).toBe("test-key");
+  test('should use default database and collection when not provided', async () => {
+    await rag.connect();
+    await rag.ingestBatch([{ id: 'doc1', content: 'test' }]);
+
+    expect(mockClient.db).toHaveBeenCalledWith('defaultDB');
+    expect(mockDb.collection).toHaveBeenCalledWith('defaultCollection');
   });
 
-  test("should connect to MongoDB (mocked)", async () => {
-    await rag.connect();
-    expect(MongoClient).toHaveBeenCalled();
+  test('should allow overriding database and collection', async () => {
+    await rag.ingestBatch([{ id: 'doc1', content: 'test' }], {
+      database: 'customDB',
+      collection: 'customCollection'
+    });
+
+    expect(mockClient.db).toHaveBeenCalledWith('customDB');
+    expect(mockDb.collection).toHaveBeenCalledWith('customCollection');
   });
 
-  test("should close connection", async () => {
-    await rag.connect();
-    await rag.close();
-    expect(MongoClient.mock.instances[0].close).toHaveBeenCalled();
-  });
+  test('should throw error if database/collection missing', async () => {
+    rag.config.defaultDatabase = null;
+    rag.config.defaultCollection = null;
 
-  test("should ingest documents", async () => {
-    await rag.connect();
-    const result = await rag.ingestBatch([{ id: "doc1", content: "test" }]);
-    expect(result.processed).toBe(1);
+    await expect(rag.ingestBatch([{ id: 'doc1', content: 'test' }]))
+      .rejects.toThrow('Database and collection must be specified');
   });
 });

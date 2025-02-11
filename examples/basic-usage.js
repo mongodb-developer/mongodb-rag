@@ -30,8 +30,8 @@ async function runExample() {
   
   const rag = new MongoRAG({
     mongoUrl: process.env.MONGODB_URI,
-    database: 'ragtest',
-    collection: 'documents',
+    database: 'ragtest',  // Default database
+    collection: 'documents',  // Default collection
     embedding: {
       provider: process.env.EMBEDDING_PROVIDER || 'openai',
       apiKey: process.env.EMBEDDING_API_KEY,
@@ -44,11 +44,10 @@ async function runExample() {
     await rag.connect();
     console.log('Successfully connected and initialized indexes');
 
-    console.log('Ingesting documents...');
+    console.log('Ingesting documents into `dynamic_test_db.dynamic_docs`...');
     const ingestResult = await rag.ingestBatch(documents, {
-      onProgress: (progress) => {
-        console.log(`Progress: ${progress.percent}%`);
-      }
+      database: 'dynamic_test_db',   // NEW: Dynamic database
+      collection: 'dynamic_docs'     // NEW: Dynamic collection
     });
 
     console.log(`Ingested ${ingestResult.processed} documents`);
@@ -58,6 +57,8 @@ async function runExample() {
     console.log(`Query: "${searchQuery}"`);
 
     const results = await rag.search(searchQuery, {
+      database: 'dynamic_test_db',   // NEW: Dynamic database
+      collection: 'dynamic_docs',    // NEW: Dynamic collection
       maxResults: 2,
       includeMetadata: true
     });
