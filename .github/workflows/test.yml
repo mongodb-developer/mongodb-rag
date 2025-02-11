@@ -20,5 +20,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Debug Environment Variables
+        run: |
+          echo "OPENAI_API_KEY length: ${#OPENAI_API_KEY}"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
       - name: Run tests
         run: npm test
