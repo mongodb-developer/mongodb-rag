@@ -1,4 +1,6 @@
+// chunker.js
 import debug from 'debug';
+import natural from 'natural';
 
 const log = debug('mongodb-rag:chunker');
 
@@ -14,7 +16,7 @@ class Chunker {
 
   async chunkDocument(document) {
     log(`Chunking document ${document.id} using ${this.options.strategy} strategy`);
-    
+
     switch (this.options.strategy) {
       case 'sliding':
         return this.slidingWindowChunk(document);
@@ -31,28 +33,25 @@ class Chunker {
     const text = document.content;
     const chunks = [];
     const sentences = this.splitIntoSentences(text);
-    
+
     let currentChunk = [];
     let currentLength = 0;
 
     for (const sentence of sentences) {
       const sentenceLength = sentence.length;
-      
+
       if (currentLength + sentenceLength > this.options.maxChunkSize && currentChunk.length > 0) {
-        // Store current chunk and start a new one
         chunks.push(this.createChunk(document, currentChunk.join(' ')));
-        
-        // Handle overlap by keeping some sentences from the previous chunk
+
         const overlapSentences = this.calculateOverlap(currentChunk);
         currentChunk = overlapSentences;
         currentLength = overlapSentences.join(' ').length;
       }
-      
+
       currentChunk.push(sentence);
       currentLength += sentenceLength;
     }
 
-    // Don't forget the last chunk
     if (currentChunk.length > 0) {
       chunks.push(this.createChunk(document, currentChunk.join(' ')));
     }
@@ -62,22 +61,75 @@ class Chunker {
   }
 
   semanticChunk(document) {
-    // This is a placeholder for semantic chunking
-    // In a real implementation, this would use NLP to identify
-    // semantic boundaries like paragraphs, sections, or topics
-    return this.slidingWindowChunk(document);
+    const text = document.content;
+    const tokenizer = new natural.SentenceTokenizer();
+    const sentences = tokenizer.tokenize(text);
+    const chunks = [];
+
+    let currentChunk = [];
+    let currentLength = 0;
+
+    for (const sentence of sentences) {
+      const sentenceLength = sentence.length;
+
+      if (currentLength + sentenceLength > this.options.maxChunkSize && currentChunk.length > 0) {
+        chunks.push(this.createChunk(document, currentChunk.join(' ')));
+
+        currentChunk = [];
+        currentLength = 0;
+      }
+
+      currentChunk.push(sentence);
+      currentLength += sentenceLength;
+    }
+
+    if (currentChunk.length > 0) {
+      chunks.push(this.createChunk(document, currentChunk.join(' ')));
+    }
+
+    log(`Created ${chunks.length} semantic chunks for document ${document.id}`);
+    return chunks;
   }
 
   recursiveChunk(document) {
-    // This is a placeholder for recursive chunking
-    // In a real implementation, this would recursively split
-    // the document based on headers, sections, etc.
-    return this.slidingWindowChunk(document);
+    const text = document.content;
+    const chunks = [];
+    const sections = text.split(/\n\s*\n/); // Split based on paragraphs
+
+    for (const section of sections) {
+      if (section.length <= this.options.maxChunkSize) {
+        chunks.push(this.createChunk(document, section));
+      } else {
+        // If a section is too large, break it into sentences
+        const sentences = this.splitIntoSentences(section);
+        let currentChunk = [];
+        let currentLength = 0;
+
+        for (const sentence of sentences) {
+          const sentenceLength = sentence.length;
+
+          if (currentLength + sentenceLength > this.options.maxChunkSize && currentChunk.length > 0) {
+            chunks.push(this.createChunk(document, currentChunk.join(' ')));
+
+            currentChunk = [];
+            currentLength = 0;
+          }
+
+          currentChunk.push(sentence);
+          currentLength += sentenceLength;
+        }
+
+        if (currentChunk.length > 0) {
+          chunks.push(this.createChunk(document, currentChunk.join(' ')));
+        }
+      }
+    }
+
+    log(`Created ${chunks.length} recursive chunks for document ${document.id}`);
+    return chunks;
   }
 
   splitIntoSentences(text) {
-    // Simple sentence splitting - in production you'd want to use
-    // a more sophisticated NLP approach
     return text
       .replace(/([.!?])\s+/g, '$1\n')
       .split('\n')
@@ -96,7 +148,7 @@ class Chunker {
       content: content,
       metadata: {
         ...document.metadata,
-        chunkIndex: Date.now(), // Simple way to ensure unique chunks
+        chunkIndex: Date.now(),
         strategy: this.options.strategy
       }
     };

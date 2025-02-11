@@ -8,7 +8,7 @@ MongoDB-RAG (Retrieval Augmented Generation) is an NPM module designed to facili
 - **Batch Processing**: Handles bulk processing of documents with retry mechanisms.
 - **Index Management**: Ensures necessary indexes are available and optimized for vector queries.
 - **Caching Mechanism**: Provides in-memory caching for frequently accessed data.
-- **Flexible Chunking**: Supports different strategies for chunking long documents into smaller pieces.
+- **Advanced Chunking**: Supports **sliding window**, **semantic**, and **recursive** chunking strategies for optimal document processing.
 
 ## Installation
 You can install MongoDB-RAG using npm or yarn:
@@ -62,6 +62,9 @@ console.log(cachedResults);
 ```
 
 ### Chunking Large Documents
+MongoDB-RAG provides **multiple chunking strategies** to optimize retrieval:
+
+#### **1. Sliding Window Chunking** (default)
 ```javascript
 import { Chunker } from 'mongodb-rag';
 
@@ -69,6 +72,26 @@ const chunker = new Chunker({ strategy: "sliding", maxChunkSize: 500, overlap: 5
 const chunks = chunker.chunkDocument({ id: "doc1", content: "Long document text..." });
 console.log(chunks);
 ```
+- **Splits text into sentences** and ensures smooth overlapping chunks.
+- Prevents **information loss** between chunks.
+
+#### **2. Semantic Chunking**
+```javascript
+const semanticChunker = new Chunker({ strategy: "semantic", maxChunkSize: 500 });
+const semanticChunks = semanticChunker.chunkDocument({ id: "doc2", content: "Long structured text..." });
+console.log(semanticChunks);
+```
+- Uses **Natural Language Processing (NLP)** to detect semantic boundaries (paragraphs, sections).
+- Creates **meaningful segments for retrieval**.
+
+#### **3. Recursive Chunking**
+```javascript
+const recursiveChunker = new Chunker({ strategy: "recursive", maxChunkSize: 700 });
+const recursiveChunks = recursiveChunker.chunkDocument({ id: "doc3", content: "Structured document..." });
+console.log(recursiveChunks);
+```
+- Recursively **splits documents by headers, sections, sub-sections**.
+- Best for **technical papers, structured content**.
 
 ## Testing
 Run the test suite with:
