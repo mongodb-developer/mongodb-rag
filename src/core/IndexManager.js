@@ -44,16 +44,22 @@ class IndexManager {
   }
 
   buildSearchQuery(embedding, filter = {}, options = {}) {
+    const vectorSearchQuery = {
+      index: this.options.indexName,
+      path: "embedding",
+      queryVector: embedding,
+      limit: options.maxResults || 10,
+      exact: options.exact || false  // Allow exact to be configurable
+    };
+  
+    // Only add numCandidates if exact is false
+    if (!vectorSearchQuery.exact) {
+      vectorSearchQuery.numCandidates = options.numCandidates || 100;
+    }
+  
     const pipeline = [
       {
-        $vectorSearch: {
-          index: this.options.indexName,
-          path: "embedding",
-          queryVector: embedding,
-          numCandidates: options.numCandidates || 100,
-          limit: options.maxResults || 10,
-          exact: true
-        }
+        $vectorSearch: vectorSearchQuery
       },
       {
         $addFields: {
@@ -61,12 +67,12 @@ class IndexManager {
         }
       }
     ];
-
+  
     // Add filter if present
     if (Object.keys(filter).length > 0) {
       pipeline[0].$vectorSearch.filter = filter;
     }
-
+  
     if (options.includeMetadata) {
       pipeline.push({
         $project: {
@@ -77,10 +83,11 @@ class IndexManager {
         }
       });
     }
-
+  
     console.log('Generated search query:', JSON.stringify(pipeline, null, 2));
     return pipeline;
   }
+  
 
   async getIndexStats() {
     try {
