@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmongodb_rag_docs=self.webpackChunkmongodb_rag_docs||[]).push([[647],{8122:function(e,r,n){n.r(r),n.d(r,{default:function(){return d}});n(6540);var s=n(8215),c=n(1769),o=n(204),u=n(2831),a=n(1410),t=n(4848);function d(e){return(0,t.jsx)(c.e3,{className:(0,s.A)(o.G.wrapper.docsPages),children:(0,t.jsx)(a.A,{children:(0,u.v)(e.route.routes)})})}}}]);
