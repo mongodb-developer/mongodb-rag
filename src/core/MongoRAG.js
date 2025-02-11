@@ -189,6 +189,21 @@ class MongoRAG {
     }
 
     /**
+     * Retrieves an embedding for a given text.
+     * @param {string} text - The text to embed.
+     * @returns {Promise<Array<number>>} The embedded text.
+     */
+    
+    async _getEmbedding(text) {
+        if (!this.embeddingProvider) {
+            await this._initializeEmbeddingProvider();
+        }
+        const [embedding] = await this.embeddingProvider.getEmbeddings([text]);
+        return embedding;
+    }
+    
+
+    /**
      * Closes the MongoDB connection.
      * @returns {Promise<void>}
      */
