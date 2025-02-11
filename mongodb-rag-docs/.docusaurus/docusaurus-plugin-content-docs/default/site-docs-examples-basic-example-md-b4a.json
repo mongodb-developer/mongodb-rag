@@ -1,0 +1,29 @@
+{
+  "id": "examples/basic-example",
+  "title": "Basic Example",
+  "description": "This example demonstrates how to set up a simple RAG system using MongoDB-RAG for document retrieval and question answering.",
+  "source": "@site/docs/examples/basic-example.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/basic-example",
+  "permalink": "/mongodb-rag/mongodb-rag-docs/docs/examples/basic-example",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/docs/examples/basic-example.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "id": "basic-example",
+    "title": "Basic Example",
+    "sidebar_position": 1
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Usage",
+    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/usage"
+  },
+  "next": {
+    "title": "Advanced Example",
+    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/examples/advanced-example"
+  }
+}

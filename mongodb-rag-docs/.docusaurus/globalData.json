@@ -1,0 +1,58 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/mongodb-rag/mongodb-rag-docs/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/mongodb-rag/mongodb-rag-docs/docs",
+          "mainDocId": "intro",
+          "docs": [
+            {
+              "id": "api-reference",
+              "path": "/mongodb-rag/mongodb-rag-docs/docs/api-reference",
+              "sidebar": "docs"
+            },
+            {
+              "id": "examples/advanced-example",
+              "path": "/mongodb-rag/mongodb-rag-docs/docs/examples/advanced-example",
+              "sidebar": "docs"
+            },
+            {
+              "id": "examples/basic-example",
+              "path": "/mongodb-rag/mongodb-rag-docs/docs/examples/basic-example",
+              "sidebar": "docs"
+            },
+            {
+              "id": "installation",
+              "path": "/mongodb-rag/mongodb-rag-docs/docs/installation",
+              "sidebar": "docs"
+            },
+            {
+              "id": "intro",
+              "path": "/mongodb-rag/mongodb-rag-docs/docs/intro",
+              "sidebar": "docs"
+            },
+            {
+              "id": "usage",
+              "path": "/mongodb-rag/mongodb-rag-docs/docs/usage",
+              "sidebar": "docs"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "docs": {
+              "link": {
+                "path": "/mongodb-rag/mongodb-rag-docs/docs/intro",
+                "label": "intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

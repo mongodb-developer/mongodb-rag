@@ -1,0 +1,28 @@
+{
+  "id": "installation",
+  "title": "Installation",
+  "description": "Install via npm",
+  "source": "@site/docs/installation.md",
+  "sourceDirName": ".",
+  "slug": "/installation",
+  "permalink": "/mongodb-rag/mongodb-rag-docs/docs/installation",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/docs/installation.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "Installation",
+    "sidebar_position": 2
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Introduction",
+    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/intro"
+  },
+  "next": {
+    "title": "Usage",
+    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/usage"
+  }
+}

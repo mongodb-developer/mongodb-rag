@@ -1,0 +1,249 @@
+{
+  "entrypoints": [
+    "main"
+  ],
+  "origins": {
+    "42": [
+      42
+    ],
+    "17896441": [
+      869,
+      401
+    ],
+    "main": [
+      354,
+      869,
+      792
+    ],
+    "runtime~main": [
+      792,
+      869,
+      354
+    ],
+    "0e384e19": [
+      976
+    ],
+    "16f9b06f": [
+      811
+    ],
+    "3b8c55ea": [
+      803
+    ],
+    "5e95c892": [
+      647
+    ],
+    "6476eba6": [
+      722
+    ],
+    "72d756b8": [
+      256
+    ],
+    "76391b45": [
+      448
+    ],
+    "964ae018": [
+      443
+    ],
+    "a7456010": [
+      235
+    ],
+    "a7bd4aaa": [
+      98
+    ],
+    "a94703ab": [
+      869,
+      48
+    ],
+    "aba21aa0": [
+      742
+    ],
+    "b4a7054a": [
+      129
+    ],
+    "c4f5d8e4": [
+      869,
+      634
+    ],
+    "styles": [
+      48,
+      354,
+      401,
+      634,
+      792,
+      869
+    ]
+  },
+  "assets": {
+    "42": {
+      "js": [
+        {
+          "file": "assets/js/42.2006a03a.js",
+          "hash": "4d0dbb459ca3481f",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/42.2006a03a.js"
+        }
+      ]
+    },
+    "48": {
+      "js": [
+        {
+          "file": "assets/js/a94703ab.198af767.js",
+          "hash": "1e81fd91d2c9c2ca",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/a94703ab.198af767.js"
+        }
+      ]
+    },
+    "98": {
+      "js": [
+        {
+          "file": "assets/js/a7bd4aaa.207e9845.js",
+          "hash": "2203e2bf6b5d0116",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/a7bd4aaa.207e9845.js"
+        }
+      ]
+    },
+    "129": {
+      "js": [
+        {
+          "file": "assets/js/b4a7054a.a1c8ea57.js",
+          "hash": "64991d2621a192b7",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/b4a7054a.a1c8ea57.js"
+        }
+      ]
+    },
+    "235": {
+      "js": [
+        {
+          "file": "assets/js/a7456010.51b3a2be.js",
+          "hash": "4726af5ab5ec3022",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/a7456010.51b3a2be.js"
+        }
+      ]
+    },
+    "256": {
+      "js": [
+        {
+          "file": "assets/js/72d756b8.c7e1bef7.js",
+          "hash": "0897fa7a3483d8f2",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/72d756b8.c7e1bef7.js"
+        }
+      ]
+    },
+    "354": {
+      "js": [
+        {
+          "file": "assets/js/runtime~main.afefdb30.js",
+          "hash": "2d0f6f461fa99480",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/runtime~main.afefdb30.js"
+        }
+      ]
+    },
+    "401": {
+      "js": [
+        {
+          "file": "assets/js/17896441.4863802f.js",
+          "hash": "223d02e4ab9cc5b8",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/17896441.4863802f.js"
+        }
+      ]
+    },
+    "443": {
+      "js": [
+        {
+          "file": "assets/js/964ae018.8c16016e.js",
+          "hash": "cfa4bdc241533e14",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/964ae018.8c16016e.js"
+        }
+      ]
+    },
+    "448": {
+      "js": [
+        {
+          "file": "assets/js/76391b45.a3329432.js",
+          "hash": "2dcee432e3cae569",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/76391b45.a3329432.js"
+        }
+      ]
+    },
+    "634": {
+      "js": [
+        {
+          "file": "assets/js/c4f5d8e4.29b1a43e.js",
+          "hash": "db5de4cb7b10ed9f",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/c4f5d8e4.29b1a43e.js"
+        }
+      ]
+    },
+    "647": {
+      "js": [
+        {
+          "file": "assets/js/5e95c892.90e324ea.js",
+          "hash": "778e61c3b15d4363",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/5e95c892.90e324ea.js"
+        }
+      ]
+    },
+    "722": {
+      "js": [
+        {
+          "file": "assets/js/6476eba6.115cc1d9.js",
+          "hash": "c2ba5e02bbb837b6",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/6476eba6.115cc1d9.js"
+        }
+      ]
+    },
+    "742": {
+      "js": [
+        {
+          "file": "assets/js/aba21aa0.1a3087e5.js",
+          "hash": "ba887585389ba5be",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/aba21aa0.1a3087e5.js"
+        }
+      ]
+    },
+    "792": {
+      "js": [
+        {
+          "file": "assets/js/main.6d3dec77.js",
+          "hash": "317b024040911614",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/main.6d3dec77.js"
+        }
+      ]
+    },
+    "803": {
+      "js": [
+        {
+          "file": "assets/js/3b8c55ea.6f3753f8.js",
+          "hash": "11dc0fec6e1446b2",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/3b8c55ea.6f3753f8.js"
+        }
+      ]
+    },
+    "811": {
+      "js": [
+        {
+          "file": "assets/js/16f9b06f.8fea0613.js",
+          "hash": "e640f14cc178be5d",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/16f9b06f.8fea0613.js"
+        }
+      ]
+    },
+    "869": {
+      "css": [
+        {
+          "file": "assets/css/styles.f0e0ecf4.css",
+          "hash": "0da7aaf5eb086373",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/css/styles.f0e0ecf4.css"
+        }
+      ]
+    },
+    "976": {
+      "js": [
+        {
+          "file": "assets/js/0e384e19.fd66f458.js",
+          "hash": "53d31e34ca2ef696",
+          "publicPath": "/mongodb-rag/mongodb-rag-docs/assets/js/0e384e19.fd66f458.js"
+        }
+      ]
+    }
+  }
+}

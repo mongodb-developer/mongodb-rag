@@ -1,0 +1,38 @@
+{
+  "name": "mongodb-rag-docs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Documentation site for MongoDB-RAG library",
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "GIT_USER=<GITHUB_USERNAME> docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.7.0",
+    "@docusaurus/faster": "3.7.0",
+    "@docusaurus/module-type-aliases": "3.7.0",
+    "@docusaurus/plugin-google-analytics": "3.7.0",
+    "@docusaurus/plugin-google-gtag": "3.7.0",
+    "@docusaurus/preset-classic": "3.7.0",
+    "@docusaurus/theme-mermaid": "3.7.0",
+    "@mdx-js/react": "^3.0.1",
+    "clsx": "^1.2.1",
+    "docusaurus-lunr-search": "3.6.0",
+    "prism-react-renderer": "^2.1.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

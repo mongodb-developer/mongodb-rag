@@ -1,0 +1,29 @@
+{
+  "id": "examples/advanced-example",
+  "title": "Advanced Example",
+  "description": "This example demonstrates advanced features of MongoDB-RAG, including custom preprocessing, metadata filtering, and integration with an LLM for question answering.",
+  "source": "@site/docs/examples/advanced-example.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/advanced-example",
+  "permalink": "/mongodb-rag/mongodb-rag-docs/docs/examples/advanced-example",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/docs/examples/advanced-example.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "id": "advanced-example",
+    "title": "Advanced Example",
+    "sidebar_position": 2
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Basic Example",
+    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/examples/basic-example"
+  },
+  "next": {
+    "title": "API Reference",
+    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/api-reference"
+  }
+}
