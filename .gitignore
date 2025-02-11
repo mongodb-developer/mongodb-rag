@@ -1,6 +1,7 @@
 # Node.js dependencies
 codebase.md
 .docusaurus
+.aidigestignore
 node_modules/
 npm-debug.log
 yarn-error.log

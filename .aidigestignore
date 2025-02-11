@@ -5,3 +5,9 @@ out
 out.log
 out-1.log
 out-2.log
+mongodb-rag-docs
+.husky
+.github
+.git
+tests
+coverage
