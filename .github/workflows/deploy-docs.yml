@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'mongodb-rag-docs/**'
-      - '.github/workflows/deploy-docs.yml'
 
 permissions:
   contents: write
@@ -15,21 +12,24 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mongodb-rag-docs
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
-        working-directory: mongodb-rag-docs
-        run: npm install
+        run: |
+          npm install --no-package-lock
 
       - name: Build website
-        working-directory: mongodb-rag-docs
-        run: npm run build
+        run: |
+          npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
