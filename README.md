@@ -129,6 +129,10 @@ Check test coverage:
 ```sh
 npm run test:coverage
 ```
+---
+
+## **💡 Examples**
+- For more examples, check our [examples directory](https://github.com/mongodb-developer/mongodb-rag/tree/main/examples).
 
 ---
 
@@ -140,3 +144,9 @@ Contributions are welcome! Please fork the repository and submit a pull request.
 ## **📜 License**
 This project is licensed under the MIT License.
 
+## 🔗 Links
+
+- [Documentation](https://mongodb-developer.github.io/mongodb-rag/)
+- [GitHub Repository](https://github.com/mongodb-developer/mongodb-rag)
+- [Bug Reports](https://github.com/mongodb-developer/mongodb-rag/issues)
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
