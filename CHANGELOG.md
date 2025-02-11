@@ -2,10 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.4.0] - 2025-02-11
 ### Added
-- Added **semantic chunking** strategy to split documents based on semantically meaningful sentence boundaries.
-- Added **recursive chunking** strategy to split documents recursively based on sections or paragraphs.
+- **Dynamic Database & Collection Selection**: Users can now specify databases and collections dynamically at query time.
+- **Expanded Documentation**: Updated README with step-by-step instructions from setup to implementation.
+- **Updated Usage Examples**: `basic-usage.js` and `advanced-usage.js` now demonstrate dynamic database selection.
+- **Enhanced Logging**: MongoRAG now logs database/collection selection during operations for better debugging.
+
+### Changed
+- **Refactored MongoRAG Connection Handling**: Ensures database and collection are dynamically set without breaking existing functionality.
+- **Improved Tests**: Added new tests for dynamic selection and enhanced validation checks.
 
 ## [1.1.0] - 2025-02-11
 ### Changed
@@ -19,3 +25,4 @@ All notable changes to this project will be documented in this file.
 ## [1.0.0] - 2025-02-01
 ### Initial release
 - Initial version with basic chunking functionality (sliding window strategy).
+
