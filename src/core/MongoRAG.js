@@ -52,7 +52,7 @@ class MongoRAG {
                 maxResults: config.search?.maxResults || 5
             }
         };
-        
+
 
         this.client = null;
         this.indexManager = null;
@@ -66,8 +66,17 @@ class MongoRAG {
     async connect() {
         if (!this.client) {
             try {
-                log('Connecting to MongoDB...');
+                log('Initializing MongoDB client...');
                 this.client = new MongoClient(this.config.mongoUrl);
+            } catch (error) {
+                console.error('Error initializing MongoDB client:', error);
+                throw error;
+            }
+        }
+
+        if (!this.client.topology || !this.client.topology.isConnected()) {
+            try {
+                log('Connecting to MongoDB...');
                 await this.client.connect();
                 log('Connected to MongoDB');
             } catch (error) {
@@ -76,6 +85,7 @@ class MongoRAG {
             }
         }
     }
+
 
     /**
      * Retrieves a MongoDB collection reference.
@@ -139,8 +149,8 @@ class MongoRAG {
         console.log('[DEBUG] Using vector search index:', this.config.indexName);
 
         const indexManager = new IndexManager(col, {
-            indexName: this.config.indexName,  
-            embeddingFieldPath: this.config.embeddingFieldPath, 
+            indexName: this.config.indexName,
+            embeddingFieldPath: this.config.embeddingFieldPath,
             dimensions: this.config.embedding.dimensions
         });
 
@@ -207,7 +217,7 @@ class MongoRAG {
         const [embedding] = await this.embeddingProvider.getEmbeddings([text]);
         return embedding;
     }
-    
+
 
     /**
      * Closes the MongoDB connection.
