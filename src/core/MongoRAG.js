@@ -136,10 +136,11 @@ class MongoRAG {
         const { database, collection, maxResults = 5 } = options;
         const col = await this._getCollection(database, collection);
         const embedding = await this._getEmbedding(query);
+        console.log('[DEBUG] Using vector search index:', this.config.indexName);
 
         const indexManager = new IndexManager(col, {
-            indexName: this.config.indexName,  // <-- Pass configured index name
-            embeddingFieldPath: this.config.embeddingFieldPath,  // <-- Pass embedding field path
+            indexName: this.config.indexName,  
+            embeddingFieldPath: this.config.embeddingFieldPath, 
             dimensions: this.config.embedding.dimensions
         });
 

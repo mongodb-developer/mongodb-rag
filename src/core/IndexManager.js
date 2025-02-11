@@ -5,14 +5,14 @@ const log = debug('mongodb-rag:index');
 class IndexManager {
     constructor(collection, options = {}) {
         this.collection = collection;
+        this.indexName = options.indexName || 'vector_index';  // <-- Fix: Assign indexName
+        this.embeddingFieldPath = options.embeddingFieldPath || 'embedding';  // <-- Fix: Assign embeddingFieldPath
         this.options = {
-            indexName: options.indexName || 'default',
             dimensions: options.dimensions || 1536,
             similarity: options.similarity || 'cosine',
             ...options
         };
     }
-
     async ensureIndexes() {
         try {
             log("Checking indexes...");
@@ -45,8 +45,8 @@ class IndexManager {
 
     buildSearchQuery(embedding, filter = {}, options = {}) {
         const vectorSearchQuery = {
-            index: this.indexName,  // <-- Use configured index name
-            path: this.embeddingFieldPath,  // <-- Use configured embedding field path
+            index: this.indexName,  // Now correctly assigned
+            path: this.embeddingFieldPath,  // Now correctly assigned
             queryVector: embedding,
             limit: options.maxResults || 10,
             exact: options.exact || false
