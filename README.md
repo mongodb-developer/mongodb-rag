@@ -1,10 +1,10 @@
 # MongoDB-RAG
 
 ![NPM Version](https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm)  
-![Build Status](https://github.com/merlynn/mongodb-rag/actions/workflows/test.yml/badge.svg)  
-![License](https://img.shields.io/github/license/merlynn/mongodb-rag)  
-![Issues](https://img.shields.io/github/issues/merlynn/mongodb-rag)  
-![Pull Requests](https://img.shields.io/github/issues-pr/merlynn/mongodb-rag)  
+![Build Status](https://github.com/mongodb-developer/mongodb-rag/actions/workflows/tests.yml/badge.svg)
+![License](https://img.shields.io/github/license/mongodb-developer/mongodb-rag)  
+![Issues](https://img.shields.io/github/issues/mongodb-developer/mongodb-rag)  
+![Pull Requests](https://img.shields.io/github/issues-pr/mongodb-developer/mongodb-rag)  
 ![Downloads](https://img.shields.io/npm/dt/mongodb-rag)  
 
 ## Overview
