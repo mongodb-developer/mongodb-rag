@@ -1,0 +1,7 @@
+dist
+node_modules
+*.log
+out
+out.log
+out-1.log
+out-2.log
