@@ -1,4 +1,3 @@
-// examples/basic-usage.js
 import { MongoRAG } from '../src/index.js';
 import dotenv from 'dotenv';
 
@@ -6,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Debug loading of environment variables
-console.log('Environment variables loaded:', {
+console.log('Loaded ENV:', {
   mongoUri: process.env.MONGODB_URI ? 'Set' : 'Not set',
   provider: process.env.EMBEDDING_PROVIDER || 'openai',
   apiKey: process.env.EMBEDDING_API_KEY ? 'Set' : 'Not set'
