@@ -45,46 +45,39 @@ class IndexManager {
 
     buildSearchQuery(embedding, filter = {}, options = {}) {
         const vectorSearchQuery = {
-            index: this.indexName,  // Now correctly assigned
-            path: this.embeddingFieldPath,  // Now correctly assigned
+            index: this.indexName,
+            path: this.embeddingFieldPath,
             queryVector: embedding,
             limit: options.maxResults || 10,
             exact: options.exact || false
         };
-
+    
         if (!vectorSearchQuery.exact) {
             vectorSearchQuery.numCandidates = options.numCandidates || 100;
         }
-
+    
         const pipeline = [
             {
                 $vectorSearch: vectorSearchQuery
             },
             {
-                $addFields: {
-                    score: { $meta: "searchScore" }
-                }
-            }
-        ];
-
-        if (Object.keys(filter).length > 0) {
-            pipeline[0].$vectorSearch.filter = filter;
-        }
-
-        if (options.includeMetadata) {
-            pipeline.push({
                 $project: {
                     documentId: 1,
                     content: 1,
                     metadata: 1,
-                    score: 1
+                    score: { $meta: "vectorSearchScore" }  // Ensure score is always included
                 }
-            });
+            }
+        ];
+    
+        if (Object.keys(filter).length > 0) {
+            pipeline[0].$vectorSearch.filter = filter;
         }
-
+    
         console.log('Generated search query:', JSON.stringify(pipeline, null, 2));
         return pipeline;
     }
+    
 
 
     async getIndexStats() {
