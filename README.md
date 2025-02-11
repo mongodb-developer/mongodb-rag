@@ -1,7 +1,7 @@
 # MongoDB-RAG
 
 ![NPM Version](https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm)  
-![Build Status](https://github.com/mongodb-developer/mongodb-rag/actions/workflows/tests.yml/badge.svg)
+![Build Status](https://github.com/mongodb-developer/mongodb-rag/actions/workflows/test.yml/badge.svg)
 ![License](https://img.shields.io/github/license/mongodb-developer/mongodb-rag)  
 ![Issues](https://img.shields.io/github/issues/mongodb-developer/mongodb-rag)  
 ![Pull Requests](https://img.shields.io/github/issues-pr/mongodb-developer/mongodb-rag)  
