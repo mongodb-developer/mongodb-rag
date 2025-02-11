@@ -37,6 +37,8 @@ class MongoRAG {
             mongoUrl: config.mongoUrl,
             defaultDatabase: config.database,
             defaultCollection: config.collection,
+            indexName: config.indexName || "vector_index",  // <-- Ensure we allow index configuration
+            embeddingFieldPath: config.embeddingFieldPath || "embedding", // <-- Allow setting embedding field path
             embedding: {
                 provider: config.embedding?.provider || 'openai',
                 apiKey: config.embedding.apiKey,
@@ -50,6 +52,7 @@ class MongoRAG {
                 maxResults: config.search?.maxResults || 5
             }
         };
+        
 
         this.client = null;
         this.indexManager = null;
@@ -135,6 +138,8 @@ class MongoRAG {
         const embedding = await this._getEmbedding(query);
 
         const indexManager = new IndexManager(col, {
+            indexName: this.config.indexName,  // <-- Pass configured index name
+            embeddingFieldPath: this.config.embeddingFieldPath,  // <-- Pass embedding field path
             dimensions: this.config.embedding.dimensions
         });
 
@@ -193,7 +198,7 @@ class MongoRAG {
      * @param {string} text - The text to embed.
      * @returns {Promise<Array<number>>} The embedded text.
      */
-    
+
     async _getEmbedding(text) {
         if (!this.embeddingProvider) {
             await this._initializeEmbeddingProvider();
