@@ -1,5 +1,6 @@
 export default {
   "0e384e19": [() => import(/* webpackChunkName: "0e384e19" */ "@site/docs/intro.md"), "@site/docs/intro.md", require.resolveWeak("@site/docs/intro.md")],
+  "15313aa8": [() => import(/* webpackChunkName: "15313aa8" */ "@generated/docusaurus-plugin-content-docs/default/p/mongodb-rag-docs-b58.json"), "@generated/docusaurus-plugin-content-docs/default/p/mongodb-rag-docs-b58.json", require.resolveWeak("@generated/docusaurus-plugin-content-docs/default/p/mongodb-rag-docs-b58.json")],
   "16f9b06f": [() => import(/* webpackChunkName: "16f9b06f" */ "@site/docs/examples/advanced-example.md"), "@site/docs/examples/advanced-example.md", require.resolveWeak("@site/docs/examples/advanced-example.md")],
   "17896441": [() => import(/* webpackChunkName: "17896441" */ "@theme/DocItem"), "@theme/DocItem", require.resolveWeak("@theme/DocItem")],
   "3b8c55ea": [() => import(/* webpackChunkName: "3b8c55ea" */ "@site/docs/installation.md"), "@site/docs/installation.md", require.resolveWeak("@site/docs/installation.md")],
@@ -7,7 +8,6 @@ export default {
   "5e9f5e1a": [() => import(/* webpackChunkName: "5e9f5e1a" */ "@generated/docusaurus.config"), "@generated/docusaurus.config", require.resolveWeak("@generated/docusaurus.config")],
   "6476eba6": [() => import(/* webpackChunkName: "6476eba6" */ "@site/docs/usage.md"), "@site/docs/usage.md", require.resolveWeak("@site/docs/usage.md")],
   "72d756b8": [() => import(/* webpackChunkName: "72d756b8" */ "@site/src/pages/helloWorld.js"), "@site/src/pages/helloWorld.js", require.resolveWeak("@site/src/pages/helloWorld.js")],
-  "76391b45": [() => import(/* webpackChunkName: "76391b45" */ "@generated/docusaurus-plugin-content-docs/default/p/mongodb-rag-mongodb-rag-docs-docs-69a.json"), "@generated/docusaurus-plugin-content-docs/default/p/mongodb-rag-mongodb-rag-docs-docs-69a.json", require.resolveWeak("@generated/docusaurus-plugin-content-docs/default/p/mongodb-rag-mongodb-rag-docs-docs-69a.json")],
   "964ae018": [() => import(/* webpackChunkName: "964ae018" */ "@site/docs/api-reference.md"), "@site/docs/api-reference.md", require.resolveWeak("@site/docs/api-reference.md")],
   "a7456010": [() => import(/* webpackChunkName: "a7456010" */ "@generated/docusaurus-plugin-content-pages/default/__plugin.json"), "@generated/docusaurus-plugin-content-pages/default/__plugin.json", require.resolveWeak("@generated/docusaurus-plugin-content-pages/default/__plugin.json")],
   "a7bd4aaa": [() => import(/* webpackChunkName: "a7bd4aaa" */ "@theme/DocVersionRoot"), "@theme/DocVersionRoot", require.resolveWeak("@theme/DocVersionRoot")],

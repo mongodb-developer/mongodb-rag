@@ -5,7 +5,7 @@
   "source": "@site/docs/api-reference.md",
   "sourceDirName": ".",
   "slug": "/api-reference",
-  "permalink": "/mongodb-rag/mongodb-rag-docs/docs/api-reference",
+  "permalink": "/mongodb-rag/docs/api-reference",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/docs/api-reference.md",
@@ -20,6 +20,6 @@
   "sidebar": "docs",
   "previous": {
     "title": "Advanced Example",
-    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/examples/advanced-example"
+    "permalink": "/mongodb-rag/docs/examples/advanced-example"
   }
 }

@@ -5,7 +5,7 @@
   "source": "@site/docs/usage.md",
   "sourceDirName": ".",
   "slug": "/usage",
-  "permalink": "/mongodb-rag/mongodb-rag-docs/docs/usage",
+  "permalink": "/mongodb-rag/docs/usage",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/docs/usage.md",
@@ -19,10 +19,10 @@
   "sidebar": "docs",
   "previous": {
     "title": "Installation",
-    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/installation"
+    "permalink": "/mongodb-rag/docs/installation"
   },
   "next": {
     "title": "Basic Example",
-    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/examples/basic-example"
+    "permalink": "/mongodb-rag/docs/examples/basic-example"
   }
 }

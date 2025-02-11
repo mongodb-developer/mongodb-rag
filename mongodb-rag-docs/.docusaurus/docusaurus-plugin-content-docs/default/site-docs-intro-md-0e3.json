@@ -5,7 +5,7 @@
   "source": "@site/docs/intro.md",
   "sourceDirName": ".",
   "slug": "/intro",
-  "permalink": "/mongodb-rag/mongodb-rag-docs/docs/intro",
+  "permalink": "/mongodb-rag/docs/intro",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/docs/intro.md",
@@ -20,6 +20,6 @@
   "sidebar": "docs",
   "next": {
     "title": "Installation",
-    "permalink": "/mongodb-rag/mongodb-rag-docs/docs/installation"
+    "permalink": "/mongodb-rag/docs/installation"
   }
 }

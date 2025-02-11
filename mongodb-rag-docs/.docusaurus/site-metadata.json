@@ -7,6 +7,11 @@
       "name": "@docusaurus/plugin-content-docs",
       "version": "3.7.0"
     },
+    "docusaurus-plugin-content-blog": {
+      "type": "package",
+      "name": "@docusaurus/plugin-content-blog",
+      "version": "3.7.0"
+    },
     "docusaurus-plugin-content-pages": {
       "type": "package",
       "name": "@docusaurus/plugin-content-pages",

@@ -1,49 +1,49 @@
 {
-  "/mongodb-rag/mongodb-rag-docs/helloWorld-970": {
+  "/mongodb-rag/helloWorld-700": {
     "__comp": "72d756b8",
     "__context": {
       "plugin": "a7456010"
     },
     "config": "5e9f5e1a"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs-687": {
+  "/mongodb-rag/docs-f69": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/mongodb-rag/mongodb-rag-docs/docs-769": {
+  "/mongodb-rag/docs-37f": {
     "__comp": "a7bd4aaa",
-    "__props": "76391b45"
+    "__props": "15313aa8"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs-b59": {
+  "/mongodb-rag/docs-432": {
     "__comp": "a94703ab"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs/api-reference-0db": {
+  "/mongodb-rag/docs/api-reference-d42": {
     "__comp": "17896441",
     "content": "964ae018"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs/examples/advanced-example-8c2": {
+  "/mongodb-rag/docs/examples/advanced-example-3c6": {
     "__comp": "17896441",
     "content": "16f9b06f"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs/examples/basic-example-628": {
+  "/mongodb-rag/docs/examples/basic-example-806": {
     "__comp": "17896441",
     "content": "b4a7054a"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs/installation-027": {
+  "/mongodb-rag/docs/installation-159": {
     "__comp": "17896441",
     "content": "3b8c55ea"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs/intro-d2d": {
+  "/mongodb-rag/docs/intro-8ba": {
     "__comp": "17896441",
     "content": "0e384e19"
   },
-  "/mongodb-rag/mongodb-rag-docs/docs/usage-6bb": {
+  "/mongodb-rag/docs/usage-941": {
     "__comp": "17896441",
     "content": "6476eba6"
   },
-  "/mongodb-rag/mongodb-rag-docs/-e61": {
+  "/mongodb-rag/-2ae": {
     "__comp": "c4f5d8e4",
     "__context": {
       "plugin": "a7456010"

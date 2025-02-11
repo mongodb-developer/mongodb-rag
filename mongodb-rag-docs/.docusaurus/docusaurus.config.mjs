@@ -7,11 +7,10 @@ export default {
   "title": "MongoDB-RAG",
   "tagline": "Retrieval-Augmented Generation with MongoDB",
   "url": "https://mongodb-developer.github.io",
-  "baseUrl": "/mongodb-rag/mongodb-rag-docs/",
-  "onBrokenMarkdownLinks": "warn",
-  "favicon": "img/favicon.ico",
+  "baseUrl": "/mongodb-rag/",
   "organizationName": "mongodb-developer",
   "projectName": "mongodb-rag",
+  "trailingSlash": false,
   "presets": [
     [
       "@docusaurus/preset-classic",
@@ -20,7 +19,6 @@ export default {
           "sidebarPath": "/Users/michael.lynn/code/mongodb-rag/mongodb-rag-docs/sidebars.js",
           "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/"
         },
-        "blog": false,
         "theme": {
           "customCss": "/Users/michael.lynn/code/mongodb-rag/mongodb-rag-docs/src/css/custom.css"
         }
@@ -52,16 +50,8 @@ export default {
           "title": "Documentation",
           "items": [
             {
-              "label": "Getting Started",
+              "label": "Documentation",
               "to": "/docs/intro"
-            },
-            {
-              "label": "Installation",
-              "to": "/docs/installation"
-            },
-            {
-              "label": "API Reference",
-              "to": "/docs/api-reference"
             }
           ]
         },
@@ -268,6 +258,7 @@ export default {
   },
   "onBrokenLinks": "throw",
   "onBrokenAnchors": "warn",
+  "onBrokenMarkdownLinks": "warn",
   "onDuplicateRoutes": "warn",
   "staticDirectories": [
     "static"
