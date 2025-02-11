@@ -1,5 +1,12 @@
 # MongoDB-RAG
 
+![NPM Version](https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm)  
+![Build Status](https://github.com/merlynn/mongodb-rag/actions/workflows/test.yml/badge.svg)  
+![License](https://img.shields.io/github/license/merlynn/mongodb-rag)  
+![Issues](https://img.shields.io/github/issues/merlynn/mongodb-rag)  
+![Pull Requests](https://img.shields.io/github/issues-pr/merlynn/mongodb-rag)  
+![Downloads](https://img.shields.io/npm/dt/mongodb-rag)  
+
 ## Overview
 MongoDB-RAG (Retrieval Augmented Generation) is an NPM module designed to facilitate seamless vector search using MongoDB Atlas. It provides an efficient way to perform similarity search, caching, batch processing, and indexing to enable fast and accurate retrieval of relevant data from a MongoDB collection.
 
