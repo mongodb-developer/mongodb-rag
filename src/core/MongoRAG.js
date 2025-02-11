@@ -1,10 +1,33 @@
+// src/core/MongoRAG.js
+
 import { MongoClient } from 'mongodb';
 import debug from 'debug';
 import IndexManager from './IndexManager.js';
 
 const log = debug('mongodb-rag:core');
 
+/**
+ * MongoRAG - A Retrieval-Augmented Generation (RAG) library
+ * for performing semantic search and vector-based retrieval using MongoDB.
+ */
 class MongoRAG {
+    /**
+     * Constructs a new MongoRAG instance.
+     * @param {Object} config - Configuration options.
+     * @param {string} config.mongoUrl - MongoDB connection URI.
+     * @param {string} config.database - Default MongoDB database name.
+     * @param {string} config.collection - Default MongoDB collection name.
+     * @param {Object} config.embedding - Embedding configuration.
+     * @param {string} config.embedding.apiKey - API key for the embedding provider.
+     * @param {string} [config.embedding.provider='openai'] - Embedding provider name.
+     * @param {string} [config.embedding.model='text-embedding-3-small'] - Embedding model name.
+     * @param {number} [config.embedding.batchSize=100] - Batch size for embedding requests.
+     * @param {number} [config.embedding.dimensions=1536] - Number of dimensions in the embedding space.
+     * @param {Object} [config.search] - Search configuration.
+     * @param {string} [config.search.similarityMetric='cosine'] - Similarity metric for vector search.
+     * @param {number} [config.search.minScore=0.7] - Minimum score threshold for search results.
+     * @param {number} [config.search.maxResults=5] - Maximum number of results returned.
+     */
     constructor(config) {
         if (!config.embedding?.apiKey) {
             throw new Error('Embedding API key is required in config.embedding.apiKey');
@@ -32,6 +55,11 @@ class MongoRAG {
         this.indexManager = null;
     }
 
+    /**
+     * Establishes a connection to MongoDB.
+     * If already connected, it does nothing.
+     * @returns {Promise<void>}
+     */
     async connect() {
         if (!this.client) {
             try {
@@ -46,10 +74,16 @@ class MongoRAG {
         }
     }
 
+    /**
+     * Retrieves a MongoDB collection reference.
+     * @param {string} [database] - Database name, defaults to the configured database.
+     * @param {string} [collection] - Collection name, defaults to the configured collection.
+     * @returns {Promise<Object>} MongoDB collection reference.
+     * @throws {Error} If database or collection is not specified.
+     */
     async _getCollection(database, collection) {
         await this.connect();
 
-        // Use provided database/collection, or fallback to defaults
         const dbName = database || this.config.defaultDatabase;
         const colName = collection || this.config.defaultCollection;
 
@@ -61,6 +95,15 @@ class MongoRAG {
         return this.client.db(dbName).collection(colName);
     }
 
+    /**
+     * Ingests a batch of documents into MongoDB.
+     * Each document will be embedded before insertion.
+     * @param {Array<Object>} documents - Array of documents to be ingested.
+     * @param {Object} [options] - Optional parameters.
+     * @param {string} [options.database] - Database name.
+     * @param {string} [options.collection] - Collection name.
+     * @returns {Promise<Object>} Summary of the ingestion process.
+     */
     async ingestBatch(documents, options = {}) {
         const { database, collection } = options;
         const col = await this._getCollection(database, collection);
@@ -77,6 +120,15 @@ class MongoRAG {
         }
     }
 
+    /**
+     * Performs a semantic search on the stored vector embeddings.
+     * @param {string} query - The search query.
+     * @param {Object} [options] - Optional parameters.
+     * @param {string} [options.database] - Database name.
+     * @param {string} [options.collection] - Collection name.
+     * @param {number} [options.maxResults=5] - Maximum number of search results.
+     * @returns {Promise<Array<Object>>} Array of search results.
+     */
     async search(query, options = {}) {
         const { database, collection, maxResults = 5 } = options;
         const col = await this._getCollection(database, collection);
@@ -99,6 +151,11 @@ class MongoRAG {
         }));
     }
 
+    /**
+     * Embeds documents using the configured embedding provider.
+     * @param {Array<Object>} documents - Array of documents.
+     * @returns {Promise<Array<Object>>} Array of embedded documents.
+     */
     async _embedDocuments(documents) {
         await this._initializeEmbeddingProvider();
         const texts = documents.map(doc => doc.content);
@@ -110,6 +167,11 @@ class MongoRAG {
         }));
     }
 
+    /**
+     * Initializes the embedding provider.
+     * @returns {Promise<void>}
+     * @throws {Error} If the provider is unknown.
+     */
     async _initializeEmbeddingProvider() {
         if (!this.embeddingProvider) {
             const { provider, apiKey, ...options } = this.config.embedding;
@@ -126,6 +188,10 @@ class MongoRAG {
         }
     }
 
+    /**
+     * Closes the MongoDB connection.
+     * @returns {Promise<void>}
+     */
     async close() {
         if (this.client) {
             await this.client.close();
