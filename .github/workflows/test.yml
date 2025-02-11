@@ -7,7 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      EMBEDDING_PROVIDER: ${{ secrets.EMBEDDING_PROVIDER }}
+      EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -22,9 +23,10 @@ jobs:
 
       - name: Debug Environment Variables
         run: |
-          echo "OPENAI_API_KEY length: ${#OPENAI_API_KEY}"
+          echo "Embedding Provider: $EMBEDDING_PROVIDER"
+          echo "API Key Length: ${#EMBEDDING_API_KEY}"
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EMBEDDING_API_KEY: ${{ secrets.EMBEDDING_API_KEY }}
 
       - name: Run tests
         run: npm test

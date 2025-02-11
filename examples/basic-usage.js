@@ -1,3 +1,4 @@
+// examples/basic-usage.js
 import { MongoRAG } from '../src/index.js';
 import dotenv from 'dotenv';
 
@@ -7,26 +8,21 @@ dotenv.config();
 // Debug loading of environment variables
 console.log('Environment variables loaded:', {
   mongoUri: process.env.MONGODB_URI ? 'Set' : 'Not set',
-  openaiKey: process.env.OPENAI_API_KEY ? 'Set' : 'Not set'
+  provider: process.env.EMBEDDING_PROVIDER || 'openai',
+  apiKey: process.env.EMBEDDING_API_KEY ? 'Set' : 'Not set'
 });
 
 // Sample documents
 const documents = [
   {
     id: 'doc1',
-    content: 'MongoDB Atlas Vector Search enables semantic search capabilities through the storage and querying of vector embeddings.',
-    metadata: {
-      source: 'documentation',
-      category: 'features'
-    }
+    content: 'MongoDB Atlas Vector Search enables semantic search capabilities through vector embeddings.',
+    metadata: { source: 'docs', category: 'features' }
   },
   {
     id: 'doc2',
-    content: 'Vector similarity search uses mathematical representations of content to find related items, making it ideal for semantic search applications.',
-    metadata: {
-      source: 'tutorial',
-      category: 'concepts'
-    }
+    content: 'Vector similarity search uses mathematical representations to find related items.',
+    metadata: { source: 'tutorial', category: 'concepts' }
   }
 ];
 
@@ -38,15 +34,14 @@ async function runExample() {
     database: 'ragtest',
     collection: 'documents',
     embedding: {
-      provider: 'openai',
-      apiKey: process.env.OPENAI_API_KEY,
+      provider: process.env.EMBEDDING_PROVIDER || 'openai',
+      apiKey: process.env.EMBEDDING_API_KEY,
       dimensions: 1536,
-      model: 'text-embedding-3-small'
+      model: process.env.EMBEDDING_MODEL || 'text-embedding-3-small'
     }
   });
 
   try {
-    console.log('Attempting to connect to MongoDB...');
     await rag.connect();
     console.log('Successfully connected and initialized indexes');
 
@@ -56,13 +51,13 @@ async function runExample() {
         console.log(`Progress: ${progress.percent}%`);
       }
     });
-    
+
     console.log(`Ingested ${ingestResult.processed} documents`);
 
     console.log('\nPerforming search...');
     const searchQuery = 'What is vector similarity search?';
     console.log(`Query: "${searchQuery}"`);
-    
+
     const results = await rag.search(searchQuery, {
       maxResults: 2,
       includeMetadata: true

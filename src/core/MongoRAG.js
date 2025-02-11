@@ -192,22 +192,29 @@ class MongoRAG {
     async _initializeEmbeddingProvider() {
         if (!this.embeddingProvider) {
             const { provider, apiKey, ...options } = this.config.embedding;
-
-            console.log('Initializing embedding provider with API key present:', Boolean(apiKey));
-
+    
+            console.log(`Initializing embedding provider: ${provider}`);
+    
             switch (provider) {
                 case 'openai':
                     const OpenAIEmbeddingProvider = (await import('../providers/OpenAIEmbeddingProvider.js')).default;
-                    this.embeddingProvider = new OpenAIEmbeddingProvider({
-                        apiKey: apiKey, // Pass the API key directly
-                        ...options
-                    });
+                    this.embeddingProvider = new OpenAIEmbeddingProvider({ apiKey, ...options });
+                    break;
+                case 'anthropic':
+                    const AnthropicEmbeddingProvider = (await import('../providers/AnthropicEmbeddingProvider.js')).default;
+                    this.embeddingProvider = new AnthropicEmbeddingProvider({ apiKey, ...options });
+                    break;
+                case 'deepseek':
+                    const DeepSeekEmbeddingProvider = (await import('../providers/DeepSeekEmbeddingProvider.js')).default;
+                    this.embeddingProvider = new DeepSeekEmbeddingProvider({ apiKey, ...options });
                     break;
                 default:
                     throw new Error(`Unknown embedding provider: ${provider}`);
             }
         }
     }
+    
+
 }
 
 export default MongoRAG;
