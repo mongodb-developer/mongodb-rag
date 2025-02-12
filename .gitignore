@@ -7,6 +7,8 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 *.tgz
+.mongodb-rag.test.json
+.mongodb-rag.json
 
 # Logs
 logs/
@@ -44,3 +46,4 @@ Thumbs.db
 
 # config
 .mongodb-rag.json
+.mongodb-rag.test.json.bak
