@@ -8,16 +8,15 @@ import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import styles from './index.module.css';
 
 function HomepageHeader() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
+        <img src="img/mongodb-rag-logo.png" alt="MongoDB RAG" className={styles.logo} />
         <h1 className="hero__title">{siteConfig.title}</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
+        <p className="hero__subtitle">Powerful Retrieval-Augmented Generation (RAG) for MongoDB</p>
         <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro">
+          <Link className="button button--secondary button--lg" to="/docs/intro">
             Get Started →
           </Link>
         </div>
@@ -27,11 +26,9 @@ function HomepageHeader() {
 }
 
 export default function Home() {
-  const {siteConfig} = useDocusaurusContext();
+  const { siteConfig } = useDocusaurusContext();
   return (
-    <Layout
-      title={siteConfig.title}
-      description={siteConfig.tagline}>
+    <Layout title={siteConfig.title} description="MongoDB RAG - AI-Powered Vector Search">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

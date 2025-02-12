@@ -1,5 +1,7 @@
 ---
 
+![MongoDB RAG Logo](static/mongodb-rag-logo.png)
+
 # MongoDB-RAG
 
 ![NPM Version](https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm)  
@@ -179,3 +181,4 @@ This project is licensed under the MIT License.
 - [GitHub Repository](https://github.com/mongodb-developer/mongodb-rag)
 - [Bug Reports](https://github.com/mongodb-developer/mongodb-rag/issues)
 - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+

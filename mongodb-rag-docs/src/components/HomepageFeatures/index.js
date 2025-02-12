@@ -5,31 +5,19 @@ import styles from './styles.module.css';
 const FeatureList = [
   {
     title: 'Fast Vector Search',
-    description: (
-      <>
-        Built on MongoDB Atlas Vector Search for efficient similarity-based queries
-      </>
-    ),
+    description: 'Built on MongoDB Atlas Vector Search for efficient similarity-based queries.',
   },
   {
     title: 'OpenAI Integration',
-    description: (
-      <>
-        Seamless integration with OpenAI embeddings for advanced text processing
-      </>
-    ),
+    description: 'Seamless integration with OpenAI embeddings for advanced text processing.',
   },
   {
     title: 'Easy to Use',
-    description: (
-      <>
-        Simple API designed to get you up and running quickly with RAG applications
-      </>
-    ),
+    description: 'Simple API designed to get you up and running quickly with RAG applications.',
   },
 ];
 
-function Feature({title, description}) {
+function Feature({ title, description }) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center padding-horiz--md">

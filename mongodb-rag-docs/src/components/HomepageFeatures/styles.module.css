@@ -1,7 +1,9 @@
 .features {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 3rem 0;
   width: 100%;
 }
 
