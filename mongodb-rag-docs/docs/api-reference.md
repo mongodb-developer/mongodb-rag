@@ -129,7 +129,7 @@ const rag = new MongoRAG({
   collection: 'documents',
   embedding: {
     provider: 'openai',
-    apiKey: process.env.OPENAI_API_KEY
+    apiKey: process.env.EMBEDDING_API_KEY
   }
 });
 ```
@@ -143,7 +143,7 @@ const rag = new MongoRAG({
   collection: 'documents',
   embedding: {
     provider: 'openai',
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.EMBEDDING_API_KEY,
     model: 'text-embedding-ada-002',
     batchSize: 100,
     dimensions: 1536

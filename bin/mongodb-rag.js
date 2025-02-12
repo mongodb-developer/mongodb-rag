@@ -10,12 +10,90 @@ import columnify from 'columnify'; // Install with: npm install columnify
 import util from 'util';
 import { createRagApp } from '../src/cli/createRagApp.js';
 
+const isTestMode = process.env.NODE_ENV === 'test';
+const isNonInteractive = process.env.NONINTERACTIVE === 'true';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = process.env.NODE_ENV === "test"
     ? path.join(process.cwd(), ".mongodb-rag.test.json")
     : path.join(process.cwd(), ".mongodb-rag.json");
 
 console.log(chalk.blue("🔍 Debug: Using CONFIG_PATH =>"), CONFIG_PATH);
+
+const getMockIndexes = () => [
+    {
+      name: 'vector_index',
+      type: 'search',
+      key: { embedding: 'vector' }
+    },
+    {
+      name: '_id_',
+      type: 'standard',
+      key: { _id: 1 }
+    }
+  ];
+
+  const getMongoClient = async (url) => {
+    if (isTestMode) {
+      return {
+        db: () => ({
+          collection: () => ({
+            createSearchIndex: async () => ({ name: 'vector_index' }),
+            indexes: async () => getMockIndexes(),
+            listSearchIndexes: () => ({
+              toArray: async () => getMockIndexes()
+            })
+          })
+        }),
+        close: async () => {}
+      };
+    }
+    
+    const client = new MongoClient(url);
+    await client.connect();
+    return client;
+  };
+
+const getIndexParams = async (config) => {
+    if (isNonInteractive) {
+      return {
+        indexName: process.env.VECTOR_INDEX || config.indexName || 'vector_index',
+        fieldPath: process.env.FIELD_PATH || config.embedding?.path || 'embedding',
+        numDimensions: process.env.NUM_DIMENSIONS || String(config.embedding?.dimensions) || '1536',
+        similarityFunction: process.env.SIMILARITY_FUNCTION || config.embedding?.similarity || 'cosine'
+      };
+    }
+  
+    const enquirer = new Enquirer();
+    return enquirer.prompt([
+      {
+        type: 'input',
+        name: 'indexName',
+        message: 'Enter the name for your Vector Search Index:',
+        initial: config.indexName || 'vector_index'
+      },
+      {
+        type: 'input',
+        name: 'fieldPath',
+        message: 'Enter the field path where vector embeddings are stored:',
+        initial: config.embedding?.path || 'embedding'
+      },
+      {
+        type: 'input',
+        name: 'numDimensions',
+        message: 'Enter the number of dimensions for embeddings:',
+        initial: String(config.embedding?.dimensions || '1536'),
+        validate: (input) => !isNaN(input) && Number(input) > 0 ? true : 'Please enter a valid number.'
+      },
+      {
+        type: 'select',
+        name: 'similarityFunction',
+        message: 'Choose the similarity function:',
+        choices: ['cosine', 'dotProduct', 'euclidean'],
+        initial: config.embedding?.similarity || 'cosine'
+      }
+    ]);
+  };
 
 // Load Config Safely
 let config = {};
@@ -169,7 +247,7 @@ program
         }
     });
 
-program
+    program
     .command('create-index')
     .description('Create a MongoDB Atlas Vector Search Index')
     .action(async () => {
@@ -181,55 +259,28 @@ program
         console.log(chalk.cyan.bold(`📂 Database: ${config.database}`));
         console.log(chalk.cyan.bold(`📑 Collection: ${config.collection}`));
 
-        // Prompt user for vector index parameters
-        const enquirer = new Enquirer();
-        const responses = await enquirer.prompt([
-            {
-                type: 'input',
-                name: 'indexName',
-                message: 'Enter the name for your Vector Search Index:',
-                initial: config.indexName || 'vector_index'
-            },
-            {
-                type: 'input',
-                name: 'fieldPath',
-                message: 'Enter the field path where vector embeddings are stored:',
-                initial: config.embedding.path || 'embedding'
-            },
-            {
-                type: 'input',
-                name: 'numDimensions',
-                message: 'Enter the number of dimensions for embeddings:',
-                initial: String(config.embedding.dimensions || '1536'),
-                validate: (input) => !isNaN(input) && Number(input) > 0 ? true : 'Please enter a valid number.'
-            },
-            {
-                type: 'select',
-                name: 'similarityFunction',
-                message: 'Choose the similarity function:',
-                choices: ['cosine', 'dotProduct', 'euclidean'],
-                initial: config.embedding.similarity || 'cosine'
-            }
-        ]);
+        const indexParams = isNonInteractive ? {
+            indexName: process.env.VECTOR_INDEX || config.indexName || 'vector_index',
+            fieldPath: process.env.FIELD_PATH || config.embedding?.path || 'embedding',
+            numDimensions: process.env.NUM_DIMENSIONS || String(config.embedding?.dimensions) || '1536',
+            similarityFunction: process.env.SIMILARITY_FUNCTION || config.embedding?.similarity || 'cosine'
+        } : await getIndexParams(config);
 
-        // Update config with new index settings
-        config.indexName = responses.indexName;
-        config.embedding.path = responses.fieldPath;
-        config.embedding.dimensions = Number(responses.numDimensions);
-        config.embedding.similarity = responses.similarityFunction;
+        config.indexName = indexParams.indexName;
+        config.embedding.path = indexParams.fieldPath;
+        config.embedding.dimensions = Number(indexParams.numDimensions);
+        config.embedding.similarity = indexParams.similarityFunction;
 
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2));
 
-        console.log(chalk.yellow(`📌 Creating Vector Search Index: ${responses.indexName}...`));
+        console.log(chalk.yellow(`📌 Creating Vector Search Index: ${indexParams.indexName}...`));
 
-        const rag = new MongoRAG(config);
-        await rag.connect();
+        const client = await getMongoClient(config.mongoUrl);
 
         try {
-            const collection = await rag._getCollection();
-
+            const collection = client.db(config.database).collection(config.collection);
             const indexDefinition = {
-                name: responses.indexName,
+                name: indexParams.indexName,
                 type: "vectorSearch",
                 definition: {
                     fields: [
@@ -243,15 +294,13 @@ program
                 }
             };
 
-            console.log(chalk.blue("🔍 Debug: Index Definition:"));
-            console.log(JSON.stringify(indexDefinition, null, 2)); // ✅ Print structure before execution
-
-            const result = await collection.createSearchIndex(indexDefinition); // ✅ Correct function
-            console.log(chalk.green(`✅ Vector Search Index "${responses.indexName}" created successfully!`));
+            await collection.createSearchIndex(indexDefinition);
+            console.log(chalk.green(`✅ Vector Search Index "${indexParams.indexName}" created successfully!`));
         } catch (error) {
             console.error(chalk.red("❌ Error creating index:"), error.message);
+            process.exit(1);
         } finally {
-            await rag.close();
+            await client.close();
         }
     });
 
@@ -436,7 +485,7 @@ program
     });
 
 
-program
+    program
     .command('show-indexes')
     .description('Display all indexes for the configured MongoDB collection')
     .action(async () => {
@@ -446,13 +495,14 @@ program
         }
 
         console.log(chalk.cyan.bold(`📂 Database: ${config.database}`));
-        console.log(chalk.cyan.bold(`📑 Collection: ${config.collection}\n`));
+        console.log(chalk.cyan.bold(`📑 Collection: ${config.collection}`));
 
-        const rag = new MongoRAG(config);
-        await rag.connect();
+        const client = await getMongoClient(config.mongoUrl);
 
         try {
-            const collection = await rag._getCollection();
+            const collection = client.db(config.database).collection(config.collection);
+            
+            // Use the indexes() method to get all indexes
             const indexes = await collection.indexes();
 
             if (indexes.length === 0) {
@@ -468,8 +518,9 @@ program
             }
         } catch (error) {
             console.error(chalk.red("❌ Error retrieving indexes:"), error.message);
+            process.exit(1);
         } finally {
-            await rag.close();
+            await client.close();
         }
     });
 
