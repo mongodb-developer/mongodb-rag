@@ -3,6 +3,7 @@ module.exports = {
         'intro',
         'installation',
         'usage',
+        'cli-reference',
         {
           type: 'category',
           label: 'Examples',

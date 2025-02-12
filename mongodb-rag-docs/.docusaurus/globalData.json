@@ -16,6 +16,11 @@
               "sidebar": "docs"
             },
             {
+              "id": "cli-reference",
+              "path": "/mongodb-rag/docs/cli-reference",
+              "sidebar": "docs"
+            },
+            {
               "id": "examples/advanced-example",
               "path": "/mongodb-rag/docs/examples/advanced-example",
               "sidebar": "docs"

@@ -19,8 +19,8 @@
   },
   "sidebar": "docs",
   "previous": {
-    "title": "Usage",
-    "permalink": "/mongodb-rag/docs/usage"
+    "title": "CLI Reference",
+    "permalink": "/mongodb-rag/docs/cli-reference"
   },
   "next": {
     "title": "Advanced Example",

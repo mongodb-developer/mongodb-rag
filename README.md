@@ -1,3 +1,5 @@
+---
+
 # MongoDB-RAG
 
 ![NPM Version](https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm)  
@@ -10,13 +12,14 @@
 ## Overview
 MongoDB-RAG (Retrieval Augmented Generation) is an NPM module that simplifies vector search using MongoDB Atlas. This library enables developers to efficiently perform similarity search, caching, batch processing, and indexing for fast and accurate retrieval of relevant data.
 
-## Features
+## 🚀 Features
 - **Vector Search**: Efficiently retrieves similar documents using MongoDB's Atlas Vector Search.
 - **Dynamic Database & Collection Selection**: Supports flexible selection of multiple databases and collections.
 - **Batch Processing**: Handles bulk processing of documents with retry mechanisms.
 - **Index Management**: Ensures necessary indexes are available and optimized.
 - **Caching Mechanism**: Provides in-memory caching for frequently accessed data.
 - **Advanced Chunking**: Supports **sliding window**, **semantic**, and **recursive** chunking strategies.
+- **CLI for Scaffolding RAG Apps**
 
 ---
 
@@ -42,10 +45,33 @@ npm install mongodb-rag dotenv
 3. **Get Your Connection String** and store it in `.env`:
    ```env
    MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/
-   EMBEDDING_API_KEY=your-openai-api-key
+   EMBEDDING_PROVIDER=openai  # Options: openai, deepseek
+   EMBEDDING_API_KEY=your-embedding-api-key
+   EMBEDDING_MODEL=text-embedding-3-small  # Change based on provider
+   VECTOR_INDEX=default
    ```
 
-### **3️⃣ Initialize MongoRAG**
+### **3️⃣ Quick Start with CLI**
+You can generate a fully working RAG-enabled app with **MongoDB Atlas Vector Search** using:
+
+```sh
+npx mongodb-rag create-rag-app my-rag-app
+```
+
+This will:
+- Scaffold a new **CRUD RAG app** with Express and MongoDB Atlas.
+- Set up **environment variables** for **embedding providers**.
+- Create API routes for **ingestion, search, and deletion**.
+
+Then, navigate into your project and run:
+
+```sh
+cd my-rag-app
+npm install
+npm run dev
+```
+
+### **4️⃣ Initialize MongoRAG**
 ```javascript
 import { MongoRAG } from 'mongodb-rag';
 import dotenv from 'dotenv';
@@ -56,16 +82,16 @@ const rag = new MongoRAG({
     database: 'my_rag_db',  // Default database
     collection: 'documents', // Default collection
     embedding: {
-        provider: 'openai',
+        provider: process.env.EMBEDDING_PROVIDER,
         apiKey: process.env.EMBEDDING_API_KEY,
-        dimensions: 1536,
-        model: 'text-embedding-3-small'
+        model: process.env.EMBEDDING_MODEL,
+        dimensions: 1536
     }
 });
 await rag.connect();
 ```
 
-### **4️⃣ Ingest Documents**
+### **5️⃣ Ingest Documents**
 ```javascript
 const documents = [
     { id: 'doc1', content: 'MongoDB is a NoSQL database.', metadata: { source: 'docs' } },
@@ -76,7 +102,7 @@ await rag.ingestBatch(documents, { database: 'dynamic_db', collection: 'dynamic_
 console.log('Documents ingested.');
 ```
 
-### **5️⃣ Perform a Vector Search**
+### **6️⃣ Perform a Vector Search**
 ```javascript
 const query = 'How does vector search work?';
 
@@ -89,7 +115,7 @@ const results = await rag.search(query, {
 console.log('Search Results:', results);
 ```
 
-### **6️⃣ Close Connection**
+### **7️⃣ Close Connection**
 ```javascript
 await rag.close();
 ```
@@ -129,12 +155,9 @@ Check test coverage:
 ```sh
 npm run test:coverage
 ```
----
-
-## **💡 Examples**
-- For more examples, check our [examples directory](https://github.com/mongodb-developer/mongodb-rag/tree/main/examples).
 
 ---
+
 
 ## **🤝 Contributing**
 Contributions are welcome! Please fork the repository and submit a pull request.
@@ -144,8 +167,14 @@ Contributions are welcome! Please fork the repository and submit a pull request.
 ## **📜 License**
 This project is licensed under the MIT License.
 
+## **💡 Examples**
+
+- For more examples, check our [examples directory](https://github.com/mongodb-developer/mongodb-rag/tree/main/examples).
+    
+
 ## 🔗 Links
 
+- CLI Reference
 - [Documentation](https://mongodb-developer.github.io/mongodb-rag/)
 - [GitHub Repository](https://github.com/mongodb-developer/mongodb-rag)
 - [Bug Reports](https://github.com/mongodb-developer/mongodb-rag/issues)

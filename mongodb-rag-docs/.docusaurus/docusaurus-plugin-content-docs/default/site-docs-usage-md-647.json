@@ -22,7 +22,7 @@
     "permalink": "/mongodb-rag/docs/installation"
   },
   "next": {
-    "title": "Basic Example",
-    "permalink": "/mongodb-rag/docs/examples/basic-example"
+    "title": "CLI Reference",
+    "permalink": "/mongodb-rag/docs/cli-reference"
   }
 }
