@@ -37,7 +37,7 @@ class OpenAIEmbeddingProvider extends BaseEmbeddingProvider {
         input: texts
       });
 
-      if (!response.data || !response.data.data) {
+      if (!response.data?.data) {
         throw new Error('Unexpected response format from OpenAI API');
       }
 
@@ -45,10 +45,9 @@ class OpenAIEmbeddingProvider extends BaseEmbeddingProvider {
       log(`Successfully got embeddings for batch`);
       return embeddings;
     } catch (error) {
-      if (error.response?.data?.error) {
-        throw new Error(`OpenAI API error: ${error.response.data.error.message}`);
-      }
-      throw error;
+      // Extract error message from OpenAI response
+      const message = error.response?.data?.error?.message || error.message;
+      throw new Error(message);
     }
   }
 }

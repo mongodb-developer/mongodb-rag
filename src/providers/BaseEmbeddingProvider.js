@@ -15,12 +15,6 @@ class BaseEmbeddingProvider {
     if (!this.options.apiKey) {
       throw new Error('API key is required');
     }
-
-    this.rateLimiter = {
-      tokens: 60,
-      refillRate: 60,
-      lastRefill: Date.now()
-    };
   }
 
   async getEmbeddings(texts) {
@@ -36,34 +30,29 @@ class BaseEmbeddingProvider {
     const results = [];
 
     for (const batch of batches) {
-      await this._waitForRateLimit();
-      
-      let retries = 0;
-      let lastError = null;
-
-      while (retries < this.options.maxRetries) {
-        try {
-          const embeddings = await this._embedBatch(batch);
-          results.push(...embeddings);
-          break;
-        } catch (error) {
-          retries++;
-          lastError = error;
-          
-          if (retries === this.options.maxRetries) {
-            const errorMessage = `Failed to get embeddings after ${retries} retries`;
-            const details = lastError?.message || 'Unknown error';
-            log(`${errorMessage}: ${details}`);
-            throw new Error(`${errorMessage}: ${details}`);
-          }
-
-          log(`Retry ${retries} after error: ${error.message}`);
-          await this._sleep(this.options.retryDelay * retries);
-        }
-      }
+      let embeddings = await this._processWithRetry(batch);
+      results.push(...embeddings);
     }
 
     return results;
+  }
+
+  async _processWithRetry(batch) {
+    let lastError;
+    
+    for (let attempt = 1; attempt <= this.options.maxRetries; attempt++) {
+      try {
+        return await this._embedBatch(batch);
+      } catch (error) {
+        lastError = error;
+        if (attempt === this.options.maxRetries) {
+          log(`Failed after ${attempt} attempts: ${error.message}`);
+          throw error;
+        }
+        log(`Retry ${attempt}/${this.options.maxRetries} after error: ${error.message}`);
+        await this._sleep(this.options.retryDelay * attempt);
+      }
+    }
   }
 
   _createBatches(texts) {
@@ -72,26 +61,6 @@ class BaseEmbeddingProvider {
       batches.push(texts.slice(i, i + this.options.batchSize));
     }
     return batches;
-  }
-
-  async _waitForRateLimit() {
-    const now = Date.now();
-    const timePassed = now - this.rateLimiter.lastRefill;
-    const tokensToAdd = Math.floor(timePassed / 60000 * this.rateLimiter.refillRate);
-    
-    if (tokensToAdd > 0) {
-      this.rateLimiter.tokens = Math.min(60, this.rateLimiter.tokens + tokensToAdd);
-      this.rateLimiter.lastRefill = now;
-    }
-
-    if (this.rateLimiter.tokens < 1) {
-      const waitTime = Math.ceil(60000 / this.rateLimiter.refillRate);
-      log(`Rate limit reached, waiting ${waitTime}ms`);
-      await this._sleep(waitTime);
-      return this._waitForRateLimit();
-    }
-
-    this.rateLimiter.tokens--;
   }
 
   async _sleep(ms) {

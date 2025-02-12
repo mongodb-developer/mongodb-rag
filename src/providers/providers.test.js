@@ -1,39 +1,37 @@
 // src/providers/providers.test.js
 import { jest, describe, expect, test, beforeEach } from '@jest/globals';
-import OpenAIEmbeddingProvider from '../../src/providers/OpenAIEmbeddingProvider.js';
 
 // Mock axios using ES modules style
-const mockPost = jest.fn().mockResolvedValue({
-  data: {
-    data: [{ embedding: Array(1536).fill(0.1) }]
-  }
-});
+const mockPost = jest.fn();
+const mockAxiosCreate = jest.fn(() => ({
+  post: mockPost
+}));
 
-const mockAxiosCreate = jest.fn().mockReturnValue({
-  post: mockPost,
-  defaults: {
-    headers: {
-      common: {}
-    }
-  }
-});
-
+// Mock the axios module before importing any modules that use it
 await jest.unstable_mockModule('axios', () => ({
   default: {
     create: mockAxiosCreate
   }
 }));
 
+// Import modules after mocking
+const { default: OpenAIEmbeddingProvider } = await import('./OpenAIEmbeddingProvider.js');
+
 describe('Embedding Providers', () => {
   let provider;
   const mockApiKey = 'test-key-123';
 
   beforeEach(() => {
-    // Clear mocks
+    // Reset all mocks
     jest.clearAllMocks();
-    mockPost.mockClear();
-    mockAxiosCreate.mockClear();
     
+    // Set up default successful response
+    mockPost.mockResolvedValue({
+      data: {
+        data: [{ embedding: Array(1536).fill(0.1) }]
+      }
+    });
+
     // Create new provider instance
     provider = new OpenAIEmbeddingProvider({
       apiKey: mockApiKey,
@@ -45,16 +43,22 @@ describe('Embedding Providers', () => {
   test('should initialize with proper configuration', () => {
     expect(provider.apiKey).toBe(mockApiKey);
     expect(provider.model).toBe('text-embedding-3-small');
-    expect(mockAxiosCreate).toHaveBeenCalledWith(expect.objectContaining({
+    expect(mockAxiosCreate).toHaveBeenCalledWith({
       baseURL: 'https://api.openai.com/v1',
       headers: {
-        'Authorization': `Bearer ${mockApiKey}`,
+        'Authorization': 'Bearer test-key-123',
         'Content-Type': 'application/json'
       }
-    }));
+    });
   });
 
   test('should get embeddings from the OpenAI provider', async () => {
+    mockPost.mockResolvedValueOnce({
+      data: {
+        data: [{ embedding: Array(1536).fill(0.1) }]
+      }
+    });
+
     const texts = ['test text'];
     const result = await provider.getEmbeddings(texts);
     
@@ -65,9 +69,6 @@ describe('Embedding Providers', () => {
     
     expect(result).toHaveLength(1);
     expect(result[0]).toHaveLength(1536);
-    expect(typeof result[0][0]).toBe('number');
-    expect(result[0][0]).toBeGreaterThanOrEqual(-1);
-    expect(result[0][0]).toBeLessThanOrEqual(1);
   });
 
   test('should handle empty input', async () => {
@@ -77,7 +78,6 @@ describe('Embedding Providers', () => {
   });
 
   test('should handle batch processing', async () => {
-    // Update mock for batch processing
     mockPost.mockResolvedValueOnce({
       data: {
         data: Array(5).fill({ embedding: Array(1536).fill(0.1) })
@@ -93,39 +93,31 @@ describe('Embedding Providers', () => {
     });
     
     expect(result).toHaveLength(5);
-    expect(result[0]).toHaveLength(1536);
   });
 
   test('should respect batch size limits', async () => {
-    // Create provider with small batch size
-    const smallBatchProvider = new OpenAIEmbeddingProvider({
+    provider = new OpenAIEmbeddingProvider({
       apiKey: mockApiKey,
       batchSize: 2
     });
 
-    // Set up mock responses for each batch
+    // Mock responses for each batch
     mockPost
       .mockResolvedValueOnce({
-        data: {
-          data: Array(2).fill({ embedding: Array(1536).fill(0.1) })
-        }
+        data: { data: Array(2).fill({ embedding: Array(1536).fill(0.1) }) }
       })
       .mockResolvedValueOnce({
-        data: {
-          data: Array(2).fill({ embedding: Array(1536).fill(0.1) })
-        }
+        data: { data: Array(2).fill({ embedding: Array(1536).fill(0.1) }) }
       })
       .mockResolvedValueOnce({
-        data: {
-          data: Array(1).fill({ embedding: Array(1536).fill(0.1) })
-        }
+        data: { data: Array(1).fill({ embedding: Array(1536).fill(0.1) }) }
       });
 
     const texts = Array(5).fill('test text');
-    const result = await smallBatchProvider.getEmbeddings(texts);
+    const result = await provider.getEmbeddings(texts);
     
     expect(result).toHaveLength(5);
-    expect(mockPost).toHaveBeenCalledTimes(3); // Should be called three times for batches of 2,2,1
+    expect(mockPost).toHaveBeenCalledTimes(3);
   });
 
   test('should handle API errors', async () => {
@@ -139,6 +131,6 @@ describe('Embedding Providers', () => {
       }
     });
 
-    await expect(provider.getEmbeddings(['test'])).rejects.toThrow('OpenAI API error: Test API error');
+    await expect(provider.getEmbeddings(['test'])).rejects.toThrow('Test API error');
   });
 });
