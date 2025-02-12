@@ -17,41 +17,36 @@ const rag = new MongoRAG({
   mongoUrl: string,
   database: string,
   collection: string,
-  embedding?: {
+  embedding: {
     provider: 'openai',
     apiKey: string,
     model?: string,
-    batchSize?: number
-  },
-  preprocessing?: {
-    documentPreprocessor?: Function,
-    chunkSize?: number,
-    chunkOverlap?: number
+    batchSize?: number,
+    dimensions?: number
   },
   search?: {
     maxResults?: number,
-    minScore?: number
+    minScore?: number,
+    similarityMetric?: 'cosine' | 'dotProduct' | 'euclidean'
   }
 });
 ```
 
 #### Parameters
 
-- `config.mongoUrl` (string, required): MongoDB connection URI
-- `config.database` (string, required): MongoDB database name
-- `config.collection` (string, required): MongoDB collection name
-- `config.embedding` (object, optional):
-  - `provider`: Embedding provider (currently supports 'openai')
-  - `apiKey`: API key for the embedding provider
-  - `model`: Model name (default: 'text-embedding-ada-002')
-  - `batchSize`: Number of documents to embed in each batch
-- `config.preprocessing` (object, optional):
-  - `documentPreprocessor`: Custom function for document preprocessing
-  - `chunkSize`: Maximum chunk size in tokens
-  - `chunkOverlap`: Number of overlapping tokens between chunks
+- `config.mongoUrl` (string, required): MongoDB connection URI.
+- `config.database` (string, required): Default MongoDB database name.
+- `config.collection` (string, required): Default MongoDB collection name.
+- `config.embedding` (object, required):
+    - `provider` (string, required): Embedding provider (`openai` is supported).
+    - `apiKey` (string, required): API key for the embedding provider.
+    - `model` (string, optional): Model name (default: `'text-embedding-3-small'`).
+    - `batchSize` (number, optional): Batch size for embedding generation (default: `100`).
+    - `dimensions` (number, optional): Number of dimensions in the embedding space (default: `1536`).
 - `config.search` (object, optional):
-  - `maxResults`: Maximum number of results to return
-  - `minScore`: Minimum similarity score threshold
+    - `maxResults` (number, optional): Maximum number of results to return (default: `5`).
+    - `minScore` (number, optional): Minimum similarity score threshold (default: `0.7`).
+    - `similarityMetric` (string, optional): Similarity function for search (`cosine`, `dotProduct`, `euclidean`). Defaults to `'cosine'`.
 
 ### Methods
 
@@ -96,9 +91,10 @@ Performs a vector search for similar documents.
 
 ```javascript
 const results = await rag.search(query, {
+  database?: string,
+  collection?: string,
   maxResults?: number,
-  minScore?: number,
-  filter?: object
+  minScore?: number
 });
 ```
 
@@ -116,8 +112,9 @@ const results = await rag.search(query, {
 ```typescript
 interface SearchResult {
   content: string;
-  score: number;
+  documentId: string;
   metadata?: Record<string, any>;
+  score: number;
 }
 ```
 
@@ -148,23 +145,13 @@ const rag = new MongoRAG({
     provider: 'openai',
     apiKey: process.env.OPENAI_API_KEY,
     model: 'text-embedding-ada-002',
-    batchSize: 100
-  },
-  preprocessing: {
-    documentPreprocessor: (doc) => ({
-      ...doc,
-      content: doc.content.toLowerCase().trim(),
-      metadata: {
-        ...doc.metadata,
-        processedAt: new Date()
-      }
-    }),
-    chunkSize: 500,
-    chunkOverlap: 50
+    batchSize: 100,
+    dimensions: 1536
   },
   search: {
-    maxResults: 5,
-    minScore: 0.7
+    maxResults: 10,
+    minScore: 0.8,
+    similarityMetric: 'dotProduct'
   }
 });
 ```
@@ -177,40 +164,9 @@ The library provides specific error types:
 try {
   await rag.search('query');
 } catch (error) {
-  if (error instanceof ConnectionError) {
-    // Handle connection errors
-  } else if (error instanceof EmbeddingError) {
-    // Handle embedding generation errors
-  } else if (error instanceof SearchError) {
-    // Handle search errors
-  }
+  console.error('An error occurred:', error.message);
+  // Handle the error appropriately
 }
-```
-
-### Events
-
-MongoRAG emits events you can listen to:
-
-```javascript
-rag.on('connect', () => {
-  console.log('Connected to MongoDB');
-});
-
-rag.on('ingest:start', (batchSize) => {
-  console.log(`Starting ingestion of ${batchSize} documents`);
-});
-
-rag.on('ingest:complete', (count) => {
-  console.log(`Completed ingestion of ${count} documents`);
-});
-
-rag.on('search:start', (query) => {
-  console.log(`Starting search for: ${query}`);
-});
-
-rag.on('error', (error) => {
-  console.error('An error occurred:', error);
-});
 ```
 
 For more detailed examples and use cases, refer to:
