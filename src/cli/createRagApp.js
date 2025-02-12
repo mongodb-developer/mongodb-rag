@@ -33,10 +33,21 @@ export function createRagApp(projectName) {
     }
   }, null, 2));
 
-  // Step 2: Create .env file
-  fs.writeFileSync(path.join(projectPath, '.env'), `MONGODB_URI=mongodb+srv://your_user:your_password@your-cluster.mongodb.net/ragdb\nPORT=5000\n`);
+  // Step 2: Create .env file with corrected variables
+  fs.writeFileSync(path.join(projectPath, '.env'), `
+MONGODB_URI=mongodb+srv://your_user:your_password@your-cluster.mongodb.net/mongorag
+PORT=5000
 
-  // Step 3: Create server.js
+# Embedding Configuration
+EMBEDDING_PROVIDER=openai  # Options: openai, deepseek
+EMBEDDING_API_KEY=your-embedding-api-key
+EMBEDDING_MODEL=text-embedding-3-small  # Adjust for different providers
+
+# MongoDB Vector Search Index
+VECTOR_INDEX=default
+  `);
+
+  // Step 3: Create server.js with environment-aware embedding configuration
   fs.writeFileSync(path.join(projectPath, 'server.js'), `
 import express from 'express';
 import cors from 'cors';
@@ -51,13 +62,15 @@ app.use(cors());
 
 const rag = new MongoRAG({
   mongoUrl: process.env.MONGODB_URI,
-  database: "ragdb",
+  database: "mongorag",
   collection: "documents",
   embedding: {
-    provider: "openai",
-    apiKey: process.env.OPENAI_API_KEY,
+    provider: process.env.EMBEDDING_PROVIDER || "openai",
+    apiKey: process.env.EMBEDDING_API_KEY,
+    model: process.env.EMBEDDING_MODEL || "text-embedding-3-small",
     dimensions: 1536
-  }
+  },
+  indexName: process.env.VECTOR_INDEX || "default"
 });
 
 // Ingest Documents
