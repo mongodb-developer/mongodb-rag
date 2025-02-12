@@ -1,3 +1,4 @@
+// src/providers/BaseEmbeddingProvider.js
 import debug from 'debug';
 
 const log = debug('mongodb-rag:embedding');
@@ -11,9 +12,13 @@ class BaseEmbeddingProvider {
       ...options
     };
     
+    if (!this.options.apiKey) {
+      throw new Error('API key is required');
+    }
+
     this.rateLimiter = {
       tokens: 60,
-      refillRate: 60, // tokens per minute
+      refillRate: 60,
       lastRefill: Date.now()
     };
   }
@@ -23,6 +28,10 @@ class BaseEmbeddingProvider {
       texts = [texts];
     }
 
+    if (texts.length === 0) {
+      return [];
+    }
+
     const batches = this._createBatches(texts);
     const results = [];
 
@@ -30,6 +39,8 @@ class BaseEmbeddingProvider {
       await this._waitForRateLimit();
       
       let retries = 0;
+      let lastError = null;
+
       while (retries < this.options.maxRetries) {
         try {
           const embeddings = await this._embedBatch(batch);
@@ -37,9 +48,15 @@ class BaseEmbeddingProvider {
           break;
         } catch (error) {
           retries++;
+          lastError = error;
+          
           if (retries === this.options.maxRetries) {
-            throw new Error(`Failed to get embeddings after ${retries} retries: ${error.message}`);
+            const errorMessage = `Failed to get embeddings after ${retries} retries`;
+            const details = lastError?.message || 'Unknown error';
+            log(`${errorMessage}: ${details}`);
+            throw new Error(`${errorMessage}: ${details}`);
           }
+
           log(`Retry ${retries} after error: ${error.message}`);
           await this._sleep(this.options.retryDelay * retries);
         }
