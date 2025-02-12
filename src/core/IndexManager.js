@@ -102,7 +102,7 @@ class IndexManager {
             pipeline[0].$vectorSearch.filter = filter;
         }
 
-        console.log('Generated search query:', JSON.stringify(pipeline, null, 2));
+        // console.log('Generated search query:', JSON.stringify(pipeline, null, 2));
         return pipeline;
     }
 

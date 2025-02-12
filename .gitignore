@@ -40,3 +40,6 @@ jest-cache/
 
 # OS-specific files
 Thumbs.db
+
+# config
+.mongodb-rag.json

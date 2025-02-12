@@ -1,6 +1,6 @@
 {
   "name": "mongodb-rag",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "author": "Michael Lynn <merlynn@gmail.com>",
   "repository": {
     "type": "git",
@@ -9,9 +9,13 @@
   "description": "RAG (Retrieval Augmented Generation) library for MongoDB Vector Search",
   "type": "module",
   "main": "src/index.js",
+  "bin": {
+    "mongodb-rag": "./bin/mongodb-rag.js"
+  },
   "files": [
     "src",
-    "README.md"
+    "README.md",
+    "bin/mongodb-rag.js"
   ],
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/.bin/jest",
@@ -26,13 +30,19 @@
     "vector-search",
     "rag",
     "embeddings",
-    "semantic-search"
+    "semantic-search",
+    "cli",
+    "vector-database"
   ],
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.0",
+    "chalk": "^5.4.1",
+    "columnify": "^1.6.0",
+    "commander": "^10.0.0",
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
+    "enquirer": "^2.4.1",
     "mongodb": "^6.3.0",
     "natural": "^8.0.1"
   },
