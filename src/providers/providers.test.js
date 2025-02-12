@@ -26,7 +26,7 @@ describe('Embedding Providers', () => {
     jest.clearAllMocks();
     
     // Set up default successful response
-    mockPost.mockResolvedValue({
+    mockPost.mockReset().mockResolvedValue({
       data: {
         data: [{ embedding: Array(1536).fill(0.1) }]
       }
@@ -36,7 +36,8 @@ describe('Embedding Providers', () => {
     provider = new OpenAIEmbeddingProvider({
       apiKey: mockApiKey,
       model: 'text-embedding-3-small',
-      dimensions: 1536
+      dimensions: 1536,
+      maxRetries: 1 // Reduce retries for faster tests
     });
   });
 
@@ -98,7 +99,8 @@ describe('Embedding Providers', () => {
   test('should respect batch size limits', async () => {
     provider = new OpenAIEmbeddingProvider({
       apiKey: mockApiKey,
-      batchSize: 2
+      batchSize: 2,
+      maxRetries: 1
     });
 
     // Mock responses for each batch
@@ -121,7 +123,11 @@ describe('Embedding Providers', () => {
   });
 
   test('should handle API errors', async () => {
-    mockPost.mockRejectedValueOnce({
+    // Clear any previous mock implementations
+    mockPost.mockReset();
+    
+    // Mock a failed API call
+    mockPost.mockRejectedValue({
       response: {
         data: {
           error: {
@@ -131,6 +137,22 @@ describe('Embedding Providers', () => {
       }
     });
 
-    await expect(provider.getEmbeddings(['test'])).rejects.toThrow('Test API error');
+    // Expect the error to be thrown
+    await expect(
+      provider.getEmbeddings(['test'])
+    ).rejects.toThrow('Test API error');
+
+    // Verify the API was called
+    expect(mockPost).toHaveBeenCalledTimes(1);
+  });
+
+  test('should handle unexpected API responses', async () => {
+    mockPost.mockResolvedValueOnce({
+      data: {} // Missing data array
+    });
+
+    await expect(
+      provider.getEmbeddings(['test'])
+    ).rejects.toThrow('Unexpected response format from OpenAI API');
   });
 });
