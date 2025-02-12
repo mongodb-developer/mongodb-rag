@@ -3,7 +3,7 @@ import { jest, describe, expect, test, beforeEach } from '@jest/globals';
 import OpenAIEmbeddingProvider from '../../src/providers/OpenAIEmbeddingProvider.js';
 
 // Mock axios
-jest.mock('axios', () => ({
+await jest.unstable_mockModule('axios', () => ({
   default: {
     create: jest.fn(() => ({
       post: jest.fn().mockResolvedValue({
