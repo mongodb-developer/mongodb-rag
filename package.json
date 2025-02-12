@@ -18,7 +18,7 @@
     "bin/mongodb-rag.js"
   ],
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "NODE_ENV=test node --experimental-vm-modules node_modules/.bin/jest --runInBand --verbose",
     "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
     "lint": "eslint src",
@@ -43,6 +43,7 @@
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
     "enquirer": "^2.4.1",
+    "execa": "^9.5.2",
     "mongodb": "^6.3.0",
     "natural": "^8.0.1"
   },

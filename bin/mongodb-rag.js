@@ -8,9 +8,14 @@ import Enquirer from 'enquirer';
 import chalk from 'chalk';
 import columnify from 'columnify'; // Install with: npm install columnify
 import util from 'util';
+import { createRagApp } from '../src/cli/createRagApp.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CONFIG_PATH = path.join(process.cwd(), '.mongodb-rag.json');
+const CONFIG_PATH = process.env.NODE_ENV === "test"
+    ? path.join(process.cwd(), ".mongodb-rag.test.json")
+    : path.join(process.cwd(), ".mongodb-rag.json");
+
+console.log(chalk.blue("🔍 Debug: Using CONFIG_PATH =>"), CONFIG_PATH);
 
 // Load Config Safely
 let config = {};
@@ -35,6 +40,14 @@ function isConfigValid(config) {
         config.embedding.apiKey
     );
 }
+
+program
+  .command('create-rag-app <projectName>')
+  .description('Scaffold a new CRUD RAG application with MongoDB and Vector Search')
+  .action((projectName) => {
+    createRagApp(projectName);
+  });
+
 
 program
     .command('init')
@@ -356,56 +369,6 @@ program
         console.log(`✅ Vector Index Name updated to "${config.indexName}"`);
     });
 
-
-    program
-    .command('search <query>')
-    .option('--database <name>', 'Override database name')
-    .option('--collection <name>', 'Override collection name')
-    .option('--maxResults <number>', 'Set max search results', parseInt, 5)
-    .option('--minScore <number>', 'Set minimum similarity score', parseFloat, 0.7)
-    .description('Perform a vector search on stored documents')
-    .action(async (query, options) => {
-      if (!isConfigValid(config)) {
-        console.error(chalk.red("❌ Configuration missing. Run 'npx mongodb-rag init' first."));
-        process.exit(1);
-      }
-  
-      console.log(chalk.cyan.bold(`📂 Database: ${config.database}`));
-      console.log(chalk.cyan.bold(`📑 Collection: ${config.collection}`));
-      console.log(chalk.yellow(`🔍 Performing vector search using index: ${config.indexName}`));
-  
-      try {
-        const rag = new MongoRAG(config);
-        await rag.connect();
-  
-        const searchParams = {
-          database: options.database || config.database,
-          collection: options.collection || config.collection,
-          index: config.indexName, // ✅ Use stored index name
-          maxResults: options.maxResults || config.search.maxResults,
-          minScore: options.minScore || config.search.minScore
-        };
-  
-        const results = await rag.search(query, searchParams);
-  
-        console.log(chalk.bold("\n🔍 Search Results:"));
-  
-        results.forEach((result, i) => {
-          console.log(chalk.green(`${i + 1}. ${chalk.bold(result.content)}`));
-          console.log(chalk.magenta(`   🔢 Score: ${chalk.yellow(result.score.toFixed(2))}`));
-          
-          const formattedResult = formatDocument(result);
-          console.log(util.inspect(formattedResult, { colors: true, depth: null }));
-          
-          console.log(chalk.gray("---------------------------------------------------"));
-        });
-  
-        await rag.close();
-      } catch (error) {
-        console.error(chalk.red("❌ Search failed:"), error.message);
-      }
-    });
-
 program
     .command('search <query>')
     .option('--database <name>', 'Override database name')
@@ -608,13 +571,13 @@ program
 function formatDocument(doc) {
     const formatted = {};
     for (const key in doc) {
-      if (Array.isArray(doc[key]) && doc[key].length > 10) {
-        formatted[key] = [...doc[key].slice(0, 10), `... +${doc[key].length - 10} more`];
-      } else {
-        formatted[key] = doc[key];
-      }
+        if (Array.isArray(doc[key]) && doc[key].length > 10) {
+            formatted[key] = [...doc[key].slice(0, 10), `... +${doc[key].length - 10} more`];
+        } else {
+            formatted[key] = doc[key];
+        }
     }
     return formatted;
-  }
+}
 
 program.parse();

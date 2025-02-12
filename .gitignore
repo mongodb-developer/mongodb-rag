@@ -17,6 +17,7 @@ yarn-error.log*
 
 # Local development files
 .env
+.env.test
 .DS_Store
 *.local
 
