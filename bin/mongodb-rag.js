@@ -17,6 +17,21 @@ const isNonInteractive = process.env.NONINTERACTIVE === 'true';
 const enquirer = new Enquirer(); 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const isValidMongoURI = (uri) => {
+    const atlasPattern = /^mongodb\+srv:\/\/[^:]+:[^@]+@[\w-]+\.mongodb\.net\/?/;
+    return atlasPattern.test(uri);
+};
+
+const promptWithValidation = async (promptConfig) => {
+    const response = await enquirer.prompt(promptConfig);
+    if (response[promptConfig.name] === '?') {
+        console.log(chalk.yellow(`ℹ️ Help: ${promptConfig.helpMessage}\n`));
+        return promptWithValidation(promptConfig);
+    }
+    return response;
+};
+
 const CONFIG_PATH = process.env.NODE_ENV === "test"
     ? path.join(process.cwd(), ".mongodb-rag.test.json")
     : path.join(process.cwd(), ".mongodb-rag.json");
@@ -153,80 +168,51 @@ program
     .action(async () => {
         console.log(chalk.cyan.bold('🔧 Setting up MongoRAG configuration...\n'));
 
-        const responses = await enquirer.prompt([
-            {
-                type: 'input',
-                name: 'mongoUrl',
-                message: 'Enter MongoDB Connection String:'
-            },
-            {
-                type: 'input',
-                name: 'database',
-                message: 'Enter Database Name:'
-            },
-            {
-                type: 'input',
-                name: 'collection',
-                message: 'Enter Collection Name:'
-            },
-            {
-                type: 'select',
-                name: 'provider',
-                message: 'Select an Embedding Provider:',
-                choices: ['openai', 'deepseek', 'ollama']
-            },
-            {
-                type: 'input',
-                name: 'indexName',
-                message: 'Enter the name for your Vector Search Index:',
-                initial: 'vector_index'
-            }
-        ]);
+        const responses = {};
 
-        let embeddingConfig = {
-            provider: responses.provider,
-            dimensions: 1536,
-            batchSize: 100
-        };
+        responses.mongoUrl = await promptWithValidation({
+            type: 'input',
+            name: 'mongoUrl',
+            message: 'Enter MongoDB Connection String:',
+            validate: (input) => isValidMongoURI(input) ? true : 'Invalid MongoDB Atlas connection string.',
+            helpMessage: "Example: mongodb+srv://user:password@cluster.mongodb.net/myDatabase?retryWrites=true&w=majority"
+        });
 
-        if (responses.provider === 'ollama') {
-            const ollamaModels = getOllamaModels();
-            if (ollamaModels.length === 0) {
-                console.error(chalk.red('❌ Ollama is not running or no models found.'));
-                console.log(chalk.yellow('ℹ️ Ensure Ollama is installed and running before proceeding.'));
-                process.exit(1);
-            }
+        responses.database = await promptWithValidation({
+            type: 'input',
+            name: 'database',
+            message: 'Enter Database Name:',
+            helpMessage: "Specify the database name where vector search will be performed."
+        });
 
-            const modelResponse = await enquirer.prompt([
-                {
-                    type: 'select',
-                    name: 'model',
-                    message: 'Select an Ollama model:',
-                    choices: ollamaModels
-                }
-            ]);
+        responses.collection = await promptWithValidation({
+            type: 'input',
+            name: 'collection',
+            message: 'Enter Collection Name:',
+            helpMessage: "Enter the collection that will store vector embeddings."
+        });
 
-            embeddingConfig.baseUrl = "http://localhost:11434";
-            embeddingConfig.model = modelResponse.model;
-        } else {
-            const apiKeyResponse = await enquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'apiKey',
-                    message: `Enter API Key for ${responses.provider}:`
-                }
-            ]);
-            embeddingConfig.apiKey = apiKeyResponse.apiKey;
-            embeddingConfig.model = responses.provider === 'openai' ? 'text-embedding-3-small' : 'deepseek-embedding';
-        }
+        responses.provider = await promptWithValidation({
+            type: 'select',
+            name: 'provider',
+            message: 'Select an Embedding Provider:',
+            choices: ['openai', 'deepseek', 'ollama'],
+            helpMessage: "Choose an AI provider for generating vector embeddings."
+        });
+
+        const indexParams = await getIndexParams(responses); // Keep the existing index prompt functionality
 
         const newConfig = {
             mongoUrl: responses.mongoUrl,
             database: responses.database,
             collection: responses.collection,
-            embedding: embeddingConfig,
+            embedding: {
+                provider: responses.provider,
+                dimensions: 1536,
+                batchSize: 100
+            },
             search: { maxResults: 5, minScore: 0.7 },
-            indexName: indexResponse.indexName 
+            indexName: indexParams.indexName // Keep the prompted index name
         };
 
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig, null, 2));
