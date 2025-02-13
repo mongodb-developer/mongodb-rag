@@ -14,6 +14,7 @@ import { execSync } from 'child_process';
 
 const isTestMode = process.env.NODE_ENV === 'test';
 const isNonInteractive = process.env.NONINTERACTIVE === 'true';
+const enquirer = new Enquirer(); 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = process.env.NODE_ENV === "test"
@@ -75,7 +76,6 @@ const getIndexParams = async (config) => {
         };
     }
 
-    const enquirer = new Enquirer();
     return enquirer.prompt([
         {
             type: 'input',
@@ -153,7 +153,6 @@ program
     .action(async () => {
         console.log(chalk.cyan.bold('🔧 Setting up MongoRAG configuration...\n'));
 
-        const enquirer = new Enquirer();
         const responses = await enquirer.prompt([
             {
                 type: 'input',
@@ -404,7 +403,6 @@ program
         console.log(chalk.cyan.bold(`📂 Database: ${config.database}`));
         console.log(chalk.cyan.bold(`📑 Collection: ${config.collection}`));
 
-        const enquirer = new Enquirer();
         const { confirmDelete } = await enquirer.prompt([
             {
                 type: 'confirm',
