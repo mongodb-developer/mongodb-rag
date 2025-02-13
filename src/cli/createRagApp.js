@@ -4,11 +4,18 @@ import path from 'path';
 import { execSync } from 'child_process';
 import chalk from 'chalk';
 import { displayLogo } from './asciiLogo.js';
+import MongoSpinner from './spinner.js';
+import { celebrate } from './celebration.js';
+import FunProgressBar from './progressBar.js';
 
-export function createRagApp(projectName) {
-  const projectPath = path.resolve(process.cwd(), projectName);
+export async function createRagApp(projectName) {
+  const spinner = new MongoSpinner();
+  const progressBar = new FunProgressBar();
+  
+  // Display the ASCII logo
   displayLogo();
-
+  
+  const projectPath = path.resolve(process.cwd(), projectName);
   
   if (fs.existsSync(projectPath)) {
     console.error(chalk.red(`Error: Directory "${projectName}" already exists.`));
@@ -16,7 +23,17 @@ export function createRagApp(projectName) {
   }
 
   console.log(chalk.green(`\n🚀 Creating a new RAG app in ${projectPath}\n`));
+  
+  // Start the creation process with spinner
+  spinner.start('Initializing your RAG app');
   fs.mkdirSync(projectPath, { recursive: true });
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  spinner.stop(true);
+
+  // Show progress while creating files
+  console.log(chalk.cyan('\nPreparing your MongoDB RAG environment...'));
+  let currentProgress = 0;
+  progressBar.update(currentProgress);
 
   // Step 1: Create package.json
   fs.writeFileSync(path.join(projectPath, 'package.json'), JSON.stringify({
@@ -35,8 +52,10 @@ export function createRagApp(projectName) {
       "mongodb-rag": "^0.15.0"
     }
   }, null, 2));
+  currentProgress += 0.25;
+  progressBar.update(currentProgress);
 
-  // Step 2: Create .env file with corrected variables
+  // Step 2: Create .env file
   fs.writeFileSync(path.join(projectPath, '.env'), `
 MONGODB_URI=mongodb+srv://your_user:your_password@your-cluster.mongodb.net/mongorag
 PORT=5000
@@ -49,8 +68,10 @@ EMBEDDING_MODEL=text-embedding-3-small  # Adjust for different providers
 # MongoDB Vector Search Index
 VECTOR_INDEX=default
   `);
+  currentProgress += 0.25;
+  progressBar.update(currentProgress);
 
-  // Step 3: Create server.js with environment-aware embedding configuration
+  // Step 3: Create server.js
   fs.writeFileSync(path.join(projectPath, 'server.js'), `
 import express from 'express';
 import cors from 'cors';
@@ -101,13 +122,26 @@ app.listen(process.env.PORT || 5000, () => {
   console.log(\`🚀 Server running on port \${process.env.PORT || 5000}\`);
 });
   `);
+  currentProgress += 0.25;
+  progressBar.update(currentProgress);
 
-  // Step 4: Install dependencies
+  // Step 4: Install dependencies with spinner
   console.log(chalk.blue(`\n📦 Installing dependencies...\n`));
+  spinner.start('Installing packages');
   execSync(`cd ${projectPath} && npm install`, { stdio: 'inherit' });
+  spinner.stop(true);
+  currentProgress = 1;
+  progressBar.update(currentProgress);
 
-  console.log(chalk.green(`\n✅ Project created successfully!`));
-  console.log(chalk.yellow(`\nNext steps:`));
-  console.log(chalk.cyan(`  cd ${projectName}`));
-  console.log(chalk.cyan(`  npm run dev`));
+  // Show celebration
+  await new Promise(resolve => setTimeout(resolve, 500));
+  celebrate('RAG App Created Successfully! 🎉');
+
+  // Show next steps after celebration (keeping original format)
+  setTimeout(() => {
+    console.log(chalk.green(`\n✅ Project created successfully!`));
+    console.log(chalk.yellow(`\nNext steps:`));
+    console.log(chalk.cyan(`  cd ${projectName}`));
+    console.log(chalk.cyan(`  npm run dev`));
+  }, 2500);
 }
