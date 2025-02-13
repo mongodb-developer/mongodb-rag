@@ -1,35 +1,49 @@
-import { jest, describe, expect, test, beforeEach } from '@jest/globals';
-import OllamaEmbeddingProvider from './OllamaEmbeddingProvider.js';
+import BaseEmbeddingProvider from './BaseEmbeddingProvider.js';
+import fetch from 'node-fetch';
+import debug from 'debug';
 
-global.fetch = jest.fn();
+const log = debug('mongodb-rag:embedding:ollama');
 
-describe('OllamaEmbeddingProvider', () => {
-  let provider;
+class OllamaEmbeddingProvider extends BaseEmbeddingProvider {
+  constructor(options = {}) {
+    super({}); // ✅ Skip API key validation
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    
-    provider = new OllamaEmbeddingProvider({
-      baseUrl: 'http://localhost:11434',
-      model: 'llama3',
-    });
+    if (!options.baseUrl) {
+      throw new Error('Ollama base URL is required (e.g., http://localhost:11434)');
+    }
+    if (!options.model) {
+      throw new Error('Ollama model name is required (e.g., llama3)');
+    }
 
-    global.fetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve({ embedding: Array(1536).fill(0.1) })
-    });
-  });
+    this.baseUrl = options.baseUrl;
+    this.model = options.model;
+  }
 
-  test('should fetch embeddings from Ollama', async () => {
-    const texts = ['test query'];
-    const embeddings = await provider.getEmbeddings(texts);
+  async _embedBatch(texts) {
+    try {
+      log(`Fetching embeddings from Ollama (${this.model})...`);
+      
+      const responses = await Promise.all(texts.map(async (text) => {
+        const response = await fetch(`${this.baseUrl}/api/embeddings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: this.model, prompt: text }),
+        });
 
-    expect(global.fetch).toHaveBeenCalled();
-    expect(embeddings[0]).toHaveLength(1536);
-  });
+        if (!response.ok) {
+          throw new Error(`Ollama API error: ${response.statusText}`);
+        }
 
-  test('should handle API errors', async () => {
-    global.fetch.mockResolvedValueOnce({ ok: false, statusText: 'Error' });
-    await expect(provider.getEmbeddings(['test'])).rejects.toThrow('Ollama API error: Error');
-  });
-});
+        const data = await response.json();
+        return data.embedding;
+      }));
+
+      log(`Successfully retrieved ${responses.length} embeddings`);
+      return responses;
+    } catch (error) {
+      throw new Error(`Ollama embedding error: ${error.message}`);
+    }
+  }
+}
+
+export default OllamaEmbeddingProvider;
