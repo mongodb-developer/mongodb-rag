@@ -142,7 +142,14 @@ class MongoRAG {
                     this.embeddingProvider = new OpenAIEmbeddingProvider({ apiKey, ...options });
                     break;
                 case 'ollama':
-                    this.embeddingProvider = new OllamaEmbeddingProvider({ provider: 'ollama', baseUrl: options.baseUrl, model: options.model });
+                    if (!baseUrl) {
+                        throw new Error("Ollama base URL is missing from the config. Run 'npx mongodb-rag edit-config' to set it.");
+                    }
+                    this.embeddingProvider = new OllamaEmbeddingProvider({
+                        provider: 'ollama',
+                        baseUrl, 
+                        model: options.model
+                    });
                     break;
                 default:
                     throw new Error(`Unknown embedding provider: ${provider}`);
