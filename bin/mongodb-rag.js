@@ -23,78 +23,78 @@ console.log(chalk.blue("🔍 Debug: Using CONFIG_PATH =>"), CONFIG_PATH);
 
 const getMockIndexes = () => [
     {
-      name: 'vector_index',
-      type: 'search',
-      key: { embedding: 'vector' }
+        name: 'vector_index',
+        type: 'search',
+        key: { embedding: 'vector' }
     },
     {
-      name: '_id_',
-      type: 'standard',
-      key: { _id: 1 }
+        name: '_id_',
+        type: 'standard',
+        key: { _id: 1 }
     }
-  ];
+];
 
-  const getMongoClient = async (url) => {
+const getMongoClient = async (url) => {
     if (isTestMode) {
-      return {
-        db: () => ({
-          collection: () => ({
-            createSearchIndex: async () => ({ name: 'vector_index' }),
-            indexes: async () => getMockIndexes(),
-            listSearchIndexes: () => ({
-              toArray: async () => getMockIndexes()
-            })
-          })
-        }),
-        close: async () => {}
-      };
+        return {
+            db: () => ({
+                collection: () => ({
+                    createSearchIndex: async () => ({ name: 'vector_index' }),
+                    indexes: async () => getMockIndexes(),
+                    listSearchIndexes: () => ({
+                        toArray: async () => getMockIndexes()
+                    })
+                })
+            }),
+            close: async () => { }
+        };
     }
-    
+
     const client = new MongoClient(url);
     await client.connect();
     return client;
-  };
+};
 
 const getIndexParams = async (config) => {
     if (isNonInteractive) {
-      return {
-        indexName: process.env.VECTOR_INDEX || config.indexName || 'vector_index',
-        fieldPath: process.env.FIELD_PATH || config.embedding?.path || 'embedding',
-        numDimensions: process.env.NUM_DIMENSIONS || String(config.embedding?.dimensions) || '1536',
-        similarityFunction: process.env.SIMILARITY_FUNCTION || config.embedding?.similarity || 'cosine'
-      };
+        return {
+            indexName: process.env.VECTOR_INDEX || config.indexName || 'vector_index',
+            fieldPath: process.env.FIELD_PATH || config.embedding?.path || 'embedding',
+            numDimensions: process.env.NUM_DIMENSIONS || String(config.embedding?.dimensions) || '1536',
+            similarityFunction: process.env.SIMILARITY_FUNCTION || config.embedding?.similarity || 'cosine'
+        };
     }
-  
+
     const enquirer = new Enquirer();
     return enquirer.prompt([
-      {
-        type: 'input',
-        name: 'indexName',
-        message: 'Enter the name for your Vector Search Index:',
-        initial: config.indexName || 'vector_index'
-      },
-      {
-        type: 'input',
-        name: 'fieldPath',
-        message: 'Enter the field path where vector embeddings are stored:',
-        initial: config.embedding?.path || 'embedding'
-      },
-      {
-        type: 'input',
-        name: 'numDimensions',
-        message: 'Enter the number of dimensions for embeddings:',
-        initial: String(config.embedding?.dimensions || '1536'),
-        validate: (input) => !isNaN(input) && Number(input) > 0 ? true : 'Please enter a valid number.'
-      },
-      {
-        type: 'select',
-        name: 'similarityFunction',
-        message: 'Choose the similarity function:',
-        choices: ['cosine', 'dotProduct', 'euclidean'],
-        initial: config.embedding?.similarity || 'cosine'
-      }
+        {
+            type: 'input',
+            name: 'indexName',
+            message: 'Enter the name for your Vector Search Index:',
+            initial: config.indexName || 'vector_index'
+        },
+        {
+            type: 'input',
+            name: 'fieldPath',
+            message: 'Enter the field path where vector embeddings are stored:',
+            initial: config.embedding?.path || 'embedding'
+        },
+        {
+            type: 'input',
+            name: 'numDimensions',
+            message: 'Enter the number of dimensions for embeddings:',
+            initial: String(config.embedding?.dimensions || '1536'),
+            validate: (input) => !isNaN(input) && Number(input) > 0 ? true : 'Please enter a valid number.'
+        },
+        {
+            type: 'select',
+            name: 'similarityFunction',
+            message: 'Choose the similarity function:',
+            choices: ['cosine', 'dotProduct', 'euclidean'],
+            initial: config.embedding?.similarity || 'cosine'
+        }
     ]);
-  };
+};
 
 // Load Config Safely
 let config = {};
@@ -111,23 +111,32 @@ try {
 
 // Function to check if required config values exist
 function isConfigValid(config) {
-    return (
-        config.mongoUrl &&
-        config.database &&
-        config.collection &&
-        config.embedding &&
-        config.embedding.apiKey
-    );
+    const hasBasicConfig = config.mongoUrl && 
+                          config.database && 
+                          config.collection && 
+                          config.embedding;
+
+    if (!hasBasicConfig) return false;
+
+    // For Ollama provider
+    if (config.embedding.provider === 'ollama') {
+        return config.embedding.baseUrl && 
+               config.embedding.model;
+    }
+
+    // For other providers (OpenAI, DeepSeek)
+    return config.embedding.apiKey;
 }
 
 program
-  .command('create-rag-app <projectName>')
-  .description('Scaffold a new CRUD RAG application with MongoDB and Vector Search')
-  .action((projectName) => {
-    createRagApp(projectName);
-  });
+    .command('create-rag-app <projectName>')
+    .description('Scaffold a new CRUD RAG application with MongoDB and Vector Search')
+    .action((projectName) => {
+        createRagApp(projectName);
+    });
 
 
+// Update the init command to support Ollama
 program
     .command('init')
     .description('Initialize MongoRAG configuration')
@@ -154,12 +163,33 @@ program
                 type: 'select',
                 name: 'provider',
                 message: 'Select an Embedding Provider:',
-                choices: ['openai', 'deepseek']
+                choices: ['openai', 'deepseek', 'ollama']
             },
             {
                 type: 'input',
                 name: 'apiKey',
-                message: async (answers) => `Enter API Key for ${answers.provider}:`
+                message: async (answers) => {
+                    // Only ask for API key if not using Ollama
+                    if (answers.provider !== 'ollama') {
+                        return `Enter API Key for ${answers.provider}:`;
+                    }
+                    return false; // Skip this question for Ollama
+                },
+                skip: (answers) => answers.provider === 'ollama'
+            },
+            {
+                type: 'input',
+                name: 'baseUrl',
+                message: 'Enter Ollama base URL:',
+                initial: 'http://localhost:11434',
+                skip: (answers) => answers.provider !== 'ollama'
+            },
+            {
+                type: 'input',
+                name: 'model',
+                message: 'Enter Ollama model name:',
+                initial: 'llama3',
+                skip: (answers) => answers.provider !== 'ollama'
             },
             {
                 type: 'input',
@@ -169,17 +199,27 @@ program
             }
         ]);
 
+        const embeddingConfig = {
+            provider: responses.provider,
+            dimensions: 1536,
+            batchSize: 100
+        };
+
+        // Add provider-specific configuration
+        if (responses.provider === 'ollama') {
+            embeddingConfig.baseUrl = responses.baseUrl;
+            embeddingConfig.model = responses.model;
+        } else {
+            embeddingConfig.apiKey = responses.apiKey;
+            embeddingConfig.model = responses.provider === 'openai' ?
+                'text-embedding-3-small' : 'deepseek-embedding';
+        }
+
         const newConfig = {
             mongoUrl: responses.mongoUrl,
             database: responses.database,
             collection: responses.collection,
-            embedding: {
-                provider: responses.provider,
-                apiKey: responses.apiKey,
-                model: responses.provider === 'openai' ? 'text-embedding-3-small' : 'deepseek-embedding',
-                batchSize: 100,
-                dimensions: 1536
-            },
+            embedding: embeddingConfig,
             search: {
                 maxResults: 5,
                 minScore: 0.7
@@ -189,9 +229,70 @@ program
 
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig, null, 2));
         console.log(chalk.green(`✅ Configuration saved to ${CONFIG_PATH}`));
+
+        // Additional setup steps for Ollama
+        if (responses.provider === 'ollama') {
+            console.log(chalk.yellow('\n📝 Additional steps for Ollama setup:'));
+            console.log(chalk.cyan('1. Ensure Ollama is running locally'));
+            console.log(chalk.cyan(`2. Verify the model '${responses.model}' is available`));
+            console.log(chalk.cyan('3. Test the connection using: npx mongodb-rag test-connection\n'));
+        }
     });
 
-// **Test MongoDB Connection**
+program
+    .command('test-connection')
+    .description('Test the connection to the embedding provider')
+    .action(async () => {
+        if (!isConfigValid(config)) {
+            console.error(chalk.red("❌ Configuration missing. Run 'npx mongodb-rag init' first."));
+            process.exit(1);
+        }
+
+        if (config.embedding.provider === 'ollama') {
+            try {
+                console.log(chalk.cyan('🔄 Testing Ollama connection...'));
+
+                // Try to fetch model information
+                const response = await fetch(`${config.embedding.baseUrl}/api/tags`);
+                if (!response.ok) {
+                    throw new Error(`Failed to connect to Ollama: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                const models = data.models || [];
+                const modelExists = models.some(model => model.name === config.embedding.model);
+
+                if (modelExists) {
+                    console.log(chalk.green(`✅ Successfully connected to Ollama`));
+                    console.log(chalk.green(`✅ Model '${config.embedding.model}' is available`));
+                } else {
+                    console.log(chalk.yellow(`⚠️ Connected to Ollama, but model '${config.embedding.model}' not found`));
+                    console.log(chalk.cyan('Available models:'));
+                    models.forEach(model => {
+                        console.log(chalk.cyan(`  - ${model.name}`));
+                    });
+                }
+            } catch (error) {
+                console.error(chalk.red('❌ Failed to connect to Ollama:'), error.message);
+                console.log(chalk.yellow('\nTroubleshooting steps:'));
+                console.log(chalk.cyan('1. Ensure Ollama is running'));
+                console.log(chalk.cyan(`2. Verify the base URL: ${config.embedding.baseUrl}`));
+                console.log(chalk.cyan('3. Check if the model is installed using: ollama list'));
+                process.exit(1);
+            }
+        } else {
+            // Test connection for other providers
+            try {
+                const rag = new MongoRAG(config);
+                await rag._initializeEmbeddingProvider();
+                console.log(chalk.green(`✅ Successfully connected to ${config.embedding.provider}`));
+            } catch (error) {
+                console.error(chalk.red(`❌ Failed to connect to ${config.embedding.provider}:`), error.message);
+                process.exit(1);
+            }
+        }
+    });
+
 program
     .command('test-index')
     .description('Test the MongoDB Vector Search Index')
@@ -248,7 +349,7 @@ program
         }
     });
 
-    program
+program
     .command('create-index')
     .description('Create a MongoDB Atlas Vector Search Index')
     .action(async () => {
@@ -486,7 +587,7 @@ program
     });
 
 
-    program
+program
     .command('show-indexes')
     .description('Display all Vector Search indexes for the configured MongoDB collection')
     .action(async () => {
@@ -502,7 +603,7 @@ program
 
         try {
             const collection = client.db(config.database).collection(config.collection);
-            
+
             // Use $listSearchIndexes aggregation stage to get vector search indexes
             const searchIndexes = await collection.aggregate([
                 { $listSearchIndexes: {} }
@@ -526,7 +627,7 @@ program
                     console.log(`   📅 Created At: ${chalk.blue(new Date(index.latestDefinitionVersion.createdAt).toLocaleString())}`);
                     console.log(`   ✅ Status: ${chalk.green(index.status)}`);
                     console.log(`   🎯 Queryable: ${index.queryable ? chalk.green('Yes') : chalk.yellow('No')}`);
-                    
+
                     // Display shard status if available
                     if (index.statusDetail && index.statusDetail.length > 0) {
                         console.log(`   📊 Shard Status:`);
@@ -534,7 +635,7 @@ program
                             console.log(`     ${chalk.blue(shard.hostname)}: ${chalk.green(shard.status)}`);
                         });
                     }
-                    
+
                     console.log(chalk.gray("---------------------------------------------------"));
                 });
             }
@@ -545,7 +646,7 @@ program
                 regularIndexes.forEach((index, i) => {
                     // Skip _id_ index as it's created by default
                     if (index.name === '_id_') return;
-                    
+
                     console.log(chalk.green(`${i + 1}. 🔹 Index Name: ${index.name}`));
                     console.log(`   📌 Type: ${chalk.magenta('Standard')}`);
                     console.log(`   🔍 Fields: ${chalk.yellow(JSON.stringify(index.key, null, 2))}`);
