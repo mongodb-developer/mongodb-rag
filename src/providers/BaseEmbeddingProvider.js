@@ -12,8 +12,8 @@ class BaseEmbeddingProvider {
       ...options
     };
     
-    if (!this.options.apiKey) {
-      throw new Error('API key is required');
+    if (options.provider !== 'ollama' && !options.apiKey) {
+        throw new Error('API key is required');
     }
   }
 

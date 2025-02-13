@@ -6,7 +6,7 @@ const log = debug('mongodb-rag:embedding:ollama');
 
 class OllamaEmbeddingProvider extends BaseEmbeddingProvider {
   constructor(options = {}) {
-    super({}); // ✅ Skip API key validation
+    super({}); 
 
     if (!options.baseUrl) {
       throw new Error('Ollama base URL is required (e.g., http://localhost:11434)');

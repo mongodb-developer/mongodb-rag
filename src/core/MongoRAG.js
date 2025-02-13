@@ -142,7 +142,7 @@ class MongoRAG {
                     this.embeddingProvider = new OpenAIEmbeddingProvider({ apiKey, ...options });
                     break;
                 case 'ollama':
-                    this.embeddingProvider = new OllamaEmbeddingProvider({ baseUrl, model: this.config.embedding.model });
+                    this.embeddingProvider = new OllamaEmbeddingProvider({ provider: 'ollama', baseUrl: options.baseUrl, model: options.model });
                     break;
                 default:
                     throw new Error(`Unknown embedding provider: ${provider}`);
