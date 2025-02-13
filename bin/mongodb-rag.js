@@ -6,9 +6,10 @@ import { fileURLToPath } from 'url';
 import MongoRAG from '../src/core/MongoRAG.js';
 import Enquirer from 'enquirer';
 import chalk from 'chalk';
-import columnify from 'columnify'; // Install with: npm install columnify
+import columnify from 'columnify';
 import util from 'util';
 import { createRagApp } from '../src/cli/createRagApp.js';
+import { MongoClient } from 'mongodb';
 
 const isTestMode = process.env.NODE_ENV === 'test';
 const isNonInteractive = process.env.NONINTERACTIVE === 'true';
