@@ -3,9 +3,12 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import chalk from 'chalk';
+import { displayLogo } from './asciiLogo.js';
 
 export function createRagApp(projectName) {
   const projectPath = path.resolve(process.cwd(), projectName);
+  displayLogo();
+
   
   if (fs.existsSync(projectPath)) {
     console.error(chalk.red(`Error: Directory "${projectName}" already exists.`));
