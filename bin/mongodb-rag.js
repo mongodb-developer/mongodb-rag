@@ -174,6 +174,12 @@ program
                 name: 'provider',
                 message: 'Select an Embedding Provider:',
                 choices: ['openai', 'deepseek', 'ollama']
+            },
+            {
+                type: 'input',
+                name: 'indexName',
+                message: 'Enter the name for your Vector Search Index:',
+                initial: 'vector_index'
             }
         ]);
 
@@ -220,7 +226,7 @@ program
             collection: responses.collection,
             embedding: embeddingConfig,
             search: { maxResults: 5, minScore: 0.7 },
-            indexName: 'vector_index'
+            indexName: indexResponse.indexName 
         };
 
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig, null, 2));
