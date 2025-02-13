@@ -12,7 +12,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <img src="img/mongodb-rag-logo.png" alt="MongoDB RAG" className={styles.logo} />
+        <img src="img/logo-square.png" alt="MongoDB RAG" className={styles.logo} />
         <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">Powerful Retrieval-Augmented Generation (RAG) for MongoDB</p>
         <div className={styles.buttons}>
