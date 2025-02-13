@@ -19,10 +19,10 @@ const enquirer = new Enquirer();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const isValidMongoURI = (uri) => {
-    const atlasPattern = /^mongodb\+srv:\/\/[^:]+:[^@]+@[\w-]+\.mongodb\.net\/[\w-]*\??(.*)?$/;
+    const atlasPattern = /^mongodb\+srv:\/\/([^:]+):([^@]+)@([\w-]+)\.mongodb\.net\/([\w-]+)?(\?.*)?$/;
+
     return atlasPattern.test(uri);
 };
-
 
 const promptWithValidation = async (promptConfig) => {
     const response = await enquirer.prompt(promptConfig);
