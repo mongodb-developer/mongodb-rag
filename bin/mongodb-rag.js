@@ -522,12 +522,19 @@ program
                 searchIndexes.forEach((index, i) => {
                     console.log(chalk.green(`${i + 1}. 🔹 Index Name: ${index.name}`));
                     console.log(`   📌 Type: ${chalk.magenta('Vector Search')}`);
-                    console.log(`   🎯 Definition: ${chalk.yellow(JSON.stringify(index.definition, null, 2))}`);
-                    if (index.queryable) {
-                        console.log(`   ✅ Status: ${chalk.green('Queryable')}`);
-                    } else {
-                        console.log(`   ⚠️ Status: ${chalk.yellow('Building')}`);
+                    console.log(`   🎯 Latest Definition: ${chalk.yellow(JSON.stringify(index.latestDefinition, null, 2))}`);
+                    console.log(`   📅 Created At: ${chalk.blue(new Date(index.latestDefinitionVersion.createdAt).toLocaleString())}`);
+                    console.log(`   ✅ Status: ${chalk.green(index.status)}`);
+                    console.log(`   🎯 Queryable: ${index.queryable ? chalk.green('Yes') : chalk.yellow('No')}`);
+                    
+                    // Display shard status if available
+                    if (index.statusDetail && index.statusDetail.length > 0) {
+                        console.log(`   📊 Shard Status:`);
+                        index.statusDetail.forEach(shard => {
+                            console.log(`     ${chalk.blue(shard.hostname)}: ${chalk.green(shard.status)}`);
+                        });
                     }
+                    
                     console.log(chalk.gray("---------------------------------------------------"));
                 });
             }
