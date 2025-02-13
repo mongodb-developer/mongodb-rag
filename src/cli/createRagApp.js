@@ -49,7 +49,7 @@ export async function createRagApp(projectName) {
       mongodb: "^6.3.0",
       dotenv: "^16.0.3",
       cors: "^2.8.5",
-      "mongodb-rag": "^0.15.0"
+      "mongodb-rag": "latest"
     }
   }, null, 2));
   currentProgress += 0.25;
