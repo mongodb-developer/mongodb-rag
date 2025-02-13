@@ -10,6 +10,7 @@ import columnify from 'columnify';
 import util from 'util';
 import { createRagApp } from '../src/cli/createRagApp.js';
 import { MongoClient } from 'mongodb';
+import { execSync } from 'child_process';
 
 const isTestMode = process.env.NODE_ENV === 'test';
 const isNonInteractive = process.env.NONINTERACTIVE === 'true';
@@ -20,6 +21,15 @@ const CONFIG_PATH = process.env.NODE_ENV === "test"
     : path.join(process.cwd(), ".mongodb-rag.json");
 
 console.log(chalk.blue("🔍 Debug: Using CONFIG_PATH =>"), CONFIG_PATH);
+
+function getOllamaModels() {
+    try {
+        const output = execSync('ollama list', { encoding: 'utf-8' });
+        return output.split('\n').filter(line => line.trim()).map(line => line.split(' ')[0]);
+    } catch (error) {
+        return [];
+    }
+}
 
 const getMockIndexes = () => [
     {
@@ -143,7 +153,8 @@ program
     .action(async () => {
         console.log(chalk.cyan.bold('🔧 Setting up MongoRAG configuration...\n'));
 
-        const responses = await new Enquirer().prompt([
+        const enquirer = new Enquirer();
+        const responses = await enquirer.prompt([
             {
                 type: 'input',
                 name: 'mongoUrl',
@@ -164,55 +175,44 @@ program
                 name: 'provider',
                 message: 'Select an Embedding Provider:',
                 choices: ['openai', 'deepseek', 'ollama']
-            },
-            {
-                type: 'input',
-                name: 'apiKey',
-                message: async (answers) => {
-                    // Only ask for API key if not using Ollama
-                    if (answers.provider !== 'ollama') {
-                        return `Enter API Key for ${answers.provider}:`;
-                    }
-                    return false; // Skip this question for Ollama
-                },
-                skip: (answers) => answers.provider === 'ollama'
-            },
-            {
-                type: 'input',
-                name: 'baseUrl',
-                message: 'Enter Ollama base URL:',
-                initial: 'http://localhost:11434',
-                skip: (answers) => answers.provider !== 'ollama'
-            },
-            {
-                type: 'input',
-                name: 'model',
-                message: 'Enter Ollama model name:',
-                initial: 'llama3',
-                skip: (answers) => answers.provider !== 'ollama'
-            },
-            {
-                type: 'input',
-                name: 'indexName',
-                message: 'Enter the name for your Vector Search Index:',
-                initial: 'vector_index'
             }
         ]);
 
-        const embeddingConfig = {
+        let embeddingConfig = {
             provider: responses.provider,
             dimensions: 1536,
             batchSize: 100
         };
 
-        // Add provider-specific configuration
         if (responses.provider === 'ollama') {
-            embeddingConfig.baseUrl = responses.baseUrl;
-            embeddingConfig.model = responses.model;
+            const ollamaModels = getOllamaModels();
+            if (ollamaModels.length === 0) {
+                console.error(chalk.red('❌ Ollama is not running or no models found.'));
+                console.log(chalk.yellow('ℹ️ Ensure Ollama is installed and running before proceeding.'));
+                process.exit(1);
+            }
+
+            const modelResponse = await enquirer.prompt([
+                {
+                    type: 'select',
+                    name: 'model',
+                    message: 'Select an Ollama model:',
+                    choices: ollamaModels
+                }
+            ]);
+
+            embeddingConfig.baseUrl = "http://localhost:11434";
+            embeddingConfig.model = modelResponse.model;
         } else {
-            embeddingConfig.apiKey = responses.apiKey;
-            embeddingConfig.model = responses.provider === 'openai' ?
-                'text-embedding-3-small' : 'deepseek-embedding';
+            const apiKeyResponse = await enquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'apiKey',
+                    message: `Enter API Key for ${responses.provider}:`
+                }
+            ]);
+            embeddingConfig.apiKey = apiKeyResponse.apiKey;
+            embeddingConfig.model = responses.provider === 'openai' ? 'text-embedding-3-small' : 'deepseek-embedding';
         }
 
         const newConfig = {
@@ -220,26 +220,22 @@ program
             database: responses.database,
             collection: responses.collection,
             embedding: embeddingConfig,
-            search: {
-                maxResults: 5,
-                minScore: 0.7
-            },
-            indexName: responses.indexName
+            search: { maxResults: 5, minScore: 0.7 },
+            indexName: 'vector_index'
         };
 
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig, null, 2));
         console.log(chalk.green(`✅ Configuration saved to ${CONFIG_PATH}`));
 
-        // Additional setup steps for Ollama
         if (responses.provider === 'ollama') {
             console.log(chalk.yellow('\n📝 Additional steps for Ollama setup:'));
-            console.log(chalk.cyan('1. Ensure Ollama is running locally'));
-            console.log(chalk.cyan(`2. Verify the model '${responses.model}' is available`));
-            console.log(chalk.cyan('3. Test the connection using: npx mongodb-rag test-connection\n'));
+            console.log(chalk.cyan('1. Ensure Ollama is running (`ollama list`)'));
+            console.log(chalk.cyan(`2. Verify model '${embeddingConfig.model}' is installed`));
+            console.log(chalk.cyan('3. Run `npx mongodb-rag test-connection` to validate setup\n'));
         }
     });
 
-program
+    program
     .command('test-connection')
     .description('Test the connection to the embedding provider')
     .action(async () => {
@@ -251,37 +247,27 @@ program
         if (config.embedding.provider === 'ollama') {
             try {
                 console.log(chalk.cyan('🔄 Testing Ollama connection...'));
-
-                // Try to fetch model information
                 const response = await fetch(`${config.embedding.baseUrl}/api/tags`);
-                if (!response.ok) {
-                    throw new Error(`Failed to connect to Ollama: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Failed to connect: ${response.statusText}`);
 
                 const data = await response.json();
                 const models = data.models || [];
                 const modelExists = models.some(model => model.name === config.embedding.model);
 
                 if (modelExists) {
-                    console.log(chalk.green(`✅ Successfully connected to Ollama`));
-                    console.log(chalk.green(`✅ Model '${config.embedding.model}' is available`));
+                    console.log(chalk.green(`✅ Successfully connected to Ollama and model '${config.embedding.model}' is available`));
                 } else {
-                    console.log(chalk.yellow(`⚠️ Connected to Ollama, but model '${config.embedding.model}' not found`));
-                    console.log(chalk.cyan('Available models:'));
-                    models.forEach(model => {
-                        console.log(chalk.cyan(`  - ${model.name}`));
-                    });
+                    console.log(chalk.yellow(`⚠️ Ollama model '${config.embedding.model}' not found`));
                 }
             } catch (error) {
-                console.error(chalk.red('❌ Failed to connect to Ollama:'), error.message);
-                console.log(chalk.yellow('\nTroubleshooting steps:'));
+                console.error(chalk.red('❌ Ollama connection failed:'), error.message);
+                console.log(chalk.yellow('\nTroubleshooting:'));
                 console.log(chalk.cyan('1. Ensure Ollama is running'));
                 console.log(chalk.cyan(`2. Verify the base URL: ${config.embedding.baseUrl}`));
-                console.log(chalk.cyan('3. Check if the model is installed using: ollama list'));
+                console.log(chalk.cyan('3. Check available models with `ollama list`'));
                 process.exit(1);
             }
         } else {
-            // Test connection for other providers
             try {
                 const rag = new MongoRAG(config);
                 await rag._initializeEmbeddingProvider();
