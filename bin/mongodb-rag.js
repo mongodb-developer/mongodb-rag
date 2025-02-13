@@ -26,13 +26,22 @@ const isValidMongoURI = (uri) => {
 };
 
 const promptWithValidation = async (promptConfig) => {
-    const response = await enquirer.prompt(promptConfig);
-    if (response[promptConfig.name] === '?') {
-        console.log(chalk.yellow(`ℹ️ Help: ${promptConfig.helpMessage}\n`));
-        return promptWithValidation(promptConfig);
+    while (true) {
+        const response = await enquirer.prompt(promptConfig);
+        const userInput = response[promptConfig.name];
+
+        if (userInput === '?') {
+            console.log(chalk.yellow(`ℹ️ Help: ${promptConfig.helpMessage}\n`));
+            continue;
+        }
+        if (promptConfig.validate && promptConfig.validate(userInput) !== true) {
+            console.log(chalk.red(`❌ ${promptConfig.validate(userInput)}`));
+            continue;
+        }
+        return userInput;
     }
-    return response;
 };
+
 
 const CONFIG_PATH = process.env.NODE_ENV === "test"
     ? path.join(process.cwd(), ".mongodb-rag.test.json")
@@ -172,59 +181,147 @@ program
 
         const responses = {};
 
+        // MongoDB Connection String
         responses.mongoUrl = await promptWithValidation({
             type: 'input',
             name: 'mongoUrl',
             message: 'Enter MongoDB Connection String:',
             validate: (input) => isValidMongoURI(input) ? true : 'Invalid MongoDB Atlas connection string.',
-            helpMessage: "Example: mongodb+srv://user:password@cluster.mongodb.net/myDatabase?retryWrites=true&w=majority"
+            helpMessage: "MongoDB Atlas connection string format:\n" +
+                "  mongodb+srv://username:password@cluster.mongodb.net/database\n" +
+                "- Must be a MongoDB Atlas cluster (starts with mongodb+srv://)\n" +
+                "- Include your username and password\n" +
+                "- Should end with your cluster address (.mongodb.net)\n" +
+                "- Can include optional parameters (e.g. ?retryWrites=true&w=majority)"
         });
 
+        // Database Name
         responses.database = await promptWithValidation({
             type: 'input',
             name: 'database',
             message: 'Enter Database Name:',
-            helpMessage: "Specify the database name where vector search will be performed."
+            validate: (input) => {
+                if (!input || input.trim().length === 0) return 'Database name cannot be empty';
+                if (input.includes(' ')) return 'Database name cannot contain spaces';
+                if (input.length > 63) return 'Database name cannot exceed 63 characters';
+                return true;
+            },
+            helpMessage: "Database name requirements:\n" +
+                "- Cannot be empty\n" +
+                "- Must not contain spaces\n" +
+                "- Maximum length of 63 characters\n" +
+                "- Will be created if it doesn't exist\n" +
+                "- Common names: 'vectordb', 'ragstore', 'embeddings'"
         });
 
+        // Collection Name
         responses.collection = await promptWithValidation({
             type: 'input',
             name: 'collection',
             message: 'Enter Collection Name:',
-            helpMessage: "Enter the collection that will store vector embeddings."
+            validate: (input) => {
+                if (!input || input.trim().length === 0) return 'Collection name cannot be empty';
+                if (input.includes(' ')) return 'Collection name cannot contain spaces';
+                if (input.length > 255) return 'Collection name cannot exceed 255 characters';
+                return true;
+            },
+            helpMessage: "Collection name requirements:\n" +
+                "- Cannot be empty\n" +
+                "- Must not contain spaces\n" +
+                "- Maximum length of 255 characters\n" +
+                "- Will store your embedded documents\n" +
+                "- Common names: 'documents', 'embeddings', 'vectors'"
         });
 
+        // Embedding Provider
         responses.provider = await promptWithValidation({
             type: 'select',
             name: 'provider',
             message: 'Select an Embedding Provider:',
             choices: ['openai', 'deepseek', 'ollama'],
-            helpMessage: "Choose an AI provider for generating vector embeddings."
+            helpMessage: "Available embedding providers:\n" +
+                "- OpenAI: Most popular, requires API key, uses text-embedding-3-small\n" +
+                "- DeepSeek: Alternative provider, requires API key\n" +
+                "- Ollama: Local deployment, no API key needed, requires Ollama installation\n" +
+                "\nConsiderations:\n" +
+                "- OpenAI provides consistent, high-quality embeddings\n" +
+                "- DeepSeek offers competitive pricing\n" +
+                "- Ollama allows for local processing without API costs"
         });
 
-        const indexParams = await getIndexParams(responses); // Keep the existing index prompt functionality
+        // Get provider-specific configuration
+        if (responses.provider === 'openai' || responses.provider === 'deepseek') {
+            responses.apiKey = await promptWithValidation({
+                type: 'password',
+                name: 'apiKey',
+                message: `Enter your ${responses.provider === 'openai' ? 'OpenAI' : 'DeepSeek'} API Key:`,
+                validate: (input) => input && input.length > 0 ? true : 'API key is required',
+                helpMessage: responses.provider === 'openai' 
+                    ? "OpenAI API key format: sk-....\n- Get your key from: https://platform.openai.com/api-keys"
+                    : "DeepSeek API key format: dk-....\n- Get your key from DeepSeek's platform"
+            });
+        } else if (responses.provider === 'ollama') {
+            responses.model = await promptWithValidation({
+                type: 'input',
+                name: 'model',
+                message: 'Enter the Ollama model name:',
+                initial: 'llama2',
+                validate: (input) => input && input.length > 0 ? true : 'Model name is required',
+                helpMessage: "Ollama model requirements:\n" +
+                    "- Must be installed locally via Ollama\n" +
+                    "- Common models: llama2, codellama, mistral\n" +
+                    "- Check available models with: ollama list"
+            });
+        }
 
+        // Vector Search Index Configuration
+        const indexParams = await getIndexParams({
+            type: 'input',
+            name: 'indexName',
+            message: 'Enter the name for your Vector Search Index:',
+            initial: 'vector_index',
+            validate: (input) => {
+                if (!input || input.trim().length === 0) return 'Index name cannot be empty';
+                if (input.includes(' ')) return 'Index name cannot contain spaces';
+                return true;
+            },
+            helpMessage: "Vector Search Index requirements:\n" +
+                "- Cannot be empty or contain spaces\n" +
+                "- Will be created automatically\n" +
+                "- Used for similarity search operations\n" +
+                "- Default name 'vector_index' is recommended"
+        });
+
+        // Build the configuration object
         const newConfig = {
             mongoUrl: responses.mongoUrl,
             database: responses.database,
             collection: responses.collection,
             embedding: {
                 provider: responses.provider,
+                ...(responses.apiKey && { apiKey: responses.apiKey }),
+                ...(responses.model && { model: responses.model }),
                 dimensions: 1536,
                 batchSize: 100
             },
             search: { maxResults: 5, minScore: 0.7 },
-            indexName: indexParams.indexName // Keep the prompted index name
+            indexName: indexParams.indexName
         };
 
+        // Save the configuration
         fs.writeFileSync(CONFIG_PATH, JSON.stringify(newConfig, null, 2));
         console.log(chalk.green(`✅ Configuration saved to ${CONFIG_PATH}`));
 
+        // Provider-specific follow-up instructions
         if (responses.provider === 'ollama') {
             console.log(chalk.yellow('\n📝 Additional steps for Ollama setup:'));
             console.log(chalk.cyan('1. Ensure Ollama is running (`ollama list`)'));
-            console.log(chalk.cyan(`2. Verify model '${embeddingConfig.model}' is installed`));
+            console.log(chalk.cyan(`2. Verify model '${responses.model}' is installed`));
             console.log(chalk.cyan('3. Run `npx mongodb-rag test-connection` to validate setup\n'));
+        } else {
+            console.log(chalk.cyan('\n🔍 Next steps:'));
+            console.log(chalk.cyan('1. Run `npx mongodb-rag test-connection` to verify your setup'));
+            console.log(chalk.cyan('2. Run `npx mongodb-rag create-index` to create your vector search index'));
         }
     });
 
