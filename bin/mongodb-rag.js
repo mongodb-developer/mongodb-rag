@@ -488,7 +488,7 @@ program
 
     program
     .command('show-indexes')
-    .description('Display all indexes for the configured MongoDB collection')
+    .description('Display all Vector Search indexes for the configured MongoDB collection')
     .action(async () => {
         if (!isConfigValid(config)) {
             console.error(chalk.red("❌ Configuration missing. Run 'npx mongodb-rag init' first."));
@@ -503,20 +503,49 @@ program
         try {
             const collection = client.db(config.database).collection(config.collection);
             
-            // Use the indexes() method to get all indexes
-            const indexes = await collection.indexes();
+            // Use $listSearchIndexes aggregation stage to get vector search indexes
+            const searchIndexes = await collection.aggregate([
+                { $listSearchIndexes: {} }
+            ]).toArray();
 
-            if (indexes.length === 0) {
+            // Get regular indexes as well for completeness
+            const regularIndexes = await collection.indexes();
+
+            if (searchIndexes.length === 0 && regularIndexes.length === 0) {
                 console.log(chalk.yellow("⚠️ No indexes found in this collection."));
-            } else {
-                console.log(chalk.bold("\n📄 List of Indexes:"));
-                indexes.forEach((index, i) => {
+                return;
+            }
+
+            // Display Vector Search Indexes
+            if (searchIndexes.length > 0) {
+                console.log(chalk.bold("\n🔍 Vector Search Indexes:"));
+                searchIndexes.forEach((index, i) => {
                     console.log(chalk.green(`${i + 1}. 🔹 Index Name: ${index.name}`));
-                    console.log(`   📌 Type: ${chalk.magenta(index.type || 'Standard')}`);
+                    console.log(`   📌 Type: ${chalk.magenta('Vector Search')}`);
+                    console.log(`   🎯 Definition: ${chalk.yellow(JSON.stringify(index.definition, null, 2))}`);
+                    if (index.queryable) {
+                        console.log(`   ✅ Status: ${chalk.green('Queryable')}`);
+                    } else {
+                        console.log(`   ⚠️ Status: ${chalk.yellow('Building')}`);
+                    }
+                    console.log(chalk.gray("---------------------------------------------------"));
+                });
+            }
+
+            // Display Regular Indexes
+            if (regularIndexes.length > 0) {
+                console.log(chalk.bold("\n📄 Regular Indexes:"));
+                regularIndexes.forEach((index, i) => {
+                    // Skip _id_ index as it's created by default
+                    if (index.name === '_id_') return;
+                    
+                    console.log(chalk.green(`${i + 1}. 🔹 Index Name: ${index.name}`));
+                    console.log(`   📌 Type: ${chalk.magenta('Standard')}`);
                     console.log(`   🔍 Fields: ${chalk.yellow(JSON.stringify(index.key, null, 2))}`);
                     console.log(chalk.gray("---------------------------------------------------"));
                 });
             }
+
         } catch (error) {
             console.error(chalk.red("❌ Error retrieving indexes:"), error.message);
             process.exit(1);
