@@ -3,7 +3,21 @@ import EventEmitter from 'events';
 
 const log = debug('mongodb-rag:batch');
 
+/**
+ * Handles batch processing of items with retry logic and concurrency control
+ * @extends EventEmitter
+ * @fires BatchProcessor#progress
+ * @fires BatchProcessor#batchError
+ */
 class BatchProcessor extends EventEmitter {
+  /**
+   * Creates a new batch processor instance
+   * @param {Object} options - Configuration options
+   * @param {number} [options.batchSize=100] - Number of items to process in each batch
+   * @param {number} [options.concurrency=2] - Number of batches to process concurrently
+   * @param {number} [options.retryAttempts=3] - Maximum number of retry attempts per batch
+   * @param {number} [options.retryDelay=1000] - Delay between retries in milliseconds
+   */
   constructor(options = {}) {
     super();
     
@@ -23,6 +37,13 @@ class BatchProcessor extends EventEmitter {
     };
   }
 
+  /**
+   * Processes a single batch of items with retry logic
+   * @param {Array} items - Items to process in this batch
+   * @param {Function} processor - Function to process the items
+   * @returns {Promise<{results: Array, errors: Array}>} Results and errors from processing
+   * @fires BatchProcessor#batchError
+   */
   async processBatch(items, processor) {
     const results = [];
     const errors = [];
@@ -56,6 +77,13 @@ class BatchProcessor extends EventEmitter {
     return { results, errors };
   }
 
+  /**
+   * Processes all items in batches with concurrency control
+   * @param {Array} items - All items to process
+   * @param {Function} processor - Function to process each batch
+   * @returns {Promise<{results: Array, errors: Array}>} Combined results and errors from all batches
+   * @fires BatchProcessor#progress
+   */
   async process(items, processor) {
     this.stats.total = items.length;
     const batches = this._createBatches(items);
@@ -83,7 +111,15 @@ class BatchProcessor extends EventEmitter {
         }
       });
 
-      // Emit progress event
+      /**
+       * Progress event
+       * @event BatchProcessor#progress
+       * @type {Object}
+       * @property {number} processed - Number of successfully processed items
+       * @property {number} failed - Number of failed items
+       * @property {number} total - Total number of items
+       * @property {number} percent - Percentage of completion
+       */
       this.emit('progress', {
         processed: this.stats.processed,
         failed: this.stats.failed,
@@ -95,6 +131,12 @@ class BatchProcessor extends EventEmitter {
     return { results, errors };
   }
 
+  /**
+   * Splits array of items into batches
+   * @private
+   * @param {Array} items - Items to split into batches
+   * @returns {Array<Array>} Array of batches
+   */
   _createBatches(items) {
     const batches = [];
     for (let i = 0; i < items.length; i += this.options.batchSize) {
@@ -103,10 +145,25 @@ class BatchProcessor extends EventEmitter {
     return batches;
   }
 
+  /**
+   * Utility function to pause execution
+   * @private
+   * @param {number} ms - Milliseconds to sleep
+   * @returns {Promise<void>}
+   */
   _sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  /**
+   * Returns current processing statistics
+   * @returns {Object} Current processing stats including success rate
+   * @property {number} processed - Number of successfully processed items
+   * @property {number} failed - Number of failed items
+   * @property {number} retried - Number of retried items
+   * @property {number} total - Total number of items
+   * @property {string} successRate - Percentage of successful processing
+   */
   getStats() {
     return {
       ...this.stats,

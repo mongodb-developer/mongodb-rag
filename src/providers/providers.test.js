@@ -155,4 +155,50 @@ describe('Embedding Providers', () => {
       provider.getEmbeddings(['test'])
     ).rejects.toThrow('Unexpected response format from OpenAI API');
   });
+  test('should handle different model dimensions', () => {
+    const smallProvider = new OpenAIEmbeddingProvider({
+      apiKey: mockApiKey,
+      model: 'text-embedding-3-small'
+    });
+    expect(smallProvider.dimensions).toBe(1536);
+
+    const largeProvider = new OpenAIEmbeddingProvider({
+      apiKey: mockApiKey,
+      model: 'text-embedding-3-large'
+    });
+    expect(largeProvider.dimensions).toBe(3072);
+  });
+
+  test('should retry failed requests', async () => {
+    mockPost
+      .mockRejectedValueOnce(new Error('Network error'))  // First attempt fails
+      .mockResolvedValueOnce({                           // Second attempt succeeds
+        data: {
+          data: [{ embedding: Array(1536).fill(0.1) }]
+        }
+      });
+
+    const result = await provider.getEmbeddings(['test text']);
+    expect(mockPost).toHaveBeenCalledTimes(2);
+    expect(result).toHaveLength(1);
+  });
+
+  test('should handle rate limiting', async () => {
+    mockPost
+      .mockRejectedValueOnce({
+        response: {
+          status: 429,
+          data: { error: { message: 'Rate limit exceeded' } }
+        }
+      })
+      .mockResolvedValueOnce({
+        data: {
+          data: [{ embedding: Array(1536).fill(0.1) }]
+        }
+      });
+
+    const result = await provider.getEmbeddings(['test text']);
+    expect(mockPost).toHaveBeenCalledTimes(2);
+    expect(result).toHaveLength(1);
+  });
 });

@@ -1,55 +1,38 @@
 // src/providers/OpenAIEmbeddingProvider.js
-import BaseEmbeddingProvider from './BaseEmbeddingProvider.js';
-import axios from 'axios';
+import OpenAI from 'openai';
 import debug from 'debug';
 
-const log = debug('mongodb-rag:embedding:openai');
+const log = debug('mongodb-rag:openai');
 
-class OpenAIEmbeddingProvider extends BaseEmbeddingProvider {
-  constructor(options = {}) {
-    super(options);
-    
-    if (!options.apiKey) {
-      throw new Error('OpenAI API key is required');
+class OpenAIEmbeddingProvider {
+    constructor(config) {
+        this.client = new OpenAI({ apiKey: config.apiKey });
+        this.model = config.model || 'text-embedding-3-small';
+        log(`Initialized OpenAI provider with model: ${this.model}`);
     }
 
-    this.apiKey = options.apiKey;
-    this.model = options.model || 'text-embedding-3-small';
-    
-    // Create axios instance with default config
-    this.client = axios.create({
-      baseURL: 'https://api.openai.com/v1',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    async getEmbedding(text) {
+        try {
+            const response = await this.client.embeddings.create({
+                model: this.model,
+                input: text
+            });
 
-    log('OpenAI embedding provider initialized');
-  }
-
-  async _embedBatch(texts) {
-    try {
-      log(`Getting embeddings for batch of ${texts.length} texts`);
-      
-      const response = await this.client.post('/embeddings', {
-        model: this.model,
-        input: texts
-      });
-
-      if (!response.data?.data) {
-        throw new Error('Unexpected response format from OpenAI API');
-      }
-
-      const embeddings = response.data.data.map(item => item.embedding);
-      log(`Successfully got embeddings for batch`);
-      return embeddings;
-    } catch (error) {
-      // Extract error message from OpenAI response
-      const message = error.response?.data?.error?.message || error.message;
-      throw new Error(message);
+            return response.data[0].embedding;
+        } catch (error) {
+            log('Error getting embedding from OpenAI:', error);
+            throw error;
+        }
     }
-  }
+
+    async getEmbeddings(texts) {
+        const response = await this.client.embeddings.create({
+            model: this.model,
+            input: texts
+        });
+
+        return response.data.map(item => item.embedding);
+    }
 }
 
 export default OpenAIEmbeddingProvider;

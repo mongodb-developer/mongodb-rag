@@ -7,8 +7,9 @@ jest.useFakeTimers();
 describe('MongoSpinner', () => {
   let spinner;
   let originalMethods;
-  let originalEnv;
   let originalIsTTY;
+  let originalEnv;
+  let consoleLogSpy;
 
   beforeEach(() => {
     // Save original properties
@@ -18,33 +19,44 @@ describe('MongoSpinner', () => {
       write: process.stdout.write
     };
     originalIsTTY = process.stdout.isTTY;
-    originalEnv = process.env;
+    originalEnv = { ...process.env };
 
-    // Mock stdout methods individually
+    // Mock stdout methods
     process.stdout.clearLine = jest.fn();
     process.stdout.cursorTo = jest.fn();
     process.stdout.write = jest.fn();
     process.stdout.isTTY = true;
 
-    // Reset process.env
-    process.env = { ...originalEnv };
-    
+    // Mock console.log
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+
+    // Reset environment
+    delete process.env.NO_SPINNER;
+    delete process.env.CI;
+
     spinner = new MongoSpinner();
   });
 
   afterEach(() => {
-    // Stop all timers
-    jest.clearAllTimers();
-    
     // Restore original methods
     process.stdout.clearLine = originalMethods.clearLine;
     process.stdout.cursorTo = originalMethods.cursorTo;
     process.stdout.write = originalMethods.write;
     process.stdout.isTTY = originalIsTTY;
-    process.env = originalEnv;
     
-    // Ensure spinner is stopped
-    spinner.stop();
+    // Restore environment
+    process.env = originalEnv;
+
+    // Restore console.log
+    consoleLogSpy.mockRestore();
+
+    // Clear timers
+    jest.clearAllTimers();
+    
+    // Stop spinner if running
+    if (spinner.interval) {
+      spinner.stop();
+    }
   });
 
   test('initializes with default configuration', () => {
@@ -73,53 +85,71 @@ describe('MongoSpinner', () => {
 
   test('starts spinner in interactive environment', () => {
     spinner.start('Testing spinner');
-    // Advance timers to trigger the first interval
-    jest.advanceTimersByTime(100);
     
+    // Force the first interval tick
+    jest.advanceTimersByTime(800);
+    
+    expect(process.stdout.write).toHaveBeenCalledWith('\n');
     expect(process.stdout.clearLine).toHaveBeenCalled();
     expect(process.stdout.cursorTo).toHaveBeenCalledWith(0);
-    expect(process.stdout.write).toHaveBeenCalledWith(
+    expect(process.stdout.write).toHaveBeenLastCalledWith(
       expect.stringContaining('Testing spinner')
     );
   });
 
   test('uses fallback in non-interactive environment', () => {
-    const consoleSpy = jest.spyOn(console, 'log');
-    process.env.NO_SPINNER = 'true';
+    process.stdout.isTTY = false;
     spinner = new MongoSpinner();
     
     spinner.start('Testing spinner');
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.any(String),
+    
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      'Preparing vector magic...',
       'Testing spinner'
     );
-    
-    consoleSpy.mockRestore();
+    expect(process.stdout.write).not.toHaveBeenCalled();
   });
 
   test('handles missing terminal methods gracefully', () => {
-    // Remove clearLine method to simulate missing functionality
+    // Set method to undefined
     process.stdout.clearLine = undefined;
+    
+    // Create new spinner instance
     spinner = new MongoSpinner();
+    
+    // Should be disabled when missing required methods
     expect(spinner.isEnabled).toBe(false);
+    
+    // Start spinner
+    spinner.start('Test');
+    
+    // Should use fallback logging
+    expect(process.stdout.write).not.toHaveBeenCalled();
+    expect(consoleLogSpy).toHaveBeenCalled();
   });
 
   test('updates message correctly', () => {
-    spinner.start();
-    jest.advanceTimersByTime(100);
-    spinner.updateMessage('New message');
+    spinner.start('Initial message');
+    jest.advanceTimersByTime(800);
     
-    expect(process.stdout.write).toHaveBeenLastCalledWith(
+    spinner.updateMessage('New message');
+    jest.advanceTimersByTime(800);
+    
+    expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining('New message')
     );
   });
 
   test('stops spinner and cleans up', () => {
-    spinner.start();
-    jest.advanceTimersByTime(100);
+    spinner.start('Test message');
+    jest.advanceTimersByTime(800);
+    
     spinner.stop(true);
     
     expect(spinner.interval).toBeNull();
     expect(process.stdout.clearLine).toHaveBeenCalled();
+    expect(process.stdout.write).toHaveBeenLastCalledWith(
+      expect.stringContaining('✨ Vector magic complete!')
+    );
   });
 });

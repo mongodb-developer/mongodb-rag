@@ -1,14 +1,19 @@
+// jest-config.mjs
 export default {
   testEnvironment: "node",
-  extensionsToTreatAsEsm: [".js"],
+  extensionsToTreatAsEsm: [".js", ".mjs"],
+  moduleFileExtensions: ["js", "mjs"],
   transform: {},
   moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^(\\.{1,2}/.*)\\.js$": "$1"
   },
   setupFiles: ["<rootDir>/tests/setup.js"],
+  setupFilesAfterEnv: ["<rootDir>/tests/setupAfterEnv.js"],
   testMatch: [
-    "**/src/**/*.test.mjs",   // ✅ Existing unit tests
-    "**/tests/**/*.test.mjs"  // ✅ Ensure CLI tests are included
+    "**/tests/**/*.test.js",
+    "**/tests/**/*.test.mjs",
+    "**/src/**/*.test.js",
+    "**/src/**/*.test.mjs"
   ],
   testTimeout: 30000,
   slowTestThreshold: 10000,
@@ -18,6 +23,7 @@ export default {
   verbose: true,
   detectOpenHandles: true,
   testEnvironmentOptions: {
-    url: "http://localhost",
+    url: "http://localhost"
   },
+  injectGlobals: true
 };

@@ -41,7 +41,28 @@ class MongoRAG {
 
         this.client = null;
         this.indexManager = null;
-        this.embeddingProvider = null;
+        this.provider = this._createEmbeddingProvider(this.config.embedding);
+    }
+
+    _createEmbeddingProvider(config) {
+        const { provider, apiKey, baseUrl, ...options } = config;
+        log(`Creating embedding provider: ${provider}`);
+
+        switch (provider) {
+            case 'openai':
+                return new OpenAIEmbeddingProvider({ apiKey, ...options });
+            case 'ollama':
+                if (!baseUrl) {
+                    throw new Error("Ollama base URL is missing from the config. Run 'npx mongodb-rag edit-config' to set it.");
+                }
+                return new OllamaEmbeddingProvider({
+                    provider: 'ollama',
+                    baseUrl, 
+                    model: options.model
+                });
+            default:
+                throw new Error(`Unknown embedding provider: ${provider}`);
+        }
     }
 
     async connect() {
@@ -97,34 +118,50 @@ class MongoRAG {
     }
 
     async search(query, options = {}) {
-        const { database, collection, maxResults = 5 } = options;
-        const col = await this._getCollection(database, collection);
-        const embedding = await this._getEmbedding(query);
-        console.log('[DEBUG] Using vector search index:', this.config.indexName);
+        try {
+            console.log('[DEBUG] Starting search with query:', query);
+            console.log('[DEBUG] Search options:', options);
+            
+            const { database, collection, maxResults = 5 } = options;
+            console.log('[DEBUG] Getting collection...');
+            const col = await this._getCollection(database, collection);
+            
+            console.log('[DEBUG] Getting embedding for query...');
+            const embedding = await this.getEmbedding(query);
+            
+            console.log('[DEBUG] Using vector search index:', this.config.indexName);
+            console.log('[DEBUG] Collection details:', {
+                database: database || this.config.defaultDatabase,
+                collection: collection || this.config.defaultCollection
+            });
 
-        const indexManager = new IndexManager(col, {
-            indexName: this.config.indexName,
-            embeddingFieldPath: this.config.embeddingFieldPath,
-            dimensions: this.config.embedding.dimensions
-        });
+            const indexManager = new IndexManager(col, {
+                indexName: this.config.indexName,
+                embeddingFieldPath: this.config.embeddingFieldPath,
+                dimensions: this.config.embedding.dimensions
+            });
 
-        const aggregation = indexManager.buildSearchQuery(embedding, {}, { maxResults });
+            const aggregation = indexManager.buildSearchQuery(embedding, {}, { maxResults });
 
-        log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
-        const results = await col.aggregate(aggregation).toArray();
+            log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
+            const results = await col.aggregate(aggregation).toArray();
 
-        return results.map(r => ({
-            content: r.content,
-            documentId: r.documentId,
-            metadata: r.metadata,
-            score: r.score
-        }));
+            return results.map(r => ({
+                content: r.content,
+                documentId: r.documentId,
+                metadata: r.metadata,
+                score: r.score
+            }));
+        } catch (error) {
+            console.error('[DEBUG] Search error:', error);
+            throw error;
+        }
     }
 
     async _embedDocuments(documents) {
         await this._initializeEmbeddingProvider();
         const texts = documents.map(doc => doc.content);
-        const embeddings = await this.embeddingProvider.getEmbeddings(texts);
+        const embeddings = await this.getEmbeddings(texts);
 
         return documents.map((doc, i) => ({
             ...doc,
@@ -133,19 +170,19 @@ class MongoRAG {
     }
 
     async _initializeEmbeddingProvider() {
-        if (!this.embeddingProvider) {
+        if (!this.provider) {
             const { provider, apiKey, baseUrl, ...options } = this.config.embedding;
             log(`Initializing embedding provider: ${provider}`);
 
             switch (provider) {
                 case 'openai':
-                    this.embeddingProvider = new OpenAIEmbeddingProvider({ apiKey, ...options });
+                    this.provider = new OpenAIEmbeddingProvider({ apiKey, ...options });
                     break;
                 case 'ollama':
                     if (!baseUrl) {
                         throw new Error("Ollama base URL is missing from the config. Run 'npx mongodb-rag edit-config' to set it.");
                     }
-                    this.embeddingProvider = new OllamaEmbeddingProvider({
+                    this.provider = new OllamaEmbeddingProvider({
                         provider: 'ollama',
                         baseUrl, 
                         model: options.model
@@ -157,12 +194,18 @@ class MongoRAG {
         }
     }
 
-    async _getEmbedding(text) {
-        if (!this.embeddingProvider) {
-            await this._initializeEmbeddingProvider();
+    async getEmbedding(text) {
+        if (!this.provider) {
+            throw new Error('Embedding provider not initialized');
         }
-        const [embedding] = await this.embeddingProvider.getEmbeddings([text]);
-        return embedding;
+        return await this.provider.getEmbedding(text);
+    }
+
+    async getEmbeddings(texts) {
+        if (!this.provider) {
+            throw new Error('Embedding provider not initialized');
+        }
+        return await this.provider.getEmbeddings(texts);
     }
 
     async close() {

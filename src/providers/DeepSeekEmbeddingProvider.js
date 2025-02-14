@@ -5,7 +5,19 @@ import debug from 'debug';
 
 const log = debug('mongodb-rag:embedding:deepseek');
 
+/**
+ * DeepSeek Embedding Provider implementation
+ * Generates embeddings using the DeepSeek API
+ * @extends BaseEmbeddingProvider
+ */
 class DeepSeekEmbeddingProvider extends BaseEmbeddingProvider {
+  /**
+   * Creates a new DeepSeek embedding provider instance
+   * @param {Object} options - Configuration options
+   * @param {string} options.apiKey - DeepSeek API key
+   * @param {string} [options.model='deepseek-embedding'] - Model to use for embeddings
+   * @throws {Error} If API key is not provided
+   */
   constructor(options = {}) {
     super(options);
     
@@ -26,6 +38,13 @@ class DeepSeekEmbeddingProvider extends BaseEmbeddingProvider {
     log('DeepSeek embedding provider initialized');
   }
 
+  /**
+   * Generates embeddings for a batch of texts using DeepSeek API
+   * @protected
+   * @param {string[]} texts - Array of texts to embed
+   * @returns {Promise<number[][]>} Array of embedding vectors
+   * @throws {Error} If the API request fails or returns unexpected response
+   */
   async _embedBatch(texts) {
     try {
       log(`Getting embeddings for batch of ${texts.length} texts`);

@@ -10,7 +10,10 @@ global.jest = jest;
 process.env.EMBEDDING_PROVIDER = process.env.EMBEDDING_PROVIDER || 'openai';
 process.env.EMBEDDING_API_KEY = process.env.EMBEDDING_API_KEY || 'test-key-123';
 process.env.MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/test';
-
+process.env.NODE_ENV = 'test';
+process.env.CONFIG_PATH = '.mongodb-rag.test.json';
+process.env.VECTOR_INDEX_NAME = 'vector_index';
+process.env.VECTOR_SEARCH_FIELD = 'text';
 // Mock MongoDB client
 jest.mock('mongodb', () => ({
   MongoClient: jest.fn().mockImplementation(() => ({
