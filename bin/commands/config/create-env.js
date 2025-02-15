@@ -14,15 +14,15 @@ export async function createEnvFile() {
     // Read the config file
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
-    // Create .env content
+    // Create .env content with correct property mappings
     const envContent = [
-      `MONGODB_URI="${config.mongodbUri}"`,
-      `EMBEDDING_PROVIDER="${config.embeddingProvider}"`,
-      `EMBEDDING_API_KEY="${config.embeddingApiKey}"`,
-      `EMBEDDING_MODEL="${config.embeddingModel}"`,
-      `VECTOR_INDEX="${config.vectorSearchIndex}"`,
-      `MONGODB_DATABASE_NAME="${config.databaseName}"`,
-      `MONGODB_COLLECTION_NAME="${config.collectionName}"`,
+      `MONGODB_URI="${config.mongoUrl}"`,
+      `EMBEDDING_PROVIDER="${config.embedding?.provider || config.provider}"`,
+      `EMBEDDING_API_KEY="${config.apiKey}"`,
+      `EMBEDDING_MODEL="${config.embedding?.model || config.model}"`,
+      `VECTOR_INDEX="${config.indexName}"`,
+      `MONGODB_DATABASE_NAME="${config.database}"`,
+      `MONGODB_COLLECTION_NAME="${config.collection}"`,
     ].join('\n');
 
     // Write to .env file
