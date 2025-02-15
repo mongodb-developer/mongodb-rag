@@ -7,6 +7,28 @@ import { displayLogo } from '../../../src/cli/asciiLogo.js';
 import MongoSpinner from '../../../src/cli/spinner.js';
 import { celebrate } from '../../../src/cli/celebration.js';
 import FunProgressBar from '../../../src/cli/progressBar.js';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import net from 'net';
+
+async function findAvailablePort(startPort) {
+  const isPortAvailable = (port) => {
+    return new Promise((resolve) => {
+      const server = net.createServer();
+      server.listen(port, () => {
+        server.once('close', () => resolve(true));
+        server.close();
+      });
+      server.on('error', () => resolve(false));
+    });
+  };
+
+  let port = startPort;
+  while (!(await isPortAvailable(port))) {
+    port++;
+  }
+  return port;
+}
 
 function generateReadme(projectName) {
   return `# ${projectName}
@@ -83,7 +105,7 @@ For detailed documentation, visit:
 `;
 }
 
-function createBackendFiles(projectPath) {
+function createBackendFiles(projectPath, backendPort) {
   // Create backend directory structure
   fs.mkdirSync(path.join(projectPath, 'backend'), { recursive: true });
   fs.mkdirSync(path.join(projectPath, 'backend', 'config'), { recursive: true });
@@ -114,16 +136,44 @@ dotenv.config();
 
 export const config = {
   mongoUrl: process.env.MONGODB_URI,
-  database: "mongorag",
-  collection: "documents",
+  database: process.env.MONGODB_DATABASE || "mongorag",
+  collection: process.env.MONGODB_COLLECTION || "documents",
   embedding: {
     provider: process.env.EMBEDDING_PROVIDER || "openai",
     apiKey: process.env.EMBEDDING_API_KEY,
     model: process.env.EMBEDDING_MODEL || "text-embedding-3-small",
-    dimensions: 1536
+    dimensions: parseInt(process.env.EMBEDDING_DIMENSIONS || "1536", 10)
   },
-  indexName: process.env.VECTOR_INDEX || "default"
+  indexName: process.env.VECTOR_INDEX || "default",
+  maxResults: parseInt(process.env.MAX_RESULTS || "5", 10)
 };
+
+// Validate configuration
+if (!config.mongoUrl) {
+  throw new Error('MONGODB_URI is required in .env file');
+}
+
+if (!config.embedding.apiKey && config.embedding.provider !== 'ollama') {
+  throw new Error('EMBEDDING_API_KEY is required in .env file unless using Ollama');
+}
+`);
+
+  // Create backend .env file
+  fs.writeFileSync(path.join(projectPath, 'backend', '.env'), `# MongoDB Connection
+MONGODB_URI=mongodb+srv://your_user:your_password@your-cluster.mongodb.net/mongorag
+MONGODB_DATABASE=mongorag
+MONGODB_COLLECTION=documents
+PORT=${backendPort}
+
+# Embedding Configuration
+EMBEDDING_PROVIDER=openai  # Options: openai, ollama
+EMBEDDING_API_KEY=your-embedding-api-key
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIMENSIONS=1536
+
+# Vector Search Configuration
+VECTOR_INDEX=default
+MAX_RESULTS=5
 `);
 
   // Create backend server.js
@@ -134,10 +184,71 @@ import { MongoRAG } from 'mongodb-rag';
 import { config } from './config/dbConfig.js';
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+const PORT = 4001;  // Hardcode the port for now
 
-const rag = new MongoRAG(config);
+app.use(cors());
+app.use(express.json());
+
+// Initialize RAG with better error handling
+let rag;
+try {
+  rag = new MongoRAG(config);
+} catch (error) {
+  console.error('Failed to initialize MongoRAG:', error);
+}
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    ragInitialized: !!rag,
+    config: {
+      provider: config.embedding.provider,
+      database: config.database,
+      collection: config.collection,
+      indexName: config.indexName
+    }
+  });
+});
+
+// Search Documents
+app.get('/api/search', async (req, res) => {
+  try {
+    // Check if RAG is initialized
+    if (!rag) {
+      console.error('RAG not initialized. Current config:', config);
+      return res.status(500).json({ 
+        error: 'RAG system not initialized. Check your configuration.',
+        config: {
+          provider: config.embedding.provider,
+          hasApiKey: !!config.embedding.apiKey,
+          database: config.database,
+          collection: config.collection
+        }
+      });
+    }
+
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).json({ error: 'Query parameter is required' });
+    }
+
+    const results = await rag.search(query, { maxResults: config.maxResults });
+    res.json(results);
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ 
+      error: error.message || 'Failed to perform search',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      config: {
+        provider: config.embedding.provider,
+        hasApiKey: !!config.embedding.apiKey,
+        database: config.database,
+        collection: config.collection
+      }
+    });
+  }
+});
 
 // Ingest Documents
 app.post('/api/ingest', async (req, res) => {
@@ -146,17 +257,7 @@ app.post('/api/ingest', async (req, res) => {
     const result = await rag.ingestBatch(documents);
     res.json(result);
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Search Documents
-app.get('/api/search', async (req, res) => {
-  try {
-    const { query } = req.query;
-    const results = await rag.search(query, { maxResults: 5 });
-    res.json(results);
-  } catch (error) {
+    console.error('Ingest error:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -168,18 +269,29 @@ app.delete('/api/documents/:id', async (req, res) => {
     await col.deleteOne({ documentId: req.params.id });
     res.json({ message: 'Deleted successfully' });
   } catch (error) {
+    console.error('Delete error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(\`🚀 Server running on port \${PORT}\`);
+  if (!rag) {
+    console.warn('⚠️  Warning: RAG system not initialized. Check your configuration:');
+    console.warn('   - MONGODB_URI:', config.mongoUrl ? '✓ Set' : '✗ Missing');
+    console.warn('   - EMBEDDING_PROVIDER:', config.embedding.provider);
+    console.warn('   - EMBEDDING_API_KEY:', config.embedding.apiKey ? '✓ Set' : '✗ Missing');
+  }
+  console.log(\`📚 API Documentation:
+  GET    /api/health           - Health check
+  POST   /api/ingest          - Ingest documents
+  GET    /api/search?query=   - Search documents
+  DELETE /api/documents/:id   - Delete document\`);
 });
 `);
 }
 
-function createFrontendFiles(projectPath) {
+function createFrontendFiles(projectPath, backendPort, frontendPort) {
   // Create frontend directory structure
   fs.mkdirSync(path.join(projectPath, 'frontend'), { recursive: true });
   fs.mkdirSync(path.join(projectPath, 'frontend', 'src'), { recursive: true });
@@ -207,17 +319,52 @@ function createFrontendFiles(projectPath) {
     }
   }, null, 2));
 
+  // Copy the MongoDB RAG logo from the installed package
+  const packageDir = path.dirname(fileURLToPath(import.meta.url));
+  // When installed via npm, the package will be in node_modules/mongodb-rag
+  const logoPath = path.resolve(packageDir, '../../../node_modules/mongodb-rag/static/logo-square.png');
+  
+  // Create public directory if it doesn't exist
+  const publicDir = path.join(projectPath, 'frontend', 'public');
+  fs.mkdirSync(publicDir, { recursive: true });
+  const logoDestPath = path.join(publicDir, 'logo-square.png');
+  
+  try {
+    if (fs.existsSync(logoPath)) {
+      fs.copyFileSync(logoPath, logoDestPath);
+      console.log(chalk.green('✓ Logo copied successfully'));
+    } else {
+      // Try fallback path for local development
+      const devLogoPath = path.resolve(packageDir, '../../../static/logo-square.png');
+      if (fs.existsSync(devLogoPath)) {
+        fs.copyFileSync(devLogoPath, logoDestPath);
+        console.log(chalk.green('✓ Logo copied successfully (dev mode)'));
+      } else {
+        console.warn(chalk.yellow('⚠️ Logo file not found. Using fallback styling.'));
+      }
+    }
+  } catch (error) {
+    console.warn(chalk.yellow('⚠️ Could not copy logo file:', error.message));
+  }
+
   // Create frontend components
   const components = {
     'Header.jsx': `
+import React from 'react';
+
 export function Header() {
   return (
     <header className="header">
-      <h1>MongoDB RAG Application</h1>
+      <div className="logo-container">
+        <img src="/logo-square.png" alt="MongoDB RAG Logo" className="logo" />
+        <h1>MongoDB RAG Application</h1>
+      </div>
     </header>
   );
 }`,
     'Footer.jsx': `
+import React from 'react';
+
 export function Footer() {
   return (
     <footer className="footer">
@@ -226,24 +373,35 @@ export function Footer() {
   );
 }`,
     'Chatbot.jsx': `
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 export function Chatbot() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    if (!query.trim()) return;
+
     setLoading(true);
+    setError(null);
+    
     try {
-      const response = await axios.get(\`http://localhost:5000/api/search?query=\${query}\`);
+      // Use relative URL to leverage Vite's proxy configuration
+      const response = await axios.get('/api/search', {
+        params: { query: query.trim() }
+      });
       setResults(response.data);
     } catch (error) {
       console.error('Search failed:', error);
+      setError(error.response?.data?.error || 'Failed to perform search. Please try again.');
+      setResults([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -254,18 +412,30 @@ export function Chatbot() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Ask a question..."
+          disabled={loading}
         />
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading || !query.trim()}>
           {loading ? 'Searching...' : 'Search'}
         </button>
       </form>
+
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
+
       <div className="results">
-        {results.map((result, index) => (
-          <div key={index} className="result">
-            <p>{result.content}</p>
-            <small>Score: {result.score}</small>
-          </div>
-        ))}
+        {results.length > 0 ? (
+          results.map((result, index) => (
+            <div key={index} className="result">
+              <p>{result.content}</p>
+              <small>Score: {result.score.toFixed(2)}</small>
+            </div>
+          ))
+        ) : !loading && !error && query && (
+          <p className="no-results">No results found. Try a different query.</p>
+        )}
       </div>
     </div>
   );
@@ -279,6 +449,7 @@ export function Chatbot() {
 
   // Create App.jsx
   fs.writeFileSync(path.join(projectPath, 'frontend', 'src', 'App.jsx'), `
+import React from 'react';
 import { Header } from './components/Header';
 import { Chatbot } from './components/Chatbot';
 import { Footer } from './components/Footer';
@@ -299,17 +470,55 @@ function App() {
 export default App;
 `);
 
-  // Create styles.css
+  // Create styles.css with proper imports and reset
   fs.writeFileSync(path.join(projectPath, 'frontend', 'src', 'styles.css'), `
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: #f5f5f5;
+}
+
 .app {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  background: white;
+  min-height: 100vh;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .header {
   text-align: center;
   margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.header .logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.header .logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.header h1 {
+  color: #00684A;
+  font-size: 1.8rem;
 }
 
 .chatbot {
@@ -324,21 +533,36 @@ export default App;
 
 .chatbot input {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0.75rem;
   font-size: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.chatbot input:focus {
+  outline: none;
+  border-color: #00684A;
 }
 
 .chatbot button {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   background: #00684A;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.chatbot button:hover {
+  background: #005138;
 }
 
 .chatbot button:disabled {
   background: #ccc;
+  cursor: not-allowed;
 }
 
 .results {
@@ -347,16 +571,57 @@ export default App;
 
 .result {
   padding: 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid #e0e0e0;
   margin-bottom: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  transition: transform 0.2s;
+}
+
+.result:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.result small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #666;
 }
 
 .footer {
   text-align: center;
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #e0e0e0;
+  color: #666;
+}
+
+.footer a {
+  color: #00684A;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #dc3545;
+  background: #f8d7da;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
+}
+
+.no-results {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  font-style: italic;
 }
 `);
 
@@ -374,13 +639,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 )
 `);
 
-  // Create index.html
+  // Create index.html with proper public path
   fs.writeFileSync(path.join(projectPath, 'frontend', 'index.html'), `
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/logo-square.png">
     <title>MongoDB RAG App</title>
   </head>
   <body>
@@ -389,6 +655,36 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </body>
 </html>
 `);
+
+  // Create vite.config.js with dynamic backend port
+  fs.writeFileSync(path.join(projectPath, 'frontend', 'vite.config.js'), `
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+// The backend is running on port ${backendPort}
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: ${frontendPort},
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4001',  // Hardcode the port for now
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('Proxy Error:', err.message);
+          });
+        }
+      }
+    }
+  }
+});
+`);
+
+  // Create a basic favicon (or you could copy an existing one)
+  fs.writeFileSync(path.join(projectPath, 'frontend', 'public', 'favicon.ico'), '');
 }
 
 export async function createRagApp(projectName) {
@@ -408,16 +704,20 @@ export async function createRagApp(projectName) {
   console.log(chalk.green(`\n🚀 Creating a new RAG app in ${projectPath}\n`));
   
   try {
+    // Find available ports
+    const backendPort = await findAvailablePort(5000);
+    const frontendPort = await findAvailablePort(3000);
+
     // Create project structure
     fs.mkdirSync(projectPath, { recursive: true });
 
-    // Create backend
+    // Create backend with dynamic port
     console.log(chalk.blue('\n📁 Creating backend...'));
-    createBackendFiles(projectPath);
+    createBackendFiles(projectPath, backendPort);
     
-    // Create frontend
+    // Create frontend with dynamic port configuration
     console.log(chalk.blue('\n📁 Creating frontend...'));
-    createFrontendFiles(projectPath);
+    createFrontendFiles(projectPath, backendPort, frontendPort);
 
     // Create root package.json for workspace
     fs.writeFileSync(path.join(projectPath, 'package.json'), JSON.stringify({
@@ -435,23 +735,22 @@ export async function createRagApp(projectName) {
       }
     }, null, 2));
 
-    // Create root .env
-    fs.writeFileSync(path.join(projectPath, '.env'), `
-MONGODB_URI=mongodb+srv://your_user:your_password@your-cluster.mongodb.net/mongorag
-PORT=5000
-
-# Embedding Configuration
-EMBEDDING_PROVIDER=openai
-EMBEDDING_API_KEY=your-embedding-api-key
-EMBEDDING_MODEL=text-embedding-3-small
-
-# MongoDB Vector Search Index
-VECTOR_INDEX=default
-`);
-
     // Install dependencies
     console.log(chalk.blue('\n📦 Installing dependencies...'));
+    spinner.start('Installing packages');
+    
+    // Install root dependencies
     execSync(`cd ${projectPath} && npm install`, { stdio: 'inherit' });
+    
+    // Install frontend dependencies
+    console.log(chalk.blue('\n📦 Installing frontend dependencies...'));
+    execSync(`cd ${projectPath}/frontend && npm install`, { stdio: 'inherit' });
+    
+    // Install backend dependencies
+    console.log(chalk.blue('\n📦 Installing backend dependencies...'));
+    execSync(`cd ${projectPath}/backend && npm install`, { stdio: 'inherit' });
+    
+    spinner.stop(true);
 
     // Create README
     fs.writeFileSync(
@@ -465,8 +764,11 @@ VECTOR_INDEX=default
     console.log(chalk.green('\n✅ Project created successfully!'));
     console.log(chalk.yellow('\nNext steps:'));
     console.log(chalk.cyan(`  1. cd ${projectName}`));
-    console.log(chalk.cyan('  2. Update .env with your MongoDB and API credentials'));
+    console.log(chalk.cyan('  2. Update backend/.env with your MongoDB and API credentials'));
     console.log(chalk.cyan('  3. npm run dev    # This will start both frontend and backend'));
+    console.log(chalk.cyan('\nYour app will be available at:'));
+    console.log(chalk.cyan(`  Frontend: http://localhost:${frontendPort}`));
+    console.log(chalk.cyan(`  Backend:  http://localhost:${backendPort}`));
 
   } catch (error) {
     console.error(chalk.red('\n❌ Error creating project:'), error);

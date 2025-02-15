@@ -17,7 +17,8 @@
     "README.md",
     "bin/mongodb-rag.js",
     "bin/commands",
-    "bin/utils"
+    "bin/utils",
+    "static"
   ],
   "scripts": {
     "test": "NODE_ENV=test node --experimental-vm-modules node_modules/.bin/jest --runInBand --verbose",
