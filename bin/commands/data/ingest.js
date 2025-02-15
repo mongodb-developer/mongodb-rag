@@ -14,11 +14,9 @@ export async function ingestData(config, options) {
 
   // Restructure the config to match expected format
   const ragConfig = {
-    mongodb: {
-      connectionString: config.mongoUrl,
-      database: config.database,
-      collection: config.collection
-    },
+    mongodbUri: config.mongoUrl,
+    database: config.database,
+    collection: config.collection,
     embedding: {
       provider: config.embedding?.provider || config.provider,
       apiKey: config.apiKey,
