@@ -25,44 +25,56 @@ export async function createIndex(config) {
       console.log(chalk.blue("🔍 Existing indexes:"), existingIndexes);
 
       await client.close();
-      throw error; 
+      throw new Error("createSearchIndexes() is not available"); 
     }
 
     if (!config || !config.embedding || !config.embedding.dimensions) {
       console.error(chalk.red("❌ MongoDB Error: Missing embedding dimensions in config."));
-      throw new Error("Missing embedding dimensions in config."); // ✅ Instead of process.exit(1)
+      throw new Error("Missing embedding dimensions in config.");
     }
 
     console.log(chalk.blue(`📌 Creating Vector Search Index: ${config.indexName}...`));
 
-    const indexDefinition = {
+    const indexConfig = {
       name: config.indexName || "vector_index",
       definition: {
         mappings: {
-          dynamic: false,  // ✅ Fix: Set dynamic to false to explicitly define the index
+          dynamic: false,  // More restrictive than true, better for vector search
           fields: {
             [config.embedding.path || "embedding"]: {
-              type: "vector",
-              numDimensions: config.embedding.dimensions || 1536,  // ✅ Ensure dimensions are set
+              type: "knnVector",
+              dimensions: config.embedding.dimensions,
               similarity: config.embedding.similarity || "cosine"
             }
           }
         }
       }
     };
-    
 
-    console.log(chalk.blue(`🔍 Debug: Index definition: `, JSON.stringify(indexDefinition, null, 2)));
+    console.log(chalk.blue(`🔍 Debug: Index definition: `), JSON.stringify(indexConfig, null, 2));
 
-    const indexResult = await collection.createSearchIndexes([indexDefinition]);
+    try {
+      const indexResult = await collection.createSearchIndex(indexConfig);
+      console.log(chalk.green(`✅ Vector Search Index "${indexConfig.name}" created successfully!`));
+      console.log(chalk.blue(`🔍 Index creation result:`), indexResult);
+      
+      await client.close();
+      console.log(chalk.blue("🔍 MongoDB connection closed."));
+      
+      return {
+        success: true,
+        message: "Vector search index created successfully",
+        indexName: indexConfig.name,
+        result: indexResult
+      };
+    } catch (error) {
+      console.error(chalk.red(`❌ Error creating search index: ${error.message}`));
+      await client.close();
+      throw error;
+    }
 
-    console.log(chalk.green(`✅ Vector Search Index "${config.indexName}" created successfully!`));
-    console.log(chalk.blue(`🔍 Index creation result:`), indexResult);
-    return indexResult;
-    await client.close();
-    console.log(chalk.blue("🔍 MongoDB connection closed."));
   } catch (error) {
-    console.error(chalk.red(`❌ MongoDB Error: ${error.message}`));
-    throw error; 
+    console.error(chalk.red(`❌ Error: ${error.message}`));
+    throw error;
   }
 }

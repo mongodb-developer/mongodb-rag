@@ -91,13 +91,18 @@ function displayResult(result, index) {
 }
 
 export function formatDocument(doc) {
-    const formatted = {};
-    for (const key in doc) {
-        if (Array.isArray(doc[key]) && doc[key].length > 10) {
-            formatted[key] = [...doc[key].slice(0, 10), `... +${doc[key].length - 10} more`];
-        } else {
-            formatted[key] = doc[key];
-        }
+  const formatted = { ...doc };
+  
+  // Handle arrays with preview
+  Object.keys(formatted).forEach(key => {
+    if (Array.isArray(formatted[key])) {
+      const array = formatted[key];
+      formatted[key] = {
+        preview: array.slice(0, 10),
+        remaining: Math.max(0, array.length - 10)
+      };
     }
-    return formatted;
+  });
+  
+  return formatted;
 }
