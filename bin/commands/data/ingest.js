@@ -42,11 +42,12 @@ export async function ingestData(config, options) {
 
   // Restructure the config to match expected format
   const ragConfig = {
-    mongodb: {
-      uri: config.mongoUrl,
-      database: config.database,
-      collection: config.collection
-    },
+    // MongoDB connection details at top level
+    connectionString: config.mongoUrl,  // Try this instead of nested mongodb object
+    databaseName: config.database,      // Use full names at top level
+    collectionName: config.collection,
+    
+    // Keep the rest of the config
     embedding: {
       provider: config.embedding?.provider || config.provider,
       apiKey: config.apiKey,
@@ -59,18 +60,19 @@ export async function ingestData(config, options) {
       maxResults: config.search?.maxResults || 5,
       minScore: config.search?.minScore || 0.7
     },
-    indexName: config.indexName
+    indexName: config.indexName,
+    
+    // Add standard MongoDB options
+    mongodbOptions: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
   };
 
-  // Add MongoDB connection options
-  ragConfig.mongodb.options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  };
-
-  // Log the restructured config
+  // Remove the mongodb nested object structure
   if (isDevelopment) {
-    console.log('Restructured ragConfig:', JSON.stringify(ragConfig, null, 2));
+    console.log('Attempting to connect to MongoDB...');
+    console.log('MongoDB URI:', ragConfig.connectionString);
   }
 
   // Set environment variables from config if they're not already set
@@ -93,7 +95,7 @@ export async function ingestData(config, options) {
     
     if (isDevelopment) {
       console.log('Attempting to connect to MongoDB...');
-      console.log('MongoDB URI:', ragConfig.mongodb.uri);
+      console.log('MongoDB URI:', ragConfig.connectionString);
     }
     
     await rag.connect();
