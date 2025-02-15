@@ -12,6 +12,17 @@ export async function ingestData(config, options) {
     throw new Error("Configuration missing. Run 'npx mongodb-rag init' first.");
   }
 
+  // Set environment variables from config if they're not already set
+  if (!process.env.EMBEDDING_API_KEY && config.apiKey) {
+    process.env.EMBEDDING_API_KEY = config.apiKey;
+  }
+  if (!process.env.EMBEDDING_PROVIDER && (config.embedding?.provider || config.provider)) {
+    process.env.EMBEDDING_PROVIDER = config.embedding?.provider || config.provider;
+  }
+  if (!process.env.EMBEDDING_MODEL && (config.embedding?.model || config.model)) {
+    process.env.EMBEDDING_MODEL = config.embedding?.model || config.model;
+  }
+
   try {
     let documents = [];
     const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
