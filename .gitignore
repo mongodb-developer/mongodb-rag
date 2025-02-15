@@ -10,7 +10,7 @@ package-lock.json
 .mongodb-rag.test.json*
 .mongodb-rag.json.bak
 .mongodb-rag.json
-
+.DS_Store
 # Logs
 logs/
 *.log
@@ -21,8 +21,9 @@ yarn-error.log*
 # Local development files
 .env
 .env.test
-.DS_Store
+.env.swp
 *.local
+*.swp
 
 # Coverage reports (Jest, Istanbul)
 coverage/
