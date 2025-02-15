@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
-const { formatSuccess, formatError } = require('../../utils/formatting');
-const { handleError } = require('../../utils/error-handling');
+import fs from 'fs';
+import path from 'path';
+import { formatSuccess } from '../../utils/formatting.js';
+import { handleError } from '../../utils/error-handling.js';
 
-async function createEnvFile() {
+export async function createEnvFile() {
   try {
     // Check if .mongodb-rag.json exists
     const configPath = path.join(process.cwd(), '.mongodb-rag.json');
@@ -33,6 +33,4 @@ async function createEnvFile() {
   } catch (error) {
     handleError(error);
   }
-}
-
-module.exports = createEnvFile; 
+} 

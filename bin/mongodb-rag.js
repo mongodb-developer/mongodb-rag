@@ -26,6 +26,7 @@ import {
   setIndexName
 } from './commands/index.js';
 import { createRagApp } from './commands/init/createRagApp.js';
+import { createEnvFile } from './commands/config/create-env.js';
 import { isConfigValid } from './utils/validation.js';
 import { wrapCommand } from './utils/error-handling.js';
 import { readFileSync } from 'fs';
@@ -170,6 +171,12 @@ program
   .command('set-index-name')
   .description('Set the name for the MongoDB Vector Search Index')
   .action(wrapCommand(async () => await setIndexName(CONFIG_PATH)));
+
+// Add this new command after the other command definitions
+program
+  .command('create-env')
+  .description('Create a .env file from your MongoDB RAG configuration')
+  .action(wrapCommand(async () => await createEnvFile()));
 
 // Add global options
 program
