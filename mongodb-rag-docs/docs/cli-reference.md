@@ -112,4 +112,19 @@ npx mongodb-rag reset-config
 
 Resets the configuration by re-running the setup.
 
+### **Create Environment File**
+
+```
+npx mongodb-rag create-env
+```
+
+Creates a `.env` file from your `.mongodb-rag.json` configuration. This command generates environment variables needed for your RAG application:
+- MONGODB_URI
+- EMBEDDING_PROVIDER
+- EMBEDDING_API_KEY
+- EMBEDDING_MODEL
+- VECTOR_INDEX
+- MONGODB_DATABASE_NAME
+- MONGODB_COLLECTION_NAME
+
 For more details, refer to the MongoDB-RAG API Reference.

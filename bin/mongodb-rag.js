@@ -69,11 +69,14 @@ program
   .description('MongoDB RAG CLI for managing vector search and RAG operations')
   .version(packageJson.version);
 
-// Create RAG App
+// Wrap your commands with error handling
+const wrappedCreateRagApp = wrapCommand(createRagApp);
+
+// Use the wrapped version in your command handling
 program
   .command('create-rag-app <projectName>')
   .description('Scaffold a new CRUD RAG application with MongoDB and Vector Search')
-  .action(wrapCommand(createRagApp));
+  .action(wrappedCreateRagApp);
 
 // Initialize configuration
 program

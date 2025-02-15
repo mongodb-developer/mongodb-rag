@@ -1,6 +1,31 @@
 // bin/utils/error-handling.js
 import chalk from 'chalk';
 
+/**
+ * Wraps a command function with error handling
+ * @param {Function} commandFn The command function to wrap
+ * @returns {Function} Wrapped command function with error handling
+ */
+export const wrapCommand = (commandFn) => {
+  return async (...args) => {
+    try {
+      await commandFn(...args);
+    } catch (error) {
+      console.error('\x1b[31m%s\x1b[0m', 'Error:', error.message);
+      process.exit(1);
+    }
+  };
+};
+
+/**
+ * Generic error handler for async operations
+ * @param {Error} error The error to handle
+ */
+export const handleError = (error) => {
+  console.error('\x1b[31m%s\x1b[0m', 'Error:', error.message);
+  process.exit(1);
+};
+
 export function withErrorHandling(command) {
   return async (...args) => {
     try {
