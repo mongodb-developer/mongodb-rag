@@ -6,6 +6,7 @@ import { isConfigValid } from '../../utils/validation.js';
 import MongoRAG from '../../../src/core/MongoRAG.js';
 import { parseDocument } from '../../utils/document-parsers.js';
 import { DocumentChunker } from '../../utils/chunking.js';
+import { MongoClient } from 'mongodb';
 
 export async function ingestData(config, options) {
   if (!isConfigValid(config)) {
@@ -14,14 +15,34 @@ export async function ingestData(config, options) {
 
   const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
 
-  // Log the incoming config
-  if (isDevelopment) {
-    console.log('Original config:', JSON.stringify(config, null, 2));
+  // Validate MongoDB URI
+  if (!config.mongoUrl || typeof config.mongoUrl !== 'string') {
+    throw new Error('Invalid MongoDB URI: URI must be a non-empty string');
+  }
+
+  // Ensure URI starts with mongodb:// or mongodb+srv://
+  if (!config.mongoUrl.startsWith('mongodb://') && !config.mongoUrl.startsWith('mongodb+srv://')) {
+    throw new Error('Invalid MongoDB URI: URI must start with mongodb:// or mongodb+srv://');
+  }
+
+  // Test MongoDB connection before proceeding
+  try {
+    if (isDevelopment) {
+      console.log('Testing MongoDB connection...');
+    }
+    const testClient = new MongoClient(config.mongoUrl);
+    await testClient.connect();
+    await testClient.close();
+    if (isDevelopment) {
+      console.log('MongoDB connection test successful');
+    }
+  } catch (error) {
+    throw new Error(`MongoDB connection test failed: ${error.message}`);
   }
 
   // Restructure the config to match expected format
   const ragConfig = {
-    mongodb: {  // Nest under mongodb object
+    mongodb: {
       uri: config.mongoUrl,
       database: config.database,
       collection: config.collection
@@ -41,8 +62,11 @@ export async function ingestData(config, options) {
     indexName: config.indexName
   };
 
-  // Add a top-level uri for backwards compatibility
-  ragConfig.uri = config.mongoUrl;
+  // Add MongoDB connection options
+  ragConfig.mongodb.options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  };
 
   // Log the restructured config
   if (isDevelopment) {
