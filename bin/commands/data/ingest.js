@@ -21,9 +21,11 @@ export async function ingestData(config, options) {
 
   // Restructure the config to match expected format
   const ragConfig = {
-    mongodbUri: config.mongoUrl,
-    database: config.database,
-    collection: config.collection,
+    mongodb: {  // Nest under mongodb object
+      uri: config.mongoUrl,
+      database: config.database,
+      collection: config.collection
+    },
     embedding: {
       provider: config.embedding?.provider || config.provider,
       apiKey: config.apiKey,
@@ -38,6 +40,9 @@ export async function ingestData(config, options) {
     },
     indexName: config.indexName
   };
+
+  // Add a top-level uri for backwards compatibility
+  ragConfig.uri = config.mongoUrl;
 
   // Log the restructured config
   if (isDevelopment) {
@@ -64,7 +69,7 @@ export async function ingestData(config, options) {
     
     if (isDevelopment) {
       console.log('Attempting to connect to MongoDB...');
-      console.log('MongoDB URI:', ragConfig.mongodbUri);
+      console.log('MongoDB URI:', ragConfig.mongodb.uri);
     }
     
     await rag.connect();
