@@ -15,16 +15,6 @@ export async function ingestData(config, options) {
 
   const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
 
-  // Validate MongoDB URI
-  if (!config.mongoUrl || typeof config.mongoUrl !== 'string') {
-    throw new Error('Invalid MongoDB URI: URI must be a non-empty string');
-  }
-
-  // Ensure URI starts with mongodb:// or mongodb+srv://
-  if (!config.mongoUrl.startsWith('mongodb://') && !config.mongoUrl.startsWith('mongodb+srv://')) {
-    throw new Error('Invalid MongoDB URI: URI must start with mongodb:// or mongodb+srv://');
-  }
-
   // Test MongoDB connection before proceeding
   try {
     if (isDevelopment) {
@@ -40,62 +30,31 @@ export async function ingestData(config, options) {
     throw new Error(`MongoDB connection test failed: ${error.message}`);
   }
 
-  // Restructure the config to match expected format
+  // Create the RAG configuration using the exact structure expected by MongoRAG
   const ragConfig = {
-    // MongoDB connection details at top level
-    connectionString: config.mongoUrl,  // Try this instead of nested mongodb object
-    databaseName: config.database,      // Use full names at top level
-    collectionName: config.collection,
-    
-    // Keep the rest of the config
+    mongoUrl: config.mongoUrl,
+    database: config.database,
+    collection: config.collection,
     embedding: {
-      provider: config.embedding?.provider || config.provider,
+      provider: config.embedding.provider,
       apiKey: config.apiKey,
-      model: config.embedding?.model || config.model,
-      dimensions: config.embedding?.dimensions || config.dimensions,
-      baseUrl: config.embedding?.baseUrl || config.baseUrl,
-      batchSize: config.embedding?.batchSize || 100
+      model: config.embedding.model,
+      dimensions: config.embedding.dimensions,
+      baseUrl: config.embedding.baseUrl,
+      batchSize: config.embedding.batchSize
     },
-    search: {
-      maxResults: config.search?.maxResults || 5,
-      minScore: config.search?.minScore || 0.7
-    },
-    indexName: config.indexName,
-    
-    // Add standard MongoDB options
-    mongodbOptions: {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    }
+    indexName: config.indexName
   };
-
-  // Remove the mongodb nested object structure
-  if (isDevelopment) {
-    console.log('Attempting to connect to MongoDB...');
-    console.log('MongoDB URI:', ragConfig.connectionString);
-  }
-
-  // Set environment variables from config if they're not already set
-  if (!process.env.EMBEDDING_API_KEY && config.apiKey) {
-    process.env.EMBEDDING_API_KEY = config.apiKey;
-  }
-  if (!process.env.EMBEDDING_PROVIDER && (config.embedding?.provider || config.provider)) {
-    process.env.EMBEDDING_PROVIDER = config.embedding?.provider || config.provider;
-  }
-  if (!process.env.EMBEDDING_MODEL && (config.embedding?.model || config.model)) {
-    process.env.EMBEDDING_MODEL = config.embedding?.model || config.model;
-  }
 
   try {
     if (isDevelopment) {
-      console.log('Creating MongoRAG instance with config...');
+      console.log('Creating MongoRAG instance...');
     }
     
     const rag = new MongoRAG(ragConfig);
     
     if (isDevelopment) {
-      console.log('Attempting to connect to MongoDB...');
-      console.log('MongoDB URI:', ragConfig.connectionString);
+      console.log('Connecting to MongoDB...');
     }
     
     await rag.connect();
@@ -128,7 +87,7 @@ export async function ingestData(config, options) {
       const chunkedDocs = [];
       for (const doc of documents) {
         if (isDevelopment) {
-          console.log(chalk.blue(`📄 Chunking document: ${doc.metadata.filename}`));
+          console.log(chalk.blue(`📄 Chunking document: ${doc.metadata?.filename}`));
         }
         const chunks = chunker.chunkDocument(doc);
         chunkedDocs.push(...chunks);
@@ -150,6 +109,7 @@ export async function ingestData(config, options) {
     });
 
     console.log(chalk.green(`✅ Successfully ingested ${result.processed} documents!`));
+    await rag.close();
     return result;
   } catch (error) {
     console.error(chalk.red('❌ Ingestion failed:'), error.message);
@@ -169,8 +129,12 @@ async function processDirectory(dirPath, options) {
       const subDocs = await processDirectory(filePath, options);
       documents.push(...subDocs);
     } else if (stat.isFile()) {
-      const docs = await processFile(filePath, options);
-      documents.push(...docs);
+      try {
+        const docs = await processFile(filePath, options);
+        documents.push(...docs);
+      } catch (error) {
+        console.warn(chalk.yellow(`⚠️ Warning: Failed to process ${filePath}: ${error.message}`));
+      }
     }
   }
 
@@ -194,7 +158,7 @@ async function processFile(filePath, options) {
     
     if (isDevelopment) {
       console.log(chalk.blue(`📄 Processed ${filePath}`));
-      if (doc.metadata.processingFailed) {
+      if (doc.metadata?.processingFailed) {
         console.warn(chalk.yellow(`⚠️ Warning: ${doc.metadata.error}`));
       }
     }
