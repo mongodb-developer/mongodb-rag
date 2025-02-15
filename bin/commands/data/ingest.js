@@ -12,6 +12,13 @@ export async function ingestData(config, options) {
     throw new Error("Configuration missing. Run 'npx mongodb-rag init' first.");
   }
 
+  const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+
+  // Log the incoming config
+  if (isDevelopment) {
+    console.log('Original config:', JSON.stringify(config, null, 2));
+  }
+
   // Restructure the config to match expected format
   const ragConfig = {
     mongodbUri: config.mongoUrl,
@@ -32,6 +39,11 @@ export async function ingestData(config, options) {
     indexName: config.indexName
   };
 
+  // Log the restructured config
+  if (isDevelopment) {
+    console.log('Restructured ragConfig:', JSON.stringify(ragConfig, null, 2));
+  }
+
   // Set environment variables from config if they're not already set
   if (!process.env.EMBEDDING_API_KEY && config.apiKey) {
     process.env.EMBEDDING_API_KEY = config.apiKey;
@@ -44,8 +56,20 @@ export async function ingestData(config, options) {
   }
 
   try {
+    if (isDevelopment) {
+      console.log('Creating MongoRAG instance with config...');
+    }
+    
+    const rag = new MongoRAG(ragConfig);
+    
+    if (isDevelopment) {
+      console.log('Attempting to connect to MongoDB...');
+      console.log('MongoDB URI:', ragConfig.mongodbUri);
+    }
+    
+    await rag.connect();
+
     let documents = [];
-    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
 
     // Handle directory ingestion
     if (options.directory) {
@@ -88,9 +112,6 @@ export async function ingestData(config, options) {
     if (isDevelopment) {
       console.log(chalk.blue(`📊 Found ${documents.length} documents to process`));
     }
-
-    const rag = new MongoRAG(ragConfig);
-    await rag.connect();
 
     const result = await rag.ingestBatch(documents, {
       database: options.database || config.database,
