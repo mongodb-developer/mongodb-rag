@@ -21,8 +21,8 @@ export async function createEnvFile() {
       `EMBEDDING_API_KEY="${config.apiKey}"`,
       `EMBEDDING_MODEL="${config.embedding?.model || config.model}"`,
       `VECTOR_INDEX="${config.indexName}"`,
-      `MONGODB_DATABASE_NAME="${config.database}"`,
-      `MONGODB_COLLECTION_NAME="${config.collection}"`,
+      `MONGODB_DATABASE="${config.database}"`,
+      `MONGODB_COLLECTION="${config.collection}"`,
     ].join('\n');
 
     // Write to .env file

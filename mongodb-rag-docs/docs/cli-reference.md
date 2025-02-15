@@ -124,7 +124,7 @@ Creates a `.env` file from your `.mongodb-rag.json` configuration. This command 
 - EMBEDDING_API_KEY
 - EMBEDDING_MODEL
 - VECTOR_INDEX
-- MONGODB_DATABASE_NAME
-- MONGODB_COLLECTION_NAME
+- MONGODB_DATABASE
+- MONGODB_COLLECTION
 
 For more details, refer to the MongoDB-RAG API Reference.
