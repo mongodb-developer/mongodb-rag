@@ -28,8 +28,11 @@ import {
 import { createRagApp } from './commands/init/createRagApp.js';
 import { isConfigValid } from './utils/validation.js';
 import { wrapCommand } from './utils/error-handling.js';
+import { readFileSync } from 'fs';
+import { dirname, resolve } from 'path';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const packageJson = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'));
 
 // Configuration setup
 const CONFIG_PATH = process.env.CONFIG_PATH || (
@@ -64,7 +67,7 @@ try {
 program
   .name('mongodb-rag')
   .description('MongoDB RAG CLI for managing vector search and RAG operations')
-  .version(process.env.npm_package_version || '0.0.0');
+  .version(packageJson.version);
 
 // Create RAG App
 program
