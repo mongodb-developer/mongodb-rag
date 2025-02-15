@@ -4,95 +4,87 @@ import debug from 'debug';
 
 const log = debug('mongodb-rag:ollama');
 
-/**
- * Ollama Embedding Provider implementation
- * Generates embeddings using a local Ollama instance
- */
 class OllamaEmbeddingProvider {
-  /**
-   * Creates a new Ollama embedding provider instance
-   * @param {Object} config - Configuration options
-   * @param {string} config.baseUrl - Base URL of the Ollama instance
-   * @param {string} config.model - Name of the Ollama model to use
-   * @throws {Error} If baseUrl or model is not provided
-   */
-  constructor(config) {
-    this.baseUrl = config.baseUrl || 'http://localhost:11434';
-    this.model = config.model || 'llama2';
-    log(`Initialized Ollama provider with model: ${this.model}`);
-  }
+    constructor(config) {
+        if (!config.baseUrl) {
+            throw new Error('Ollama base URL is required');
+        }
+        if (!config.model) {
+            throw new Error('Ollama model name is required');
+        }
 
-  /**
-   * Retrieves an embedding for a single text using Ollama API
-   * @param {string} text - The text to embed
-   * @returns {Promise<number[]>} The embedding vector
-   * @throws {Error} If the API request fails
-   */
-  async getEmbedding(text) {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: this.model,
-          prompt: text
-        })
-      });
+        this.baseUrl = config.baseUrl;
+        this.model = config.model;
+        this.dimensions = config.dimensions || 1536;
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Ollama API error: ${error}`);
-      }
-
-      const data = await response.json();
-      return data.embedding;
-    } catch (error) {
-      log('Error getting embedding from Ollama:', error);
-      throw error;
+        log(`Initialized Ollama provider with model: ${this.model}`);
     }
-  }
 
-  /**
-   * Retrieves embeddings for a batch of texts using Ollama API
-   * @param {string[]} texts - Array of texts to embed
-   * @returns {Promise<number[][]>} Array of embedding vectors
-   * @throws {Error} If the API request fails
-   */
-  async getEmbeddings(texts) {
-    return Promise.all(texts.map(text => this.getEmbedding(text)));
-  }
+    async getEmbedding(text) {
+        if (!text || typeof text !== 'string') {
+            throw new Error('Input text must be a non-empty string');
+        }
 
-  /**
-   * Retrieves list of available models from Ollama instance
-   * @returns {Promise<Array<Object>>} Array of available models
-   * @throws {Error} If unable to fetch model list
-   */
-  async listModels() {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/tags`);
-      if (!response.ok) {
-        throw new Error(`Failed to list models: ${response.statusText}`);
-      }
-      const data = await response.json();
-      return data.models;
-    } catch (error) {
-      throw new Error(`Failed to list Ollama models: ${error.message}`);
+        try {
+            const response = await fetch(`${this.baseUrl}/api/embeddings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: this.model,
+                    prompt: text
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(`Ollama API error: ${error}`);
+            }
+
+            const data = await response.json();
+            
+            if (!data.embedding || !Array.isArray(data.embedding)) {
+                throw new Error('Invalid response from Ollama API');
+            }
+
+            return data.embedding;
+        } catch (error) {
+            log('Error getting embedding from Ollama:', error);
+            throw error;
+        }
     }
-  }
 
-  /**
-   * Verifies if the configured model is available in the Ollama instance
-   * @returns {Promise<boolean>} True if model is available, false otherwise
-   * @throws {Error} If unable to verify model availability
-   */
-  async verifyModel() {
-    try {
-      const models = await this.listModels();
-      return models.some(model => model.name === this.model);
-    } catch (error) {
-      throw new Error(`Failed to verify model ${this.model}: ${error.message}`);
+    async getEmbeddings(texts) {
+        if (!Array.isArray(texts) || texts.length === 0) {
+            return [];
+        }
+
+        // Validate all inputs are strings
+        if (!texts.every(text => typeof text === 'string' && text.length > 0)) {
+            throw new Error('All inputs must be non-empty strings');
+        }
+
+        // Ollama doesn't support batch processing, so we need to process sequentially
+        try {
+            const embeddings = await Promise.all(texts.map(text => this.getEmbedding(text)));
+            return embeddings;
+        } catch (error) {
+            log('Error getting embeddings from Ollama:', error);
+            throw error;
+        }
     }
-  }
+
+    async verifyModel() {
+        try {
+            const response = await fetch(`${this.baseUrl}/api/tags`);
+            if (!response.ok) {
+                throw new Error(`Failed to list models: ${response.statusText}`);
+            }
+            const data = await response.json();
+            return data.models?.some(model => model.name === this.model) || false;
+        } catch (error) {
+            throw new Error(`Failed to verify model ${this.model}: ${error.message}`);
+        }
+    }
 }
 
 export default OllamaEmbeddingProvider;

@@ -14,10 +14,12 @@ const log = debug('mongodb-rag:core');
  */
 class MongoRAG {
     constructor(config) {
+        // Validate required embedding configuration
         if (!config.embedding?.apiKey && config.embedding?.provider !== 'ollama') {
             throw new Error('Embedding API key is required unless using Ollama.');
         }
 
+        // Set up the configuration with proper structure
         this.config = {
             mongoUrl: config.mongoUrl,
             defaultDatabase: config.database,
@@ -25,12 +27,12 @@ class MongoRAG {
             indexName: config.indexName || "vector_index",
             embeddingFieldPath: config.embeddingFieldPath || "embedding",
             embedding: {
-                provider: config.embedding?.provider || 'openai',
-                apiKey: config.embedding?.apiKey,
-                model: config.embedding?.model || 'text-embedding-3-small',
-                baseUrl: config.embedding?.baseUrl || 'http://localhost:11434', // Default Ollama base URL
-                batchSize: config.embedding?.batchSize || 100,
-                dimensions: config.embedding?.dimensions || 1536
+                provider: config.embedding.provider,
+                apiKey: config.embedding.apiKey,
+                model: config.embedding.model || 'text-embedding-3-small',
+                baseUrl: config.embedding.baseUrl || 'http://localhost:11434',
+                batchSize: config.embedding.batchSize || 100,
+                dimensions: config.embedding.dimensions || 1536
             },
             search: {
                 similarityMetric: config.search?.similarityMetric || 'cosine',
@@ -44,20 +46,24 @@ class MongoRAG {
         this.provider = this._createEmbeddingProvider(this.config.embedding);
     }
 
+
     _createEmbeddingProvider(config) {
         const { provider, apiKey, baseUrl, ...options } = config;
         log(`Creating embedding provider: ${provider}`);
 
         switch (provider) {
             case 'openai':
-                return new OpenAIEmbeddingProvider({ apiKey, ...options });
+                return new OpenAIEmbeddingProvider({ 
+                    apiKey,
+                    model: options.model,
+                    dimensions: options.dimensions
+                });
             case 'ollama':
                 if (!baseUrl) {
-                    throw new Error("Ollama base URL is missing from the config. Run 'npx mongodb-rag edit-config' to set it.");
+                    throw new Error("Ollama base URL is missing from the config");
                 }
                 return new OllamaEmbeddingProvider({
-                    provider: 'ollama',
-                    baseUrl, 
+                    baseUrl,
                     model: options.model
                 });
             default:

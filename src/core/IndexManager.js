@@ -1,19 +1,20 @@
+// src/core/IndexManager.js
 import debug from 'debug';
 
 const log = debug('mongodb-rag:index');
 
 class IndexManager {
-    constructor(collection, options = {}) {
+    constructor(collection, config = {}) {
         this.collection = collection;
         this.options = {
-            indexName: options.indexName || 'vector_index',
-            dimensions: options.dimensions || 1536,
-            similarity: options.similarity || 'cosine',
-            ...options
+            indexName: config.indexName || 'vector_index',
+            dimensions: config.embedding?.dimensions || 1536,
+            similarity: config.search?.similarity || 'cosine',
+            embeddingPath: config.embeddingFieldPath || 'embedding',
+            ...config
         };
     }
 
-    // ✅ Fix: Remove `function` keyword from method definition
     async ensureIndexes() {
         try {
             console.log('Checking existing indexes...');
@@ -31,7 +32,7 @@ class IndexManager {
                         fields: [
                             {
                                 type: 'vector',
-                                path: 'embedding',
+                                path: this.options.embeddingPath,
                                 numDimensions: this.options.dimensions,
                                 similarity: this.options.similarity,
                                 quantization: 'none'
@@ -75,10 +76,10 @@ class IndexManager {
 
     buildSearchQuery(embedding, filter = {}, options = {}) {
         const vectorSearchQuery = {
-            index: this.options.indexName, // ✅ Fix: Correct property reference
-            path: "embedding", // ✅ Fix: Use correct path
+            index: this.options.indexName,
+            path: this.options.embeddingPath,
             queryVector: embedding,
-            limit: options.maxResults || 10,
+            limit: options.maxResults || this.options.search?.maxResults || 10,
             exact: options.exact || false
         };
 
@@ -93,7 +94,7 @@ class IndexManager {
                     documentId: 1,
                     content: 1,
                     metadata: 1,
-                    score: { $meta: "vectorSearchScore" }  // Ensure score is always included
+                    score: { $meta: "vectorSearchScore" }
                 }
             }
         ];
@@ -102,11 +103,10 @@ class IndexManager {
             pipeline[0].$vectorSearch.filter = filter;
         }
 
-        // console.log('Generated search query:', JSON.stringify(pipeline, null, 2));
+        log('Generated search pipeline:', JSON.stringify(pipeline, null, 2));
         return pipeline;
     }
 
-    // ✅ Fix: Remove `function` keyword
     async getIndexStats() {
         try {
             const stats = await this.collection.stats();

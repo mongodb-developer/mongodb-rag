@@ -15,6 +15,11 @@ export async function ingestData(config, options) {
 
   const isDevelopment = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
 
+  // Validate MongoDB URI
+  if (!config.mongoUrl || typeof config.mongoUrl !== 'string') {
+    throw new Error('Invalid MongoDB URI: URI must be a non-empty string');
+  }
+
   // Test MongoDB connection before proceeding
   try {
     if (isDevelopment) {
@@ -30,28 +35,12 @@ export async function ingestData(config, options) {
     throw new Error(`MongoDB connection test failed: ${error.message}`);
   }
 
-  // Create the RAG configuration using the exact structure expected by MongoRAG
-  const ragConfig = {
-    mongoUrl: config.mongoUrl,
-    database: config.database,
-    collection: config.collection,
-    embedding: {
-      provider: config.embedding.provider,
-      apiKey: config.apiKey,
-      model: config.embedding.model,
-      dimensions: config.embedding.dimensions,
-      baseUrl: config.embedding.baseUrl,
-      batchSize: config.embedding.batchSize
-    },
-    indexName: config.indexName
-  };
-
   try {
     if (isDevelopment) {
       console.log('Creating MongoRAG instance...');
     }
     
-    const rag = new MongoRAG(ragConfig);
+    const rag = new MongoRAG(config);
     
     if (isDevelopment) {
       console.log('Connecting to MongoDB...');

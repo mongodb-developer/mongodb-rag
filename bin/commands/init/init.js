@@ -10,18 +10,21 @@ export async function init(configPath) {
   // Get MongoDB configuration
   const mongoConfig = await promptForMongoConfig();
 
-  // Get provider configuration
+  // Get provider configuration - this now returns the complete embedding config
   const embeddingConfig = await promptForProviderConfig();
 
-  // Build configuration object
+  // Build configuration object in the correct format
   const config = {
-    ...mongoConfig,
+    mongoUrl: mongoConfig.mongoUrl,
+    database: mongoConfig.database,
+    collection: mongoConfig.collection,
     embedding: {
       provider: embeddingConfig.provider,
+      apiKey: embeddingConfig.apiKey,
       model: embeddingConfig.model,
       dimensions: embeddingConfig.dimensions,
-      baseUrl: embeddingConfig.baseUrl,
-      batchSize: 100
+      batchSize: 100,
+      ...(embeddingConfig.baseUrl && { baseUrl: embeddingConfig.baseUrl })
     },
     search: {
       maxResults: 5,
