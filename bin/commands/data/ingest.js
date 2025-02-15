@@ -12,6 +12,28 @@ export async function ingestData(config, options) {
     throw new Error("Configuration missing. Run 'npx mongodb-rag init' first.");
   }
 
+  // Restructure the config to match expected format
+  const ragConfig = {
+    mongodb: {
+      uri: config.mongoUrl,
+      database: config.database,
+      collection: config.collection
+    },
+    embedding: {
+      provider: config.embedding?.provider || config.provider,
+      apiKey: config.apiKey,
+      model: config.embedding?.model || config.model,
+      dimensions: config.embedding?.dimensions || config.dimensions,
+      baseUrl: config.embedding?.baseUrl || config.baseUrl,
+      batchSize: config.embedding?.batchSize || 100
+    },
+    search: {
+      maxResults: config.search?.maxResults || 5,
+      minScore: config.search?.minScore || 0.7
+    },
+    indexName: config.indexName
+  };
+
   // Set environment variables from config if they're not already set
   if (!process.env.EMBEDDING_API_KEY && config.apiKey) {
     process.env.EMBEDDING_API_KEY = config.apiKey;
@@ -69,12 +91,12 @@ export async function ingestData(config, options) {
       console.log(chalk.blue(`📊 Found ${documents.length} documents to process`));
     }
 
-    const rag = new MongoRAG(config);
+    const rag = new MongoRAG(ragConfig);
     await rag.connect();
 
     const result = await rag.ingestBatch(documents, {
-      database: options.database,
-      collection: options.collection
+      database: options.database || config.database,
+      collection: options.collection || config.collection
     });
 
     console.log(chalk.green(`✅ Successfully ingested ${result.processed} documents!`));
