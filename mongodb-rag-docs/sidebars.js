@@ -13,6 +13,7 @@ module.exports = {
             'examples/advanced-example',
           ],
         },
+        'create-rag-app',
         'api-reference',
       ],
   };
