@@ -1,6 +1,42 @@
 // bin/utils/formatting.js
 import chalk from 'chalk';
 
+/**
+ * Format a success message with a green checkmark
+ * @param {string} message - The message to format
+ * @returns {string} The formatted message
+ */
+export const formatSuccess = (message) => {
+  return `${chalk.green('✅')} ${message}`;
+};
+
+/**
+ * Format an error message with a red X
+ * @param {string} message - The message to format
+ * @returns {string} The formatted message
+ */
+export const formatError = (message) => {
+  return `${chalk.red('❌')} ${message}`;
+};
+
+/**
+ * Format a warning message with a yellow warning symbol
+ * @param {string} message - The message to format
+ * @returns {string} The formatted message
+ */
+export const formatWarning = (message) => {
+  return `${chalk.yellow('⚠️')} ${message}`;
+};
+
+/**
+ * Format an info message with a blue info symbol
+ * @param {string} message - The message to format
+ * @returns {string} The formatted message
+ */
+export const formatInfo = (message) => {
+  return `${chalk.blue('ℹ️')} ${message}`;
+};
+
 export function formatSearchResults(results) {
   if (results.length === 0) {
     console.log(chalk.yellow("⚠️ No results found."));
