@@ -35,19 +35,42 @@ export async function createIndex(config) {
 
     console.log(chalk.blue(`📌 Creating Vector Search Index: ${config.indexName}...`));
 
+    import chalk from 'chalk';
+import { getMongoClient } from '../../utils/mongodb.js';
+import { isConfigValid } from '../../utils/validation.js';
+
+export async function createIndex(config) {
+  console.log(chalk.blue(`🔍 Debug: Checking config...`), config);
+
+  try {
+    console.log(chalk.blue(`🔍 Debug: Connecting to MongoDB at ${config.mongoUrl}`));
+    const client = await getMongoClient(config.mongoUrl);
+    console.log(chalk.green(`✅ Debug: client obtained: Yes`));
+
+    const db = client.db(config.database);
+    const collection = db.collection(config.collection);
+
+    console.log(chalk.blue(`📂 Database: ${config.database}`));
+    console.log(chalk.blue(`📑 Collection: ${config.collection}`));
+
+    if (!config || !config.embedding || !config.embedding.dimensions) {
+      console.error(chalk.red("❌ MongoDB Error: Missing embedding dimensions in config."));
+      throw new Error("Missing embedding dimensions in config.");
+    }
+
+    console.log(chalk.blue(`📌 Creating Vector Search Index: ${config.indexName}...`));
+
+    // Updated index configuration to match MongoDB Vector Search syntax
     const indexConfig = {
       name: config.indexName || "vector_index",
+      type: "vectorSearch",
       definition: {
-        mappings: {
-          dynamic: false,  // More restrictive than true, better for vector search
-          fields: {
-            [config.embedding.path || "embedding"]: {
-              type: "knnVector",
-              dimensions: config.embedding.dimensions,
-              similarity: config.embedding.similarity || "cosine"
-            }
-          }
-        }
+        fields: [{
+          type: "vector",
+          path: config.embedding.path || "embedding",
+          numDimensions: config.embedding.dimensions,
+          similarity: config.embedding.similarity || "cosine"
+        }]
       }
     };
 
