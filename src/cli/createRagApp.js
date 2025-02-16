@@ -11,6 +11,8 @@ import FunProgressBar from './progressBar.js';
 function generateReadme(projectName) {
   return `# ${projectName}
 
+![MongoDB-RAG](https://img.shields.io/badge/MongoDB--RAG-Enabled-brightgreen?style=flat&logo=https://raw.githubusercontent.com/mongodb-developer/mongodb-rag/main/static/logo-square.png)
+
 This RAG (Retrieval Augmented Generation) application was created with [mongodb-rag](https://npmjs.com/package/mongodb-rag).
 
 ## Getting Started
