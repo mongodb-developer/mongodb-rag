@@ -18,7 +18,7 @@ export async function createEnvFile() {
     const envContent = [
       `MONGODB_URI="${config.mongoUrl}"`,
       `EMBEDDING_PROVIDER="${config.embedding?.provider || config.provider}"`,
-      `EMBEDDING_API_KEY="${config.apiKey}"`,
+      `EMBEDDING_API_KEY="${config.embedding?.apiKey}"`,
       `EMBEDDING_MODEL="${config.embedding?.model || config.model}"`,
       `VECTOR_INDEX="${config.indexName}"`,
       `MONGODB_DATABASE="${config.database}"`,
