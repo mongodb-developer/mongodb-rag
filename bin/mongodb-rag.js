@@ -10,6 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
+import { startPlayground } from '../src/cli/playground.js';
 import {
   createIndex,
   showIndexes,
@@ -201,6 +202,14 @@ program.on('command:*', () => {
   console.log('\nRun', chalk.cyan('npx mongodb-rag --help'), 'for usage information.');
   process.exit(1);
 });
+
+program
+  .command('playground')
+  .description('Launch the MongoDB-RAG playground')
+  .action(() => {
+    console.log("Starting MongoDB-RAG Playground...");
+    startPlayground();
+  });
 
 // Parse command line arguments
 program.parse();

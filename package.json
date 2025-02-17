@@ -8,6 +8,9 @@
   },
   "description": "RAG (Retrieval Augmented Generation) library for MongoDB Vector Search",
   "type": "module",
+  "jest": {
+    "transform": {}
+  },
   "main": "src/index.js",
   "bin": {
     "mongodb-rag": "./bin/mongodb-rag.js"
@@ -21,10 +24,9 @@
     "static"
   ],
   "scripts": {
-    "test": "NODE_ENV=test node --experimental-vm-modules node_modules/.bin/jest --runInBand --verbose",
-    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/.bin/jest --coverage",
-    "lint": "eslint src",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "format": "prettier --write \"src/**/*.js\"",
     "prepare": "husky install"
   },
@@ -44,19 +46,22 @@
     "chalk": "^5.4.1",
     "columnify": "^1.6.0",
     "commander": "^10.0.0",
+    "cors": "^2.8.5",
     "debug": "^4.3.4",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.4.7",
     "enquirer": "^2.4.1",
     "execa": "^9.5.2",
+    "express": "^4.21.2",
     "js-yaml": "^4.1.0",
     "marked": "^15.0.7",
     "mongodb": "^6.13.0",
+    "multer": "^1.4.5-lts.1",
     "natural": "^8.0.1",
-    "pdf-lib": "^1.17.1"
+    "open": "^10.1.0",
+    "pdf-lib": "^1.17.1",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.26.8",
-    "@jest/globals": "^29.7.0",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^8.0.3",

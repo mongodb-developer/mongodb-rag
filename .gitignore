@@ -11,6 +11,7 @@ package-lock.json
 .mongodb-rag.json.bak
 .mongodb-rag.json
 .DS_Store
+build-scripts/
 # Logs
 logs/
 *.log
