@@ -77,8 +77,6 @@ You can customize the application by:
 - Adding authentication and authorization
 - Implementing domain-specific features
 
-![RAG App Architecture](/img/rag-app-architecture.png)
-
 ## Next Steps
 
 1. Deploy your application
@@ -86,5 +84,3 @@ You can customize the application by:
 3. Customize the UI to match your brand
 4. Implement user authentication
 5. Add features specific to your use case
-
-For more detailed information about MongoDB RAG, visit the [main documentation](./README.md).

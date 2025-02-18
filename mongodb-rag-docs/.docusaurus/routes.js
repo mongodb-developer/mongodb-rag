@@ -3,38 +3,38 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
-    path: '/mongodb-rag/__docusaurus/debug',
-    component: ComponentCreator('/mongodb-rag/__docusaurus/debug', 'a84'),
+    path: '/mongodb-rag/blog',
+    component: ComponentCreator('/mongodb-rag/blog', '12b'),
     exact: true
   },
   {
-    path: '/mongodb-rag/__docusaurus/debug/config',
-    component: ComponentCreator('/mongodb-rag/__docusaurus/debug/config', '9c2'),
+    path: '/mongodb-rag/blog/2025/02/01/simplifying',
+    component: ComponentCreator('/mongodb-rag/blog/2025/02/01/simplifying', '0bb'),
     exact: true
   },
   {
-    path: '/mongodb-rag/__docusaurus/debug/content',
-    component: ComponentCreator('/mongodb-rag/__docusaurus/debug/content', '6c6'),
+    path: '/mongodb-rag/blog/archive',
+    component: ComponentCreator('/mongodb-rag/blog/archive', 'ff7'),
     exact: true
   },
   {
-    path: '/mongodb-rag/__docusaurus/debug/globalData',
-    component: ComponentCreator('/mongodb-rag/__docusaurus/debug/globalData', 'b22'),
+    path: '/mongodb-rag/blog/tags',
+    component: ComponentCreator('/mongodb-rag/blog/tags', 'e3a'),
     exact: true
   },
   {
-    path: '/mongodb-rag/__docusaurus/debug/metadata',
-    component: ComponentCreator('/mongodb-rag/__docusaurus/debug/metadata', '8db'),
+    path: '/mongodb-rag/blog/tags/blog',
+    component: ComponentCreator('/mongodb-rag/blog/tags/blog', '723'),
     exact: true
   },
   {
-    path: '/mongodb-rag/__docusaurus/debug/registry',
-    component: ComponentCreator('/mongodb-rag/__docusaurus/debug/registry', '534'),
+    path: '/mongodb-rag/blog/tags/docusaurus',
+    component: ComponentCreator('/mongodb-rag/blog/tags/docusaurus', '595'),
     exact: true
   },
   {
-    path: '/mongodb-rag/__docusaurus/debug/routes',
-    component: ComponentCreator('/mongodb-rag/__docusaurus/debug/routes', 'ca6'),
+    path: '/mongodb-rag/blog/tags/mongodb',
+    component: ComponentCreator('/mongodb-rag/blog/tags/mongodb', 'c08'),
     exact: true
   },
   {
@@ -44,15 +44,15 @@ export default [
   },
   {
     path: '/mongodb-rag/docs',
-    component: ComponentCreator('/mongodb-rag/docs', 'edf'),
+    component: ComponentCreator('/mongodb-rag/docs', '357'),
     routes: [
       {
         path: '/mongodb-rag/docs',
-        component: ComponentCreator('/mongodb-rag/docs', '4da'),
+        component: ComponentCreator('/mongodb-rag/docs', 'b8e'),
         routes: [
           {
             path: '/mongodb-rag/docs',
-            component: ComponentCreator('/mongodb-rag/docs', '569'),
+            component: ComponentCreator('/mongodb-rag/docs', '706'),
             routes: [
               {
                 path: '/mongodb-rag/docs/api-reference',
@@ -63,6 +63,12 @@ export default [
               {
                 path: '/mongodb-rag/docs/cli-reference',
                 component: ComponentCreator('/mongodb-rag/docs/cli-reference', '234'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/create-rag-app',
+                component: ComponentCreator('/mongodb-rag/docs/create-rag-app', 'c20'),
                 exact: true,
                 sidebar: "docs"
               },

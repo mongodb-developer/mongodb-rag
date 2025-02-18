@@ -21,6 +21,11 @@
               "sidebar": "docs"
             },
             {
+              "id": "create-rag-app",
+              "path": "/mongodb-rag/docs/create-rag-app",
+              "sidebar": "docs"
+            },
+            {
               "id": "examples/advanced-example",
               "path": "/mongodb-rag/docs/examples/advanced-example",
               "sidebar": "docs"

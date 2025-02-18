@@ -19,7 +19,7 @@
   },
   "sidebar": "docs",
   "previous": {
-    "title": "Advanced Example",
-    "permalink": "/mongodb-rag/docs/examples/advanced-example"
+    "title": "Create RAG App",
+    "permalink": "/mongodb-rag/docs/create-rag-app"
   }
 }

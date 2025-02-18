@@ -48,3 +48,47 @@
     font-size: 20px;
   }
   
+  /* Change blog link colors to match the main docs site */
+  .blog a,
+  .blog a:visited {
+    color: #2e8555; /* Replace with the specific green color code used in your main docs */
+  }
+  
+  .blog a:hover {
+    color: #29784c; /* Optional: a slightly darker green for hover state */
+  }
+
+  .blog-title {
+    color: #2e8555;  /* MongoDB Spring Green */
+    font-size: 1.8rem;
+    font-weight: bold;
+
+  }
+  
+  /* Change blog post links */
+.blog-post-item a {
+  color: #2e8555; /* green */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.blog-post-item a:hover {
+  text-decoration: underline;
+  color: #1e603b; /* Darker green */
+}
+
+/* Adjust font color for the blog content */
+.blog-content {
+  color: #333; /* Darker text for better readability */
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Change sidebar link colors */
+.menu__link {
+  color: #2e8555 !important;
+}
+
+.menu__link:hover {
+  color: #1e603b !important;
+}

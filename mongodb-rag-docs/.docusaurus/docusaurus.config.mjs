@@ -21,6 +21,12 @@ export default {
         },
         "theme": {
           "customCss": "/Users/michael.lynn/code/mongodb-rag/mongodb-rag-docs/src/css/custom.css"
+        },
+        "blog": {
+          "showReadingTime": true,
+          "editUrl": "https://github.com/mongodb-developer/mongodb-rag/tree/main/mongodb-rag-docs/blog/",
+          "path": "./blog",
+          "routeBasePath": "/blog"
         }
       }
     ]
@@ -34,6 +40,11 @@ export default {
           "sidebarId": "docs",
           "position": "left",
           "label": "Docs"
+        },
+        {
+          "to": "/blog",
+          "label": "Blog",
+          "position": "left"
         },
         {
           "href": "https://github.com/mongodb-developer/mongodb-rag",

@@ -25,7 +25,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 export async function startPlayground() {
   const app = express();
-  const PORT = 4000;
+  const PORT = process.env.BACKEND_PORT || 4000;
   const server = createServer(app);
   const io = new Server(server, { cors: { origin: '*' } });
 

@@ -10,6 +10,8 @@ import { DataGrid } from '@mui/x-data-grid';
 
 const socket = io('http://localhost:4000');
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000';
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -89,7 +91,7 @@ function App() {
 
     const loadConfig = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/config');
+        const response = await fetch(`${BACKEND_URL}/api/config`);
         const data = await response.json();
         
         const completeConfig = {
@@ -126,7 +128,7 @@ function App() {
   }, []);
 
   const reloadConfig = async () => {
-    const response = await fetch('http://localhost:4000/api/config');
+    const response = await fetch(`${BACKEND_URL}/api/config`);
     const data = await response.json();
     setConfig(data);
     setFormConfig(data);
@@ -147,7 +149,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:4000/api/ingest', {
+      const response = await fetch(`${BACKEND_URL}/api/ingest`, {
         method: 'POST',
         body: formData,
       });
@@ -167,7 +169,7 @@ function App() {
     
     setSearching(true);
     try {
-      const response = await fetch('http://localhost:4000/api/search', {
+      const response = await fetch(`${BACKEND_URL}/api/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query })
@@ -192,7 +194,7 @@ function App() {
 
   const handleConfigSubmit = async () => {
     try {
-      await fetch('http://localhost:4000/api/save-config', {
+      await fetch(`${BACKEND_URL}/api/save-config`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formConfig)
@@ -211,7 +213,7 @@ function App() {
 
   const handleDownload = async (type) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/download/${type}`);
+      const response = await fetch(`${BACKEND_URL}/api/download/${type}`);
       if (!response.ok) {
         throw new Error(`Failed to download ${type} file`);
       }
@@ -281,7 +283,7 @@ function App() {
   const loadDocuments = async () => {
     setLoadingDocuments(true);
     try {
-      const response = await fetch('http://localhost:4000/api/documents');
+      const response = await fetch(`${BACKEND_URL}/api/documents`);
       const data = await response.json();
       if (data.documents) {
         setDocuments(data.documents);
@@ -297,7 +299,7 @@ function App() {
   const loadIndexes = async () => {
     setLoadingIndexes(true);
     try {
-      const response = await fetch('http://localhost:4000/api/indexes');
+      const response = await fetch(`${BACKEND_URL}/api/indexes`);
       const data = await response.json();
       setIndexes(data);
     } catch (error) {
@@ -310,7 +312,7 @@ function App() {
 
   const handleCreateIndex = async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/indexes/create', {
+      const response = await fetch(`${BACKEND_URL}/api/indexes/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newIndexConfig)

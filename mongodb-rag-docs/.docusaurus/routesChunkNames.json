@@ -1,100 +1,139 @@
 {
-  "/mongodb-rag/__docusaurus/debug-a84": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
+  "/mongodb-rag/blog-12b": {
+    "__comp": "a6aa9e1f",
     "__context": {
-      "plugin": "plugin---mongodb-rag-docusaurus-debugb-38-bd3"
-    }
-  },
-  "/mongodb-rag/__docusaurus/debug/config-9c2": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
-    "__context": {
-      "plugin": "plugin---mongodb-rag-docusaurus-debugb-38-bd3"
-    }
-  },
-  "/mongodb-rag/__docusaurus/debug/content-6c6": {
-    "__comp": "__comp---theme-debug-contentba-8-ce7",
-    "__context": {
-      "plugin": "plugin---mongodb-rag-docusaurus-debugb-38-bd3"
+      "plugin": "36994c47"
     },
-    "__props": "__props---mongodb-rag-docusaurus-debug-content-4-be-21f"
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "c838fc4d"
+      }
+    ],
+    "__props": "b18e0588"
   },
-  "/mongodb-rag/__docusaurus/debug/globalData-b22": {
-    "__comp": "__comp---theme-debug-global-dataede-0fa",
+  "/mongodb-rag/blog/2025/02/01/simplifying-0bb": {
+    "__comp": "ccc49370",
     "__context": {
-      "plugin": "plugin---mongodb-rag-docusaurus-debugb-38-bd3"
-    }
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "5dcd886a"
   },
-  "/mongodb-rag/__docusaurus/debug/metadata-8db": {
-    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
+  "/mongodb-rag/blog/archive-ff7": {
+    "__comp": "9e4087bc",
     "__context": {
-      "plugin": "plugin---mongodb-rag-docusaurus-debugb-38-bd3"
-    }
+      "plugin": "36994c47"
+    },
+    "__props": "9ee7bc1e"
   },
-  "/mongodb-rag/__docusaurus/debug/registry-534": {
-    "__comp": "__comp---theme-debug-registry-679-501",
+  "/mongodb-rag/blog/tags-e3a": {
+    "__comp": "01a85c17",
     "__context": {
-      "plugin": "plugin---mongodb-rag-docusaurus-debugb-38-bd3"
-    }
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "__props": "8b1cd5a3"
   },
-  "/mongodb-rag/__docusaurus/debug/routes-ca6": {
-    "__comp": "__comp---theme-debug-routes-946-699",
+  "/mongodb-rag/blog/tags/blog-723": {
+    "__comp": "6875c492",
     "__context": {
-      "plugin": "plugin---mongodb-rag-docusaurus-debugb-38-bd3"
-    }
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "c838fc4d"
+      }
+    ],
+    "__props": "e666f00a"
+  },
+  "/mongodb-rag/blog/tags/docusaurus-595": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "c838fc4d"
+      }
+    ],
+    "__props": "bd95f5f6"
+  },
+  "/mongodb-rag/blog/tags/mongodb-c08": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "c838fc4d"
+      }
+    ],
+    "__props": "22534bc1"
   },
   "/mongodb-rag/helloWorld-700": {
-    "__comp": "__comp---site-src-pages-hello-world-js-72-d-375",
+    "__comp": "72d756b8",
     "__context": {
-      "plugin": "plugin---mongodb-rag-hello-worlda-74-3f1"
+      "plugin": "a7456010"
     },
-    "config": "config---mongodb-rag-hello-world-5-e-9-94c"
+    "config": "5e9f5e1a"
   },
-  "/mongodb-rag/docs-edf": {
-    "__comp": "__comp---theme-docs-root-5-e-9-0b6",
+  "/mongodb-rag/docs-357": {
+    "__comp": "5e95c892",
     "__context": {
-      "plugin": "plugin---mongodb-rag-docsaba-a42"
+      "plugin": "aba21aa0"
     }
   },
-  "/mongodb-rag/docs-4da": {
-    "__comp": "__comp---theme-doc-version-roota-7-b-5de",
-    "__props": "__props---mongodb-rag-docs-153-df7"
+  "/mongodb-rag/docs-b8e": {
+    "__comp": "a7bd4aaa",
+    "__props": "15313aa8"
   },
-  "/mongodb-rag/docs-569": {
-    "__comp": "__comp---theme-doc-roota-94-67a"
+  "/mongodb-rag/docs-706": {
+    "__comp": "a94703ab"
   },
   "/mongodb-rag/docs/api-reference-d42": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---mongodb-rag-docs-api-reference-964-8d1"
+    "__comp": "17896441",
+    "content": "964ae018"
   },
   "/mongodb-rag/docs/cli-reference-234": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---mongodb-rag-docs-cli-referenceeab-753"
+    "__comp": "17896441",
+    "content": "eab70eca"
+  },
+  "/mongodb-rag/docs/create-rag-app-c20": {
+    "__comp": "17896441",
+    "content": "cdeecf8a"
   },
   "/mongodb-rag/docs/examples/advanced-example-3c6": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---mongodb-rag-docs-examples-advanced-example-16-f-352"
+    "__comp": "17896441",
+    "content": "16f9b06f"
   },
   "/mongodb-rag/docs/examples/basic-example-806": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---mongodb-rag-docs-examples-basic-exampleb-4-a-14f"
+    "__comp": "17896441",
+    "content": "b4a7054a"
   },
   "/mongodb-rag/docs/installation-159": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---mongodb-rag-docs-installation-3-b-8-ec8"
+    "__comp": "17896441",
+    "content": "3b8c55ea"
   },
   "/mongodb-rag/docs/intro-8ba": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---mongodb-rag-docs-intro-0-e-3-895"
+    "__comp": "17896441",
+    "content": "0e384e19"
   },
   "/mongodb-rag/docs/usage-941": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---mongodb-rag-docs-usage-647-6a0"
+    "__comp": "17896441",
+    "content": "6476eba6"
   },
   "/mongodb-rag/-2ae": {
-    "__comp": "__comp---site-src-pages-index-jsc-4-f-f99",
+    "__comp": "c4f5d8e4",
     "__context": {
-      "plugin": "plugin---mongodb-rag-hello-worlda-74-3f1"
+      "plugin": "a7456010"
     },
-    "config": "config---mongodb-rag-hello-world-5-e-9-94c"
+    "config": "5e9f5e1a"
   }
 }

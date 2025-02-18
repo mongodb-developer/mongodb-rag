@@ -23,7 +23,7 @@
     "permalink": "/mongodb-rag/docs/examples/basic-example"
   },
   "next": {
-    "title": "API Reference",
-    "permalink": "/mongodb-rag/docs/api-reference"
+    "title": "Create RAG App",
+    "permalink": "/mongodb-rag/docs/create-rag-app"
   }
 }
