@@ -1,6 +1,6 @@
 {
   "name": "mongodb-rag",
-  "version": "0.70.5-alpha.2",
+  "version": "0.70.5-alpha.3",
   "author": "Michael Lynn <merlynn@gmail.com>",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
   "bin": {
     "mongodb-rag": "./bin/mongodb-rag.js"
   },
- "files": [
+  "files": [
     "src",
     "README.md",
     "bin/mongodb-rag.js",
