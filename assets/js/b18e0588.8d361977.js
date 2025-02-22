@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmongodb_rag_docs=self.webpackChunkmongodb_rag_docs||[]).push([[1156],{5380:function(o){o.exports=JSON.parse('{"metadata":{"permalink":"/mongodb-rag/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":2,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
