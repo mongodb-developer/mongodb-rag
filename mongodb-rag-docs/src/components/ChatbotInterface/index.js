@@ -201,7 +201,7 @@ export default function ChatbotInterface() {
               className={`message ${message.role}`}
             >
               <div className="message-avatar">
-                {message.role === 'assistant' ? '🤖' : '👤'}
+                {message.role === 'assistant' ? ' 🦉' : '👤'}
               </div>
               <div className="message-content">
                 {message.role === 'assistant' ? (
