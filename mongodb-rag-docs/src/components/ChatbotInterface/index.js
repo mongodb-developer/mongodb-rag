@@ -21,20 +21,21 @@ const SampleQuestions = () => {
   
   // Function to handle clicking a question
   const handleQuestionClick = (question) => {
-    const inputField = document.querySelector('.chat-input');
-    if (inputField) {
-      // Set the value directly
-      inputField.value = question;
-      
-      // Dispatch an input event to trigger React's state update
-      const event = new Event('input', { bubbles: true });
-      inputField.dispatchEvent(event);
-      
-      // Focus the input
-      inputField.focus();
+    // Get access to the parent component's setInput function
+    const setInputFunction = window.chatbotSetInput;
+    
+    if (typeof setInputFunction === 'function') {
+      // Update React state directly
+      setInputFunction(question);
       
       // Hide suggestions
       setVisible(false);
+      
+      // Focus the input field
+      const inputField = document.querySelector('.chat-input');
+      if (inputField) {
+        inputField.focus();
+      }
     }
   };
   
@@ -90,6 +91,16 @@ export default function ChatbotInterface() {
   const [sessionId, setSessionId] = useState(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  
+  // Make setInput available globally so the SampleQuestions component can access it
+  useEffect(() => {
+    window.chatbotSetInput = setInput;
+    
+    // Clean up when component unmounts
+    return () => {
+      window.chatbotSetInput = undefined;
+    };
+  }, []);
 
   // Auto-scroll to bottom when messages update
   useEffect(() => {
@@ -140,7 +151,7 @@ export default function ChatbotInterface() {
 
     try {
       // Call API with session support
-      const response = await fetch('https://mongodb-rag-docs-backend.vercel.app/', {
+      const response = await fetch('http://localhost:3001/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
