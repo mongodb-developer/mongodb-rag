@@ -46,7 +46,7 @@ const config = {
           },
           {
             to: '/chatbot',
-            label: 'Chatbot',
+            label: '🦉 Owlbert',
             position: 'right',
           },
           {
