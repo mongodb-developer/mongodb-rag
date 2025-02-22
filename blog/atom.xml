@@ -109,15 +109,12 @@
         <category label="tutorial" term="tutorial"/>
     </entry>
     <entry>
-        <title type="html"><![CDATA[**Building an Intelligent Documentation Assistant with MongoDB-RAG**]]></title>
+        <title type="html"><![CDATA[Building an Intelligent Documentation Assistant with MongoDB-RAG]]></title>
         <id>https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot</id>
         <link href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot"/>
         <updated>2025-02-22T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[by Michael Lynn, Developer Advocate @ MongoDB]]></summary>
-        <content type="html"><![CDATA[<h3 class="anchor anchorWithStickyNavbar_LWe7" id="by-michael-lynn-developer-advocate--mongodb"><em>by Michael Lynn, Developer Advocate @ MongoDB</em><a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot#by-michael-lynn-developer-advocate--mongodb" class="hash-link" aria-label="Direct link to by-michael-lynn-developer-advocate--mongodb" title="Direct link to by-michael-lynn-developer-advocate--mongodb">​</a></h3>
-<p>📌 <a href="https://github.com/mrlynn" target="_blank" rel="noopener noreferrer">GitHub</a> | 🛠️ <a href="https://mongodb.github.io/mongo-rag/" target="_blank" rel="noopener noreferrer">MongoDB-RAG Docs</a></p>
-<hr>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-tldr"><strong>📖 TL;DR</strong><a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot#-tldr" class="hash-link" aria-label="Direct link to -tldr" title="Direct link to -tldr">​</a></h2>
+        <summary type="html"><![CDATA[📖 TL;DR]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-tldr"><strong>📖 TL;DR</strong><a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot#-tldr" class="hash-link" aria-label="Direct link to -tldr" title="Direct link to -tldr">​</a></h2>
 <p>Ever wished your documentation could just <em>answer questions</em> directly instead of forcing users to sift through endless pages? That’s exactly what we built with the <strong>MongoDB-RAG Documentation Assistant</strong>. In this article, I’ll walk you through the <strong>why, what, and how</strong> of building a chatbot that retrieves precise, relevant information from MongoDB-RAG’s own documentation.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="-why-build-a-documentation-assistant"><strong>🤔 Why Build a Documentation Assistant?</strong><a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot#-why-build-a-documentation-assistant" class="hash-link" aria-label="Direct link to -why-build-a-documentation-assistant" title="Direct link to -why-build-a-documentation-assistant">​</a></h3>
 <p>Traditional documentation search is useful, but it often leaves users with <em>more questions than answers</em>. Developers need to read through entire pages, infer context, and piece together solutions. Instead, we wanted something:</p>
@@ -207,6 +204,16 @@
 <p>📘 <a href="https://mongodb.github.io/mongo-rag/" target="_blank" rel="noopener noreferrer">MongoDB-RAG Docs</a><br>
 <!-- -->🔗 <a href="https://github.com/mongodb-developer/mongodb-rag" target="_blank" rel="noopener noreferrer">GitHub Repository</a><br>
 <!-- -->📦 <a href="https://www.npmjs.com/package/mongodb-rag" target="_blank" rel="noopener noreferrer">NPM Package</a></p>]]></content>
+        <author>
+            <name>Michael Lynn</name>
+            <uri>https://github.com/mrlynn</uri>
+        </author>
+        <category label="mongodb" term="mongodb"/>
+        <category label="vector-search" term="vector-search"/>
+        <category label="rag" term="rag"/>
+        <category label="ai" term="ai"/>
+        <category label="workshop" term="workshop"/>
+        <category label="tutorial" term="tutorial"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Simplifying RAG with MongoDB]]></title>
