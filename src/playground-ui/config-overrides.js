@@ -1,9 +1,8 @@
-const { override } = require("customize-cra");
+const { override, addWebpackAlias } = require('customize-cra');
+const path = require('path');
 
-module.exports = override((config) => {
-  config.resolve.fallback = {
-    ...config.resolve.fallback,
-    path: require.resolve("path-browserify"),
-  };
-  return config;
-});
+module.exports = override(
+  addWebpackAlias({
+    'path': 'path-browserify'
+  })
+);

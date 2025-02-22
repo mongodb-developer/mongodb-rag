@@ -19,27 +19,38 @@ class MongoRAG {
             throw new Error('Embedding API key is required unless using Ollama.');
         }
 
-        // Set up the configuration with proper structure
+        // Clone config to prevent mutation
+        const safeConfig = { ...config };
+
+        // Ensure database and collection exist
+        safeConfig.database = safeConfig.database || "helpdesk";  // Provide a fallback
+        safeConfig.collection = safeConfig.collection || "articles";  // Provide a fallback
+
+
+        // Set up internal config structure
         this.config = {
-            mongoUrl: config.mongoUrl,
-            defaultDatabase: config.database,
-            defaultCollection: config.collection,
-            indexName: config.indexName || "vector_index",
-            embeddingFieldPath: config.embeddingFieldPath || "embedding",
+            mongoUrl: safeConfig.mongoUrl,
+            database: safeConfig.database,  // <-- Use this consistently
+            collection: safeConfig.collection,  // <-- Use this consistently
+            indexName: safeConfig.indexName || "vector_index",
+            embeddingFieldPath: safeConfig.embeddingFieldPath || "embedding",
             embedding: {
-                provider: config.embedding.provider,
-                apiKey: config.embedding.apiKey,
-                model: config.embedding.model || 'text-embedding-3-small',
-                baseUrl: config.embedding.baseUrl || 'http://localhost:11434',
-                batchSize: config.embedding.batchSize || 100,
-                dimensions: config.embedding.dimensions || 1536
+                provider: safeConfig.embedding.provider,
+                apiKey: safeConfig.embedding.apiKey,
+                model: safeConfig.embedding.model || 'text-embedding-3-small',
+                baseUrl: safeConfig.embedding.baseUrl || 'http://localhost:11434',
+                batchSize: safeConfig.embedding.batchSize || 100,
+                dimensions: safeConfig.embedding.dimensions || 1536
             },
             search: {
-                similarityMetric: config.search?.similarityMetric || 'cosine',
-                minScore: config.search?.minScore || 0.7,
-                maxResults: config.search?.maxResults || 5
+                similarityMetric: safeConfig.search?.similarityMetric || 'cosine',
+                minScore: safeConfig.search?.minScore || 0.7,
+                maxResults: safeConfig.search?.maxResults || 5
             }
         };
+
+        console.log("✅ MongoRAG Final Config:", JSON.stringify(this.config, null, 2));
+
 
         this.client = null;
         this.indexManager = null;
@@ -96,17 +107,19 @@ class MongoRAG {
 
     async _getCollection(database, collection) {
         await this.connect();
-        const dbName = database || this.config.defaultDatabase;
-        const colName = collection || this.config.defaultCollection;
-
+    
+        const dbName = database || this.config.database;  // Fixed here
+        const colName = collection || this.config.collection;  // Fixed here
+    
+        console.log("📌 Using database:", dbName);
+        console.log("📌 Using collection:", colName);
+    
         if (!dbName || !colName) {
-            throw new Error('Database and collection must be specified either in the config or as parameters.');
+            throw new Error('Database and collection must be specified.');
         }
-
-        log(`Using database: ${dbName}, collection: ${colName}`);
+    
         return this.client.db(dbName).collection(colName);
     }
-
     async ingestBatch(documents, options = {}) {
         const { database, collection } = options;
         const col = await this._getCollection(database, collection);
@@ -128,26 +141,20 @@ class MongoRAG {
             console.log('[DEBUG] Starting search with query:', query);
             console.log('[DEBUG] Search options:', options);
             
-            const { database, collection, maxResults = 5 } = options;
-            console.log('[DEBUG] Getting collection...');
+            const { database, collection, maxResults = 5, skip = 0 } = options;
             const col = await this._getCollection(database, collection);
             
-            console.log('[DEBUG] Getting embedding for query...');
-            const embedding = await this.getEmbedding(query);
+            const embedding = query ? await this.getEmbedding(query) : null;
             
-            console.log('[DEBUG] Using vector search index:', this.config.indexName);
-            console.log('[DEBUG] Collection details:', {
-                database: database || this.config.defaultDatabase,
-                collection: collection || this.config.defaultCollection
-            });
-
             const indexManager = new IndexManager(col, {
                 indexName: this.config.indexName,
                 embeddingFieldPath: this.config.embeddingFieldPath,
                 dimensions: this.config.embedding.dimensions
             });
 
-            const aggregation = indexManager.buildSearchQuery(embedding, {}, { maxResults });
+            const aggregation = query 
+                ? indexManager.buildSearchQuery(embedding, {}, { maxResults })
+                : [{ $skip: skip }, { $limit: maxResults }]; // Simple aggregation for all documents
 
             log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
             const results = await col.aggregate(aggregation).toArray();
@@ -219,6 +226,27 @@ class MongoRAG {
             await this.client.close();
             log('MongoDB connection closed');
         }
+    }
+
+    async listDocuments({ limit = 10, skip = 0, database, collection } = {}) {
+        try {
+            // Use an empty query or a special query to fetch all documents
+            const query = ""; // or use a wildcard query if supported
+            const options = { database, collection, maxResults: limit, skip };
+
+            // Call the search method with the query
+            const results = await this.search(query, options);
+
+            // Return the results, applying skip manually if needed
+            return results.slice(skip, skip + limit);
+        } catch (error) {
+            console.error('Error listing documents:', error);
+            throw error;
+        }
+    }
+
+    getClient() {
+        return this.client;
     }
 }
 

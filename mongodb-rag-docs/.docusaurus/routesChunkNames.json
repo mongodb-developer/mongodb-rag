@@ -1,11 +1,14 @@
 {
-  "/mongodb-rag/blog-12b": {
+  "/mongodb-rag/blog-bf8": {
     "__comp": "a6aa9e1f",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "3bfb5bbe"
+      },
       {
         "content": "c838fc4d"
       }
@@ -23,6 +26,17 @@
     "sidebar": "814f3328",
     "content": "5dcd886a"
   },
+  "/mongodb-rag/blog/2025/03/15/workshop-introduction-08b": {
+    "__comp": "ccc49370",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "828685db"
+  },
   "/mongodb-rag/blog/archive-ff7": {
     "__comp": "9e4087bc",
     "__context": {
@@ -37,6 +51,19 @@
     },
     "sidebar": "814f3328",
     "__props": "8b1cd5a3"
+  },
+  "/mongodb-rag/blog/tags/ai-019": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "3bfb5bbe"
+      }
+    ],
+    "__props": "a5c9065c"
   },
   "/mongodb-rag/blog/tags/blog-723": {
     "__comp": "6875c492",
@@ -64,7 +91,7 @@
     ],
     "__props": "bd95f5f6"
   },
-  "/mongodb-rag/blog/tags/mongodb-c08": {
+  "/mongodb-rag/blog/tags/mongodb-596": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -72,10 +99,72 @@
     "sidebar": "814f3328",
     "items": [
       {
+        "content": "3bfb5bbe"
+      },
+      {
         "content": "c838fc4d"
       }
     ],
     "__props": "22534bc1"
+  },
+  "/mongodb-rag/blog/tags/rag-ca6": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "3bfb5bbe"
+      }
+    ],
+    "__props": "c5b9c88e"
+  },
+  "/mongodb-rag/blog/tags/tutorial-204": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "3bfb5bbe"
+      }
+    ],
+    "__props": "62e462ce"
+  },
+  "/mongodb-rag/blog/tags/vector-search-7a1": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "3bfb5bbe"
+      }
+    ],
+    "__props": "9db19e01"
+  },
+  "/mongodb-rag/blog/tags/workshop-b3c": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "3bfb5bbe"
+      }
+    ],
+    "__props": "7f853204"
+  },
+  "/mongodb-rag/chatbot-32d": {
+    "__comp": "e3e8e5bb",
+    "__context": {
+      "plugin": "a7456010"
+    },
+    "config": "5e9f5e1a"
   },
   "/mongodb-rag/helloWorld-700": {
     "__comp": "72d756b8",
@@ -84,17 +173,17 @@
     },
     "config": "5e9f5e1a"
   },
-  "/mongodb-rag/docs-357": {
+  "/mongodb-rag/docs-f63": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/mongodb-rag/docs-b8e": {
+  "/mongodb-rag/docs-054": {
     "__comp": "a7bd4aaa",
     "__props": "15313aa8"
   },
-  "/mongodb-rag/docs-706": {
+  "/mongodb-rag/docs-c7a": {
     "__comp": "a94703ab"
   },
   "/mongodb-rag/docs/api-reference-d42": {
@@ -128,6 +217,38 @@
   "/mongodb-rag/docs/usage-941": {
     "__comp": "17896441",
     "content": "6476eba6"
+  },
+  "/mongodb-rag/docs/workshop/advanced-techniques-d05": {
+    "__comp": "17896441",
+    "content": "49d2a30b"
+  },
+  "/mongodb-rag/docs/workshop/build-rag-app-ef1": {
+    "__comp": "17896441",
+    "content": "049fdc41"
+  },
+  "/mongodb-rag/docs/workshop/create-embeddings-ea7": {
+    "__comp": "17896441",
+    "content": "8919650a"
+  },
+  "/mongodb-rag/docs/workshop/introduction-16d": {
+    "__comp": "17896441",
+    "content": "91f7acf5"
+  },
+  "/mongodb-rag/docs/workshop/production-deployment-ae0": {
+    "__comp": "17896441",
+    "content": "03c70627"
+  },
+  "/mongodb-rag/docs/workshop/rag-concepts-15a": {
+    "__comp": "17896441",
+    "content": "d8761489"
+  },
+  "/mongodb-rag/docs/workshop/setup-mongodb-fbf": {
+    "__comp": "17896441",
+    "content": "97e70658"
+  },
+  "/mongodb-rag/docs/workshop/understanding-hybrid-search-eb6": {
+    "__comp": "17896441",
+    "content": "85b7951c"
   },
   "/mongodb-rag/-2ae": {
     "__comp": "c4f5d8e4",

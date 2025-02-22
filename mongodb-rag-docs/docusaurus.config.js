@@ -45,6 +45,11 @@ const config = {
             position: 'left',
           },
           {
+            to: '/chatbot',
+            label: 'Chatbot',
+            position: 'right',
+          },
+          {
             href: 'https://github.com/mongodb-developer/mongodb-rag',
             label: 'GitHub',
             position: 'right',

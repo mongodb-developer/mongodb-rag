@@ -21,3 +21,55 @@
     padding: 2rem;
   }
 }
+
+.chatbot-page-wrapper main {
+  padding: 0 !important;
+  max-width: 100% !important;
+}
+
+.chatbot-header {
+  background-color: var(--ifm-color-primary-lightest);
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+html[data-theme='dark'] .chatbot-header {
+  background-color: var(--ifm-color-primary-darkest);
+}
+
+.chatbot-header h1 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.header-subtitle {
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.info-badge {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: var(--ifm-color-primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+/* Make the container full-width in mobile view */
+@media (max-width: 996px) {
+  .container {
+    max-width: 100% !important;
+    padding: 0 1rem;
+  }
+  
+  .chatbot-header h1 {
+    font-size: 1.25rem;
+  }
+}

@@ -7,6 +7,7 @@ import { CloudUpload as UploadIcon, Search as SearchIcon, Settings as SettingsIc
 import './App.css';
 import logo from './owl.png';
 import { DataGrid } from '@mui/x-data-grid';
+import ConfigurationBanner from "./components/ConfigurationBanner";
 
 const socket = io('http://localhost:4000');
 
@@ -54,7 +55,7 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [searching, setSearching] = useState(false);
   const [status, setStatus] = useState('');
-  const [openWelcome, setOpenWelcome] = useState(true);
+  const [openWelcome, setOpenWelcome] = useState(!document.cookie.includes("hideWelcomePopup=true"));
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [config, setConfig] = useState({
     mongoUrl: '',
@@ -93,26 +94,8 @@ function App() {
       try {
         const response = await fetch(`${BACKEND_URL}/api/config`);
         const data = await response.json();
-        
-        const completeConfig = {
-          mongoUrl: data.mongoUrl || '',
-          database: data.database || '',
-          collection: data.collection || '',
-          provider: data.provider || '',
-          apiKey: data.apiKey || '',
-          model: data.model || '',
-          dimensions: data.dimensions || 1536,
-          batchSize: data.batchSize || 100,
-          maxResults: data.maxResults || 5,
-          minScore: data.minScore || 0.7,
-          indexName: data.indexName || 'vector_index',
-          embedding: data.embedding || {},
-          search: data.search || {}
-        };
-
-        console.log('Loaded config:', completeConfig);
-        setConfig(completeConfig);
-        setFormConfig(completeConfig);
+        setConfig(data);
+        setFormConfig(data);
       } catch (error) {
         console.error('Error loading config:', error);
         setStatus('Failed to load configuration');
@@ -120,8 +103,20 @@ function App() {
       }
     };
 
-    loadConfig();
+    const loadInitialDocuments = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/documents`);
+        const data = await response.json();
+        if (data.documents) {
+          setDocuments(data.documents);
+        }
+      } catch (error) {
+        console.error('Error loading documents:', error);
+      }
+    };
 
+    loadConfig();
+    loadInitialDocuments();
     return () => {
       socket.off('update');
     };
@@ -166,7 +161,7 @@ function App() {
 
   const handleSearch = async () => {
     if (!query.trim()) return;
-    
+
     setSearching(true);
     try {
       const response = await fetch(`${BACKEND_URL}/api/search`, {
@@ -174,11 +169,11 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query })
       });
-      
+
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       console.log('Search results:', data);
       setResults(data.results || []);
@@ -199,9 +194,9 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formConfig)
       });
-      
+
       await reloadConfig();
-      
+
       setStatus('Configuration saved successfully!');
       setOpenSnackbar(true);
     } catch (error) {
@@ -217,7 +212,7 @@ function App() {
       if (!response.ok) {
         throw new Error(`Failed to download ${type} file`);
       }
-      
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -227,7 +222,7 @@ function App() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      
+
       setStatus(`Successfully downloaded ${type === 'config' ? '.mongodb-rag.json' : '.env'} file`);
       setOpenSnackbar(true);
     } catch (error) {
@@ -238,8 +233,11 @@ function App() {
   };
 
   const formatDocumentField = (value) => {
+    if (value === undefined) {
+      return ''; // Return an empty string or a default message if value is undefined
+    }
     if (Array.isArray(value)) {
-      return value.slice(0, 10).map(item => 
+      return value.slice(0, 10).map(item =>
         typeof item === 'object' ? JSON.stringify(item) : item
       ).join(', ') + (value.length > 10 ? '...' : '');
     }
@@ -300,15 +298,26 @@ function App() {
     setLoadingIndexes(true);
     try {
       const response = await fetch(`${BACKEND_URL}/api/indexes`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch indexes: ${response.statusText}`);
+      }
+
       const data = await response.json();
-      setIndexes(data);
+
+      setIndexes({
+        searchIndexes: Array.isArray(data?.searchIndexes) ? data.searchIndexes : [],
+        regularIndexes: Array.isArray(data?.regularIndexes) ? data.regularIndexes : []
+      });
     } catch (error) {
       console.error('Error loading indexes:', error);
       setStatus('Failed to load indexes');
       setOpenSnackbar(true);
+      setIndexes({ searchIndexes: [], regularIndexes: [] });  // Ensure empty state
     }
     setLoadingIndexes(false);
   };
+
 
   const handleCreateIndex = async () => {
     try {
@@ -342,143 +351,163 @@ function App() {
     ];
 
     const regularIndexColumns = [
-      { field: 'name', headerName: 'Name', flex: 1 },
-      { field: 'key', headerName: 'Key', flex: 1, 
-        valueGetter: (params) => JSON.stringify(params.row.key) },
-      { field: 'unique', headerName: 'Unique', width: 130,
-        valueGetter: (params) => params.row.unique ? 'Yes' : 'No' },
+      { field: 'name', headerName: 'Name1', flex: 1 },
+      {
+        field: 'key',
+        headerName: 'Key',
+        flex: 1,
+        valueGetter: (params) => {
+          if (!params || !params.row) return "{}"; // Ensures params is not undefined
+          return params.row.key ? JSON.stringify(params.row.key) : "{}";
+        }
+      },
+      {
+        field: 'unique',
+        headerName: 'Unique',
+        width: 130,
+        valueGetter: (params) => {
+          if (!params || !params.row) return "No"; // Prevents accessing undefined
+          return params.row.unique ? "Yes" : "No";
+        }
+      },
     ];
 
-    const searchIndexRows = indexes.searchIndexes.map((idx, i) => ({
+
+    // Ensure indexes are always arrays to prevent map errors
+    const searchIndexRows = Array.isArray(indexes.searchIndexes) ? indexes.searchIndexes.map((idx, i) => ({
       id: i,
       name: idx.name,
       type: idx.type || 'vector',
       status: idx.status || 'ready'
-    }));
+    })) : [];
 
-    const regularIndexRows = indexes.regularIndexes.map((idx, i) => ({
+    const regularIndexRows = Array.isArray(indexes.regularIndexes) ? indexes.regularIndexes.map((idx, i) => ({
       id: i,
       name: idx.name,
       key: idx.key,
       unique: idx.unique || false
-    }));
+    })) : [];
 
     return (
-      <Box sx={{ mt: 4 }}>
-        <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6">
-              Indexes for {indexes.database}/{indexes.collection}
+      <div>
+
+        <Box sx={{ mt: 4 }}>
+          <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">
+                Indexes for {indexes.database}/{indexes.collection}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={() => setCreateIndexDialog(true)}
+                >
+                  Create Vector Index
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<RefreshIcon />}
+                  onClick={loadIndexes}
+                  disabled={loadingIndexes}
+                >
+                  Refresh
+                </Button>
+              </Box>
+            </Box>
+
+            <Typography variant="subtitle1" sx={{ mt: 3, mb: 2 }}>
+              Vector Search Indexes
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <DataGrid
+              rows={searchIndexRows}
+              columns={searchIndexColumns}
+              autoHeight
+              hideFooter={searchIndexRows.length <= 10}
+              sx={{ mb: 4 }}
+            />
+
+            <Typography variant="subtitle1" sx={{ mt: 3, mb: 2 }}>
+              Regular Indexes
+            </Typography>
+            <DataGrid
+              rows={regularIndexRows}
+              columns={regularIndexColumns}
+              autoHeight
+              hideFooter={regularIndexRows.length <= 10}
+            />
+          </Paper>
+
+          <Dialog
+            open={createIndexDialog}
+            onClose={() => setCreateIndexDialog(false)}
+            maxWidth="sm"
+            fullWidth
+          >
+            <DialogTitle>Create Vector Search Index</DialogTitle>
+            <DialogContent>
+              <Box sx={{ mt: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Index Name"
+                  value={newIndexConfig.name}
+                  onChange={(e) => setNewIndexConfig({ ...newIndexConfig, name: e.target.value })}
+                  sx={{ mb: 2 }}
+                  helperText="Name for the new vector search index"
+                />
+                <TextField
+                  fullWidth
+                  label="Dimensions"
+                  type="number"
+                  value={newIndexConfig.dimensions}
+                  onChange={(e) => setNewIndexConfig({ ...newIndexConfig, dimensions: parseInt(e.target.value) })}
+                  sx={{ mb: 2 }}
+                  helperText="Number of dimensions for the vector field"
+                />
+                <TextField
+                  fullWidth
+                  label="Field Path"
+                  value={newIndexConfig.path}
+                  onChange={(e) => setNewIndexConfig({ ...newIndexConfig, path: e.target.value })}
+                  sx={{ mb: 2 }}
+                  helperText="Path to the vector field in your documents"
+                />
+                <TextField
+                  fullWidth
+                  select
+                  label="Similarity Metric"
+                  value={newIndexConfig.similarity}
+                  onChange={(e) => setNewIndexConfig({ ...newIndexConfig, similarity: e.target.value })}
+                  helperText="Similarity metric for vector comparison"
+                >
+                  <MenuItem value="cosine">Cosine Similarity</MenuItem>
+                  <MenuItem value="dotProduct">Dot Product</MenuItem>
+                  <MenuItem value="euclidean">Euclidean Distance</MenuItem>
+                </TextField>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setCreateIndexDialog(false)}>Cancel</Button>
               <Button
+                onClick={handleCreateIndex}
                 variant="contained"
                 color="primary"
-                startIcon={<AddIcon />}
-                onClick={() => setCreateIndexDialog(true)}
+                disabled={!newIndexConfig.name || !newIndexConfig.dimensions}
               >
-                Create Vector Index
+                Create Index
               </Button>
-              <Button
-                variant="outlined"
-                startIcon={<RefreshIcon />}
-                onClick={loadIndexes}
-                disabled={loadingIndexes}
-              >
-                Refresh
-              </Button>
-            </Box>
-          </Box>
+            </DialogActions>
+          </Dialog>
+        </Box>
+      </div>
 
-          <Typography variant="subtitle1" sx={{ mt: 3, mb: 2 }}>
-            Vector Search Indexes
-          </Typography>
-          <DataGrid
-            rows={searchIndexRows}
-            columns={searchIndexColumns}
-            autoHeight
-            hideFooter={searchIndexRows.length <= 10}
-            sx={{ mb: 4 }}
-          />
-
-          <Typography variant="subtitle1" sx={{ mt: 3, mb: 2 }}>
-            Regular Indexes
-          </Typography>
-          <DataGrid
-            rows={regularIndexRows}
-            columns={regularIndexColumns}
-            autoHeight
-            hideFooter={regularIndexRows.length <= 10}
-          />
-        </Paper>
-
-        <Dialog 
-          open={createIndexDialog} 
-          onClose={() => setCreateIndexDialog(false)}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle>Create Vector Search Index</DialogTitle>
-          <DialogContent>
-            <Box sx={{ mt: 2 }}>
-              <TextField
-                fullWidth
-                label="Index Name"
-                value={newIndexConfig.name}
-                onChange={(e) => setNewIndexConfig({ ...newIndexConfig, name: e.target.value })}
-                sx={{ mb: 2 }}
-                helperText="Name for the new vector search index"
-              />
-              <TextField
-                fullWidth
-                label="Dimensions"
-                type="number"
-                value={newIndexConfig.dimensions}
-                onChange={(e) => setNewIndexConfig({ ...newIndexConfig, dimensions: parseInt(e.target.value) })}
-                sx={{ mb: 2 }}
-                helperText="Number of dimensions for the vector field"
-              />
-              <TextField
-                fullWidth
-                label="Field Path"
-                value={newIndexConfig.path}
-                onChange={(e) => setNewIndexConfig({ ...newIndexConfig, path: e.target.value })}
-                sx={{ mb: 2 }}
-                helperText="Path to the vector field in your documents"
-              />
-              <TextField
-                fullWidth
-                select
-                label="Similarity Metric"
-                value={newIndexConfig.similarity}
-                onChange={(e) => setNewIndexConfig({ ...newIndexConfig, similarity: e.target.value })}
-                helperText="Similarity metric for vector comparison"
-              >
-                <MenuItem value="cosine">Cosine Similarity</MenuItem>
-                <MenuItem value="dotProduct">Dot Product</MenuItem>
-                <MenuItem value="euclidean">Euclidean Distance</MenuItem>
-              </TextField>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setCreateIndexDialog(false)}>Cancel</Button>
-            <Button 
-              onClick={handleCreateIndex} 
-              variant="contained" 
-              color="primary"
-              disabled={!newIndexConfig.name || !newIndexConfig.dimensions}
-            >
-              Create Index
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
     );
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ 
+      <Box sx={{
         minHeight: '100vh',
         bgcolor: 'background.default',
         pb: 4
@@ -492,44 +521,44 @@ function App() {
                   MongoDB-RAG Playground
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2, mt: 0.5 }}>
-                  <a 
-                    href="https://npmjs.com/package/mongodb-rag" 
-                    target="_blank" 
+                  <a
+                    href="https://npmjs.com/package/mongodb-rag"
+                    target="_blank"
                     rel="noopener noreferrer"
                     style={{ textDecoration: 'none' }}
                   >
-                    <img 
-                      src="https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm&logo=npm" 
-                      alt="NPM Version" 
+                    <img
+                      src="https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm&logo=npm"
+                      alt="NPM Version"
                     />
                   </a>
-                  <a 
-                    href="https://github.com/mongodb-developer/mongodb-rag" 
-                    target="_blank" 
+                  <a
+                    href="https://github.com/mongodb-developer/mongodb-rag"
+                    target="_blank"
                     rel="noopener noreferrer"
                     style={{ textDecoration: 'none' }}
                   >
-                    <img 
-                      src="https://img.shields.io/github/stars/mongodb-developer/mongodb-rag?style=social" 
-                      alt="GitHub Stars" 
+                    <img
+                      src="https://img.shields.io/github/stars/mongodb-developer/mongodb-rag?style=social"
+                      alt="GitHub Stars"
                     />
                   </a>
-                  <a 
-                    href="https://github.com/mongodb-developer/mongodb-rag" 
-                    target="_blank" 
+                  <a
+                    href="https://github.com/mongodb-developer/mongodb-rag"
+                    target="_blank"
                     rel="noopener noreferrer"
                     style={{ textDecoration: 'none' }}
                   >
-                    <img 
-                      src="https://img.shields.io/github/license/mongodb-developer/mongodb-rag?color=blue" 
-                      alt="License" 
+                    <img
+                      src="https://img.shields.io/github/license/mongodb-developer/mongodb-rag?color=blue"
+                      alt="License"
                     />
                   </a>
                 </Box>
               </Box>
               <Tooltip title="View on GitHub">
-                <IconButton 
-                  color="inherit" 
+                <IconButton
+                  color="inherit"
                   href="https://github.com/mongodb-developer/mongodb-rag"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -542,27 +571,28 @@ function App() {
         </AppBar>
 
         <Container maxWidth="md" sx={{ mt: 4 }}>
+          <ConfigurationBanner />
           <Paper elevation={0} sx={{ p: 3, mb: 3 }}>
-            <Tabs 
-              value={tabValue} 
-              onChange={handleTabChange} 
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
               centered
-              sx={{ 
-                borderBottom: 1, 
+              sx={{
+                borderBottom: 1,
                 borderColor: 'divider',
-                '& .MuiTab-root': { 
+                '& .MuiTab-root': {
                   minWidth: 120,
                   px: 3
                 }
               }}
             >
+              <Tab icon={<SearchIcon />} iconPosition="start" label="Documents" />
               <Tab icon={<UploadIcon />} iconPosition="start" label="Upload" />
-              <Tab icon={<SearchIcon />} iconPosition="start" label="Search" />
               <Tab icon={<StorageIcon />} iconPosition="start" label="Indexes" />
               <Tab icon={<SettingsIcon />} iconPosition="start" label="Configure" />
             </Tabs>
 
-            {tabValue === 0 && (
+            {tabValue === 1 && (
               <Box sx={{ mt: 4, textAlign: 'center' }}>
                 <input
                   type="file"
@@ -585,11 +615,11 @@ function App() {
               </Box>
             )}
 
-            {tabValue === 1 && (
+            {tabValue === 0 && (
               <Box sx={{ mt: 4 }}>
                 <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
-                  <TextField 
-                    fullWidth 
+                  <TextField
+                    fullWidth
                     label="Search documents"
                     placeholder="Enter your search query..."
                     variant="outlined"
@@ -600,7 +630,7 @@ function App() {
                       endAdornment: (
                         <Box sx={{ display: 'flex', gap: 1 }}>
                           <Tooltip title="Search">
-                            <IconButton 
+                            <IconButton
                               onClick={handleSearch}
                               disabled={searching}
                               color="primary"
@@ -622,7 +652,7 @@ function App() {
                     }}
                   />
                 </Paper>
-                
+
                 {(results.length > 0 || documents.length > 0) && (
                   <Box>
                     <Typography variant="h6" sx={{ mb: 2 }}>
@@ -650,27 +680,28 @@ function App() {
               </Box>
             )}
 
+
             {tabValue === 2 && <IndexesView />}
 
             {tabValue === 3 && (
               <Box sx={{ mt: 4 }}>
                 <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
                   <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-                    <Button 
+                    <Button
                       variant="outlined"
                       startIcon={<DownloadIcon />}
                       onClick={() => handleDownload('config')}
                     >
                       Download Config
                     </Button>
-                    <Button 
+                    <Button
                       variant="outlined"
                       startIcon={<DownloadIcon />}
                       onClick={() => handleDownload('env')}
                     >
                       Download .env
                     </Button>
-                    <Button 
+                    <Button
                       variant="outlined"
                       startIcon={<RefreshIcon />}
                       onClick={reloadConfig}
@@ -678,7 +709,7 @@ function App() {
                       Refresh
                     </Button>
                   </Box>
-                  
+
                   <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
                       <TextField fullWidth label="MongoDB URI" variant="outlined" value={formConfig.mongoUrl} onChange={(e) => setFormConfig({ ...formConfig, mongoUrl: e.target.value })} sx={{ mt: 2 }} />
@@ -764,6 +795,14 @@ function App() {
           <Typography variant="body1" sx={{ mt: 2 }}>
             You can update these settings in the Configuration tab.
           </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
+            <input type="checkbox" id="dontShowAgain" onChange={(e) => {
+              if (e.target.checked) {
+                document.cookie = "hideWelcomePopup=true; path=/; max-age=" + 60 * 60 * 24 * 30; // 30 days
+              }
+            }} />
+            <label htmlFor="dontShowAgain" style={{ marginLeft: "8px" }}>Don't show this again</label>
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenWelcome(false)} variant="contained" color="primary">Got it</Button>

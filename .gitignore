@@ -50,3 +50,4 @@ Thumbs.db
 # config
 .mongodb-rag.json
 .mongodb-rag.test.json.bak
+.aider*

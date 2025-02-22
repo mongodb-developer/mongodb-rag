@@ -1,0 +1,44 @@
+---
+id: introduction 
+title: RAG Workshop Introduction 
+---
+
+# Building RAG Applications with MongoDB Atlas
+
+Welcome to the MongoDB-RAG Workshop! Throughout this hands-on experience, you'll learn how to build Retrieval-Augmented Generation (RAG) applications using MongoDB Atlas Vector Search and the mongodb-rag library.
+
+## What You'll Learn
+
+In this workshop, you'll:
+
+1. **Understand RAG fundamentals** - Learn how vector search and LLMs work together
+2. **Set up MongoDB Atlas** - Create and configure an Atlas cluster with Vector Search
+3. **Generate embeddings** - Transform documents into vector embeddings
+4. **Build a complete RAG application** - Develop a full application with document ingestion and search
+5. **Implement advanced techniques** - Explore hybrid search, metadata filtering, and chunking strategies
+6. **Deploy to production** - Learn best practices for scaling your RAG system
+
+## Prerequisites
+
+To get the most out of this workshop, you should have:
+
+- Basic knowledge of JavaScript/Node.js
+- Familiarity with MongoDB concepts (collections, documents, queries)
+- A MongoDB Atlas account (free tier is sufficient)
+- An OpenAI API key (or Ollama installed locally)
+- Node.js (v16+) installed on your system
+
+## Workshop Structure
+
+This workshop is designed to be completed in sequence, with each section building on the previous ones:
+
+1. **RAG Concepts** - Understanding the fundamental concepts
+2. **Setting up MongoDB** - Configuring your Atlas environment
+3. **Creating Embeddings** - Generating and storing vector embeddings
+4. **Building a RAG App** - Creating a full application
+5. **Advanced Techniques** - Improving relevance and performance
+6. **Production Deployment** - Scaling and monitoring considerations
+
+## Estimated Time
+
+The complete workshop takes approximately 2-3 hours to complete. Each section is designed to be completed in 20-30 minutes.

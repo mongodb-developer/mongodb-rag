@@ -79,6 +79,7 @@ class IndexManager {
             index: this.options.indexName,
             path: this.options.embeddingPath,
             queryVector: embedding,
+            numCandidates: options.numCandidates || 100,
             limit: options.maxResults || this.options.search?.maxResults || 10,
             exact: options.exact || false
         };

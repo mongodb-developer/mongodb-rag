@@ -49,6 +49,45 @@
               "id": "usage",
               "path": "/mongodb-rag/docs/usage",
               "sidebar": "docs"
+            },
+            {
+              "id": "workshop/advanced-techniques",
+              "path": "/mongodb-rag/docs/workshop/advanced-techniques",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/build-rag-app",
+              "path": "/mongodb-rag/docs/workshop/build-rag-app",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/create-embeddings",
+              "path": "/mongodb-rag/docs/workshop/create-embeddings",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/introduction",
+              "path": "/mongodb-rag/docs/workshop/introduction",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/production-deployment",
+              "path": "/mongodb-rag/docs/workshop/production-deployment",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/rag-concepts",
+              "path": "/mongodb-rag/docs/workshop/rag-concepts",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/setup-mongodb",
+              "path": "/mongodb-rag/docs/workshop/setup-mongodb",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/understanding-hybrid-search",
+              "path": "/mongodb-rag/docs/workshop/understanding-hybrid-search"
             }
           ],
           "draftIds": [],

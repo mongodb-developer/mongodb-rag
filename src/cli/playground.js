@@ -12,11 +12,52 @@ import multer from 'multer';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
+import detect from 'detect-port'; // Library to find available ports
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Properly resolve playground UI paths based on how the package is installed
+const findPlaygroundUiPath = () => {
+  // Possible locations for playground-ui based on different installation scenarios
+  const possiblePaths = [
+    // When installed as a dependency in node_modules
+    path.resolve(__dirname, '../../src/playground-ui'),
+
+    // When running from source/development environment
+    path.resolve(__dirname, '../playground-ui'),
+
+    // When globally installed
+    path.resolve(process.env.npm_config_prefix || '/usr/local', 'lib/node_modules/mongodb-rag/src/playground-ui')
+  ];
+
+  for (const potentialPath of possiblePaths) {
+    if (fs.existsSync(potentialPath)) {
+      // console.log(`✅ Found playground UI at: ${potentialPath}`);
+      return potentialPath;
+    }
+  }
+
+  console.warn('⚠️ Could not locate playground-ui directory');
+  return null;
+};
+
+const PLAYGROUND_UI_PATH = findPlaygroundUiPath();
+
+const DEFAULT_BACKEND_PORT = 4000;
+const DEFAULT_FRONTEND_PORT = 3000;
+
+// Use environment variables or fallback
+let backendPort = process.env.BACKEND_PORT || DEFAULT_BACKEND_PORT;
+let playgroundPort = process.env.PLAYGROUND_PORT || DEFAULT_FRONTEND_PORT;
+
+// Function to find an available port if the default is in use
+const findAvailablePort = async (preferredPort, defaultPort) => {
+  const availablePort = await detect(preferredPort);
+  return availablePort === preferredPort ? preferredPort : await detect(defaultPort);
+};
 
 console.log('Current directory:', __dirname);
 console.log('Process working directory:', process.cwd());
@@ -25,7 +66,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 export async function startPlayground() {
   const app = express();
-  const PORT = process.env.BACKEND_PORT || 4000;
   const server = createServer(app);
   const io = new Server(server, { cors: { origin: '*' } });
 
@@ -37,242 +77,104 @@ export async function startPlayground() {
   let collectionName = 'documents';
 
   const configPath = path.join(process.cwd(), '.mongodb-rag.json');
-  console.log('Looking for config file at:', configPath);
+
+  console.log("🔍 Looking for config file at:", configPath);
+  console.log("🔍 Current Working Directory:", process.cwd());
 
   if (fs.existsSync(configPath)) {
     try {
       const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+      console.log("✅ Loaded Configuration from File:", config);
+
       mongodbUrl = config.mongoUrl || mongodbUrl;
       databaseName = config.database || databaseName;
       collectionName = config.collection || collectionName;
     } catch (error) {
       console.error("❌ Error reading .mongodb-rag.json:", error.message);
     }
+  } else {
+    console.warn("🚨 Config file not found at:", configPath);
   }
+
+  console.log("📌 Final MongoDB URL:", mongodbUrl);
+  console.log("📌 Final Database Name:", databaseName);
+  console.log("📌 Final Collection Name:", collectionName);
+
+  // Declare rag here to ensure it's in scope for all routes
+  let rag = null;
 
   // Initialize RAG with configuration
   try {
-    const rag = new MongoRAG({
+    console.log("🟢 Before initializing MongoRAG:");
+    console.log("   📌 MongoDB URL:", mongodbUrl);
+    console.log("   📌 Database Name:", databaseName);
+    console.log("   📌 Collection Name:", collectionName);
+    rag = new MongoRAG({
       mongoUrl: mongodbUrl,
       database: databaseName,
       collection: collectionName,
       embedding: {
-        provider: process.env.EMBEDDING_PROVIDER || 'openai',
+        provider: process.env.EMBEDDING_PROVIDER || 'ollama',
         apiKey: process.env.EMBEDDING_API_KEY,
-        model: process.env.EMBEDDING_MODEL || 'text-embedding-3-small',
-        dimensions: 1536
+        model: process.env.EMBEDDING_MODEL || 'llama3',
+        dimensions: 1536,
+        baseUrl: process.env.EMBEDDING_BASE_URL || 'http://localhost:11434'
       }
     });
-    
+    console.log("✅ MongoRAG Final Config:", JSON.stringify(rag.config, null, 2));
+    console.log("✅ After initializing MongoRAG:");
+    console.log("   📌 Database in rag.config:", rag.config.defaultDatabase);
+    console.log("   📌 Collection in rag.config:", rag.config.defaultCollection);
+
     await rag.connect();
     console.log('✅ Successfully connected to MongoDB');
   } catch (error) {
     console.error("⚠️ MongoDB Connection Error:", error.message);
-    console.log("ℹ️ Playground will start with limited functionality");
+    console.info("ℹ️ Playground will start with limited functionality");
   }
 
-  // Modify API endpoints to handle case where rag is null
+  // API endpoints...
   app.post('/api/save-config', (req, res) => {
     fs.writeFileSync('.mongodb-rag.json', JSON.stringify(req.body, null, 2));
     res.json({ message: "Configuration saved successfully!" });
   });
 
-  app.post('/api/ingest', upload.single('file'), async (req, res) => {
+  app.get("/api/config", (req, res) => {
     if (!rag) {
-      return res.status(503).json({ 
-        error: "MongoDB connection not available",
-        message: "Please check your MongoDB connection settings and try again"
-      });
+      return res.status(503).json({ error: "MongoDB connection not available" });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
-
-    try {
-      let jsonData;
-      const fileType = req.file.mimetype;
-      const fileContent = req.file.buffer.toString();
-
-      if (fileType === "application/json") {
-        jsonData = JSON.parse(fileContent);
-      } else if (fileType === "text/markdown" || fileType === "text/plain") {
-        jsonData = fileContent.split("\n").map(line => ({ content: line.trim() })).filter(line => line.content);
-      } else if (fileType === "application/pdf") {
-        const parsedPDF = await pdfParse(req.file.buffer).catch(() => ({ text: "" }));
-        jsonData = parsedPDF.text.split("\n").map(line => ({ content: line.trim() })).filter(line => line.content);
-      } else {
-        return res.status(400).json({ error: "Unsupported file format. Please upload a JSON, Markdown, or PDF file." });
-      }
-
-      if (!Array.isArray(jsonData)) {
-        return res.status(400).json({ error: "Uploaded file must contain an array of documents or lines." });
-      }
-
-      const result = await rag.ingestBatch(jsonData);
-      io.emit('update', { message: "New documents indexed!" });
-      res.json({ message: "Documents indexed successfully!", result });
-    } catch (error) {
-      res.status(500).json({ error: "Invalid file format" });
-    }
+    res.json({
+      database: rag.config.database || "Unknown",
+      collection: rag.config.collection || "Unknown",
+      embeddingFieldPath: rag.config.embeddingFieldPath || "embedding",
+      indexName: rag.config.indexName || "vector_index"
+    });
   });
 
-  app.get('/api/documents', async (req, res) => {
-    if (!rag) {
-      return res.status(503).json({ 
-        error: "MongoDB connection not available",
-        message: "Please check your MongoDB connection settings and try again"
-      });
-    }
 
-    try {
-      const limit = parseInt(req.query.limit) || 10;
-      const skip = parseInt(req.query.skip) || 0;
-      
-      const documents = await rag.listDocuments({ limit, skip });
-      res.json({ documents });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+  app.post("/api/config", (req, res) => {
+    const newConfig = req.body;
+
+    // Update rag.config
+    rag.config.database = newConfig.database;
+    rag.config.collection = newConfig.collection;
+    rag.config.embeddingFieldPath = newConfig.embeddingFieldPath || "embedding";
+    rag.config.indexName = newConfig.indexName;
+
+    // Save to file (so changes persist)
+    fs.writeFileSync(".mongodb-rag.json", JSON.stringify(newConfig, null, 2));
+
+    res.json(newConfig);
   });
-
-  app.post('/api/search', async (req, res) => {
-    if (!rag) {
-      return res.status(503).json({ 
-        error: "MongoDB connection not available",
-        message: "Please check your MongoDB connection settings and try again"
-      });
-    }
-
-    const { query } = req.body;
-    if (!query) {
-      return res.status(400).json({ error: "Query text required" });
-    }
-
-    try {
-      console.log('Executing search with query:', query);
-      const results = await rag.search(query);
-      console.log('Search results:', results);
-      res.json({ results });
-    } catch (error) {
-      console.error('Search error:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  app.get('/api/config', (req, res) => {
-    try {
-      // First try to read from .mongodb-rag.json
-      const configPath = path.join(process.cwd(), '.mongodb-rag.json');
-      let config = {};
-      
-      if (fs.existsSync(configPath)) {
-        config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-      }
-
-      // Merge with environment variables, preferring env vars when they exist
-      const mergedConfig = {
-        mongoUrl: process.env.MONGODB_URI || config.mongoUrl,
-        database: process.env.MONGODB_DATABASE || config.database,
-        collection: process.env.MONGODB_COLLECTION || config.collection,
-        provider: process.env.EMBEDDING_PROVIDER || config.provider,
-        apiKey: process.env.EMBEDDING_API_KEY || config.apiKey,
-        model: process.env.EMBEDDING_MODEL || config.model,
-        dimensions: config.dimensions || 1536,
-        batchSize: config.embedding?.batchSize || 100,
-        maxResults: config.search?.maxResults || 5,
-        minScore: config.search?.minScore || 0.7,
-        indexName: process.env.VECTOR_INDEX || config.indexName
-      };
-
-      // Remove sensitive information before sending to client
-      const sanitizedConfig = { ...mergedConfig };
-      if (sanitizedConfig.apiKey) {
-        sanitizedConfig.apiKey = '********'; // Mask the API key
-      }
-
-      res.json(sanitizedConfig);
-    } catch (error) {
-      console.error('Error reading configuration:', error);
-      res.status(500).json({ 
-        error: 'Failed to read configuration',
-        message: error.message 
-      });
-    }
-  });
-
-  app.get('/api/download/config', (req, res) => {
-    try {
-      const configPath = path.join(process.cwd(), '.mongodb-rag.json');
-      if (fs.existsSync(configPath)) {
-        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Content-Disposition', 'attachment; filename=.mongodb-rag.json');
-        res.send(JSON.stringify(config, null, 2));
-      } else {
-        res.status(404).json({ error: 'Configuration file not found' });
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to download configuration' });
-    }
-  });
-
-  app.get('/api/download/env', (req, res) => {
-    try {
-      const envContent = [
-        `MONGODB_URI="${process.env.MONGODB_URI || ''}"`,
-        `MONGODB_DATABASE="${process.env.MONGODB_DATABASE || ''}"`,
-        `MONGODB_COLLECTION="${process.env.MONGODB_COLLECTION || ''}"`,
-        `EMBEDDING_PROVIDER="${process.env.EMBEDDING_PROVIDER || ''}"`,
-        `EMBEDDING_API_KEY="${process.env.EMBEDDING_API_KEY || ''}"`,
-        `EMBEDDING_MODEL="${process.env.EMBEDDING_MODEL || ''}"`,
-        `VECTOR_INDEX="${process.env.VECTOR_INDEX || ''}"`,
-      ].join('\n');
-
-      res.setHeader('Content-Type', 'text/plain');
-      res.setHeader('Content-Disposition', 'attachment; filename=.env');
-      res.send(envContent);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to generate .env file' });
-    }
-  });
-
-  app.get('/api/indexes', async (req, res) => {
-    if (!rag) {
-      return res.status(503).json({ 
-        error: "MongoDB connection not available",
-        message: "Please check your MongoDB connection settings and try again"
-      });
-    }
-
-    try {
-      const client = await rag.getClient();
-      const collection = client.db(rag.database).collection(rag.collection);
-
-      // Get vector search indexes
-      const searchIndexes = await collection.aggregate([
-        { $listSearchIndexes: {} }
-      ]).toArray();
-
-      // Get regular indexes
-      const regularIndexes = await collection.indexes();
-
-      res.json({ 
-        searchIndexes, 
-        regularIndexes,
-        database: rag.database,
-        collection: rag.collection
-      });
-    } catch (error) {
-      console.error('Error retrieving indexes:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
   // Add this new endpoint for creating vector search indexes
   app.post('/api/indexes/create', async (req, res) => {
+    const existingIndexes = await collection.listIndexes().toArray();
+    if (existingIndexes.some(idx => idx.name === name)) {
+      return res.status(400).json({ error: "Index already exists" });
+    }
     if (!rag) {
-      return res.status(503).json({ 
+      return res.status(503).json({
         error: "MongoDB connection not available",
         message: "Please check your MongoDB connection settings and try again"
       });
@@ -297,11 +199,11 @@ export async function startPlayground() {
       };
 
       const result = await collection.createSearchIndex(indexConfig);
-      res.json({ 
+      res.json({
         success: true,
         message: "Vector search index created successfully",
         indexName: indexConfig.name,
-        result 
+        result
       });
     } catch (error) {
       console.error('Error creating index:', error);
@@ -310,32 +212,88 @@ export async function startPlayground() {
   });
 
   io.on('connection', (socket) => {
-    console.log('A user connected');
     socket.on('disconnect', () => {
       console.log('User disconnected');
     });
   });
 
-  server.listen(PORT, () => {
-    console.log(`🚀 Playground backend running at http://localhost:${PORT}`);
+  // Start the backend server
+  backendPort = await findAvailablePort(backendPort, DEFAULT_BACKEND_PORT);
+  server.listen(backendPort, () => {
+    console.log(`🚀 Playground backend running at http://localhost:${backendPort}`);
   });
 
-  // Serve the React UI with enhancements
-  const frontendPath = path.join(__dirname, '../playground-ui/build');
-  if (!fs.existsSync(frontendPath)) {
-    console.error("⚠️ Frontend build not found. Running build...");
-    execSync('cd src/playground-ui && npm run build', { stdio: 'inherit' });
+  // Serve the React UI with proper path resolution and build process
+  if (PLAYGROUND_UI_PATH) {
+    const frontendBuildPath = path.join(PLAYGROUND_UI_PATH, 'build');
+    const frontendDistPath = path.join(PLAYGROUND_UI_PATH, 'dist');
+
+    // Determine which directory to use (build or dist)
+    let uiBuildPath = fs.existsSync(frontendBuildPath) ? frontendBuildPath :
+      (fs.existsSync(frontendDistPath) ? frontendDistPath : null);
+
+    if (!uiBuildPath) {
+      console.warn("⚠️ Frontend build not found. Attempting to build...");
+      try {
+        // Check if package.json exists in the playground-ui directory
+        const packageJsonPath = path.join(PLAYGROUND_UI_PATH, 'package.json');
+        if (!fs.existsSync(packageJsonPath)) {
+          throw new Error("package.json not found in playground-ui directory");
+        }
+
+        // Attempt to install dependencies and build
+        execSync(`cd "${PLAYGROUND_UI_PATH}" && npm install && npm run build`, {
+          stdio: 'inherit',
+          timeout: 300000 // 5 minute timeout for build process
+        });
+
+        // Re-check build paths after building
+        uiBuildPath = fs.existsSync(frontendBuildPath) ? frontendBuildPath :
+          (fs.existsSync(frontendDistPath) ? frontendDistPath : null);
+
+        if (!uiBuildPath) {
+          throw new Error("Build completed but build directory not found");
+        }
+      } catch (error) {
+        console.error(`⚠️ Failed to build frontend: ${error.message}`);
+        console.info("ℹ️ Starting in API-only mode");
+        return; // Exit frontend setup but keep backend running
+      }
+    }
+
+    const uiApp = express();
+    uiApp.use(express.static(uiBuildPath));
+
+    uiApp.get('*', (req, res) => {
+      res.sendFile(path.join(uiBuildPath, 'index.html'));
+    });
+
+    // Start the frontend server
+    playgroundPort = await findAvailablePort(playgroundPort, DEFAULT_FRONTEND_PORT);
+    uiApp.listen(playgroundPort, () => {
+      console.log(`🚀 Playground UI running at http://localhost:${playgroundPort}`);
+      open(`http://localhost:${playgroundPort}`);
+    });
+  } else {
+    console.warn("⚠️ Playground UI components not found. Running in API-only mode.");
+    console.info("ℹ️ You can still use the API endpoints at http://localhost:" + backendPort);
   }
-
-  const uiApp = express();
-  uiApp.use(express.static(frontendPath));
-
-  uiApp.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-  });
-
-  uiApp.listen(3000, () => {
-    console.log(`🚀 Playground UI running at http://localhost:3000`);
-    open(`http://localhost:3000`);
-  });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

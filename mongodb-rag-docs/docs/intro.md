@@ -15,6 +15,16 @@ MongoDB-RAG is a library designed to integrate Retrieval-Augmented Generation (R
 - Advanced Indexing via MongoDB Aggregation
 - **CLI for Scaffolding RAG Apps**
 
+## RAG Background
+
+Retrieval-Augmented Generation (RAG) is a technique that uses a large language model to generate text based on a given context. The context is typically a set of documents that are relevant to the query.
+
+The RAG process typically involves the following steps:
+
+1. **Retrieval**: The model retrieves a set of documents from a vector database that are relevant to the query.
+2. **Generation**: The model generates a response to the query based on the retrieved documents.
+
+
 ## 📦 Installation
 ```sh
 npm install mongodb-rag

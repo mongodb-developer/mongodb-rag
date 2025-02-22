@@ -1,8 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import { formatSuccess } from '../../utils/formatting.js';
-import { handleError } from '../../utils/error-handling.js';
-
 export async function createEnvFile() {
   try {
     // Check if .mongodb-rag.json exists
@@ -17,12 +12,16 @@ export async function createEnvFile() {
     // Create .env content with correct property mappings
     const envContent = [
       `MONGODB_URI="${config.mongoUrl}"`,
-      `EMBEDDING_PROVIDER="${config.embedding?.provider || config.provider}"`,
-      `EMBEDDING_API_KEY="${config.embedding?.apiKey}"`,
-      `EMBEDDING_MODEL="${config.embedding?.model || config.model}"`,
-      `VECTOR_INDEX="${config.indexName}"`,
+      `EMBEDDING_PROVIDER="${config.embedding.provider}"`,
+      `EMBEDDING_API_KEY="${config.embedding.apiKey || ''}"`,
+      `EMBEDDING_MODEL="${config.embedding.model || 'text-embedding-3-small'}"`,
+      `VECTOR_INDEX="${config.indexName || 'vector_index'}"`,
       `MONGODB_DATABASE="${config.database}"`,
       `MONGODB_COLLECTION="${config.collection}"`,
+      `EMBEDDING_DIMENSIONS="${config.embedding.dimensions}"`,
+      `EMBEDDING_BATCH_SIZE="${config.embedding.batchSize}"`,
+      `SEARCH_MAX_RESULTS="${config.search.maxResults}"`,
+      `SEARCH_MIN_SCORE="${config.search.minScore}"`
     ].join('\n');
 
     // Write to .env file
@@ -33,4 +32,4 @@ export async function createEnvFile() {
   } catch (error) {
     handleError(error);
   }
-} 
+}

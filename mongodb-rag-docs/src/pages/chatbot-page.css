@@ -1,0 +1,84 @@
+/* src/pages/chatbot-page.css */
+
+/* Override Docusaurus layout for the chatbot page */
+.chatbot-page-layout {
+    --ifm-container-width: 100% !important;
+    --ifm-spacing-horizontal: 0 !important;
+  }
+  
+  .chatbot-page-layout main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  
+  .chatbot-page-layout .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .chatbot-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+  }
+  
+  .chatbot-header {
+    background-color: #f0f4f8;
+    border-bottom: 1px solid #eaedf0;
+    padding: 1.5rem;
+    text-align: left;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  html[data-theme='dark'] .chatbot-header {
+    background-color: #252629;
+    border-bottom-color: #333;
+  }
+  
+  .chatbot-header h1 {
+    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
+  }
+  
+  .chatbot-header p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  html[data-theme='dark'] .chatbot-header p {
+    color: #aaa;
+  }
+  
+  .beta-badge {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: #4361ee;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+  }
+  
+  html[data-theme='dark'] .beta-badge {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .chatbot-header h1 {
+      font-size: 1.25rem;
+    }
+    
+    .chatbot-header p {
+      font-size: 0.8rem;
+    }
+  }

@@ -1,0 +1,169 @@
+---
+id: rag-concepts
+title: 📗 Understanding RAG Concepts
+---
+
+import Quiz from '@site/src/components/Quiz';
+
+
+# Understanding Retrieval-Augmented Generation (RAG)
+
+Before diving into implementation, let's understand what RAG is and why it's become such an important pattern in AI applications.
+
+## What is RAG?
+
+**Retrieval-Augmented Generation (RAG)** is an AI architecture pattern that enhances large language models (LLMs) by retrieving relevant information from external knowledge sources before generating responses.
+
+The core workflow consists of:
+
+1. **Retrieval**: Finding relevant information from a knowledge base
+2. **Augmentation**: Incorporating that information into the context
+3. **Generation**: Using an LLM to generate a response based on the augmented context
+
+## Why Use RAG?
+
+RAG addresses several limitations of standalone LLMs:
+
+1. **Up-to-date information**: LLMs are trained on historical data and don't know about recent events
+2. **Domain-specific knowledge**: Standard LLMs lack deep expertise in specialized domains
+3. **Hallucination reduction**: By grounding responses in retrieved facts, RAG reduces fabricated answers
+4. **Data privacy**: Your proprietary data stays in your control rather than being sent to the LLM provider
+5. **Cost efficiency**: Retrieval can reduce the context length needed for complex questions
+
+## Core Components of RAG
+
+A typical RAG system has these key components:
+
+### 1. Vector Database
+Stores document embeddings and enables semantic search. MongoDB Atlas Vector Search provides this functionality with advanced features like:
+- High-dimensional vector storage
+- Approximate nearest neighbor (ANN) search algorithms
+- Hybrid filtering (combining vector similarity with traditional queries)
+- Horizontal scaling for large collections
+
+### 2. Document Processing Pipeline
+Transforms raw documents into searchable chunks and embeddings:
+- Document loading from various sources
+- Text chunking strategies
+- Embedding generation
+- Metadata extraction
+
+### 3. Retrieval Mechanism
+Finds the most relevant information given a query:
+- Vector similarity search
+- Re-ranking for relevance
+- Metadata filtering
+- Results fusion (combining multiple retrieval methods)
+
+### 4. Augmentation Strategy
+How retrieved content is added to the prompt:
+- Document concatenation
+- Structured formatting
+- Relevance scoring
+- Dynamic prompt construction
+
+### 5. LLM Interface
+The generation component that produces the final output:
+- Prompt engineering
+- Response generation
+- Output formatting
+- Fallback handling
+
+## The RAG Architecture with MongoDB Atlas
+
+When building RAG with MongoDB Atlas, the architecture typically looks like this:
+
+1. **MongoDB Atlas** serves as the vector database
+2. **Embedding models** (like OpenAI's `text-embedding-3-small`) create vector representations
+3. **mongodb-rag library** handles document processing and retrieval
+4. **LLM providers** (OpenAI, Anthropic, etc.) generate the final responses
+
+In the following sections, you'll implement each piece of this architecture to build a complete RAG system.
+
+## Vector Search Fundamentals
+
+Before moving on, it's important to understand some key concepts about vector search:
+
+### Embeddings
+Embeddings are numerical representations of text, images, or other data that capture semantic meaning. 
+Similar concepts have similar vector representations, enabling "similarity search."
+
+For example, these sentences would have similar embeddings:
+- "The dog chased the ball"
+- "A canine pursued a round toy"
+
+### Vector Similarity Metrics
+Different distance functions measure similarity between vectors:
+- **Cosine similarity**: Measures the angle between vectors (1.0 = identical direction)
+- **Euclidean distance**: Measures straight-line distance between points
+- **Dot product**: Simple multiplication of vector components
+
+### Approximate Nearest Neighbor (ANN) Search
+For large vector collections, exact search is inefficient. ANN algorithms like HNSW (Hierarchical Navigable Small Worlds) provide faster results with minimal accuracy trade-offs.
+
+## Let's Check Your Understanding
+
+<Quiz 
+  title="RAG Concepts Check" 
+  questions={[
+    {
+      question: "What are the three main stages in the RAG workflow?",
+      options: [
+        "Vectorization, Augmentation, Generation",
+        "Retrieval, Augmentation, Generation",
+        "Retrieval, Analysis, Generation",
+        "Research, Augmentation, Generation"
+      ],
+      correctIndex: 1,
+      explanation: "The RAG (Retrieval-Augmented Generation) workflow consists of three main stages: Retrieval (finding relevant information from a knowledge base), Augmentation (incorporating that information into the context), and Generation (using an LLM to generate a response based on the augmented context)."
+    },
+    {
+      question: "Which limitation of standalone LLMs does RAG address?",
+      options: [
+        "Slow processing speed",
+        "Limited creative capabilities",
+        "Hallucination reduction",
+        "High energy consumption"
+      ],
+      correctIndex: 2,
+      explanation: "RAG addresses several limitations of standalone LLMs including hallucination reduction. By grounding responses in retrieved facts, RAG reduces fabricated answers."
+    },
+    {
+      question: "What similarity metrics does MongoDB Atlas Vector Search support?",
+      options: [
+        "Only cosine similarity",
+        "Cosine similarity and Euclidean distance",
+        "Cosine similarity, Euclidean distance, and dot product",
+        "Only Euclidean distance"
+      ],
+      correctIndex: 2,
+      explanation: "MongoDB Atlas Vector Search supports three similarity metrics: cosine similarity, Euclidean distance, and dot product."
+    },
+    {
+      question: "What is an embedding in the context of vector search?",
+      options: [
+        "A way to compress documents to save storage space",
+        "A numerical representation that captures semantic meaning",
+        "A method for encrypting sensitive information",
+        "A technique for translating text between languages"
+      ],
+      correctIndex: 1,
+      explanation: "Embeddings are numerical representations of text, images, or other data that capture semantic meaning. Similar concepts have similar vector representations, enabling 'similarity search.'"
+    },
+    {
+      question: "Why is Approximate Nearest Neighbor (ANN) search used in vector databases?",
+      options: [
+        "It provides more accurate results than exact search",
+        "It's the only search method available for vector databases",
+        "It's more efficient for large collections with minimal accuracy trade-offs",
+        "It requires less storage space for embeddings"
+      ],
+      correctIndex: 2,
+      explanation: "For large vector collections, exact search is inefficient. ANN algorithms like HNSW (Hierarchical Navigable Small Worlds) provide faster results with minimal accuracy trade-offs."
+    }
+  ]}
+/>
+
+## Moving Forward
+
+Now that you understand the core concepts behind RAG, let's set up your MongoDB Atlas environment to support vector search capabilities.
