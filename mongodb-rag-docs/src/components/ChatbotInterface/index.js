@@ -239,7 +239,7 @@ export default function ChatbotInterface() {
           ))}
           {isLoading && (
             <div className="message assistant">
-              <div className="message-avatar">🤖</div>
+              <div className="message-avatar">🦉</div>
               <div className="message-content">
                 <div className="loading-indicator">
                   <span></span><span></span><span></span>

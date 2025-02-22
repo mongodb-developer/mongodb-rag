@@ -4,12 +4,17 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 export default [
   {
     path: '/mongodb-rag/blog',
-    component: ComponentCreator('/mongodb-rag/blog', 'bf8'),
+    component: ComponentCreator('/mongodb-rag/blog', '9d8'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/2025/02/01/simplifying',
     component: ComponentCreator('/mongodb-rag/blog/2025/02/01/simplifying', '0bb'),
+    exact: true
+  },
+  {
+    path: '/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot',
+    component: ComponentCreator('/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot', '3d8'),
     exact: true
   },
   {
@@ -29,7 +34,7 @@ export default [
   },
   {
     path: '/mongodb-rag/blog/tags/ai',
-    component: ComponentCreator('/mongodb-rag/blog/tags/ai', '019'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/ai', 'f0c'),
     exact: true
   },
   {
@@ -44,27 +49,27 @@ export default [
   },
   {
     path: '/mongodb-rag/blog/tags/mongodb',
-    component: ComponentCreator('/mongodb-rag/blog/tags/mongodb', '596'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/mongodb', 'b22'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/rag',
-    component: ComponentCreator('/mongodb-rag/blog/tags/rag', 'ca6'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/rag', '2eb'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/tutorial',
-    component: ComponentCreator('/mongodb-rag/blog/tags/tutorial', '204'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/tutorial', 'fc9'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/vector-search',
-    component: ComponentCreator('/mongodb-rag/blog/tags/vector-search', '7a1'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/vector-search', '2ac'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/workshop',
-    component: ComponentCreator('/mongodb-rag/blog/tags/workshop', 'b3c'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/workshop', 'd8b'),
     exact: true
   },
   {

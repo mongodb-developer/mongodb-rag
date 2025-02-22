@@ -1,5 +1,5 @@
 {
-  "/mongodb-rag/blog-bf8": {
+  "/mongodb-rag/blog-9d8": {
     "__comp": "a6aa9e1f",
     "__context": {
       "plugin": "36994c47"
@@ -8,6 +8,9 @@
     "items": [
       {
         "content": "3bfb5bbe"
+      },
+      {
+        "content": "2c1f5287"
       },
       {
         "content": "c838fc4d"
@@ -25,6 +28,17 @@
     },
     "sidebar": "814f3328",
     "content": "5dcd886a"
+  },
+  "/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot-3d8": {
+    "__comp": "ccc49370",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "b4bfec1c"
   },
   "/mongodb-rag/blog/2025/03/15/workshop-introduction-08b": {
     "__comp": "ccc49370",
@@ -52,7 +66,7 @@
     "sidebar": "814f3328",
     "__props": "8b1cd5a3"
   },
-  "/mongodb-rag/blog/tags/ai-019": {
+  "/mongodb-rag/blog/tags/ai-f0c": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -61,6 +75,9 @@
     "items": [
       {
         "content": "3bfb5bbe"
+      },
+      {
+        "content": "2c1f5287"
       }
     ],
     "__props": "a5c9065c"
@@ -91,7 +108,7 @@
     ],
     "__props": "bd95f5f6"
   },
-  "/mongodb-rag/blog/tags/mongodb-596": {
+  "/mongodb-rag/blog/tags/mongodb-b22": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -102,12 +119,15 @@
         "content": "3bfb5bbe"
       },
       {
+        "content": "2c1f5287"
+      },
+      {
         "content": "c838fc4d"
       }
     ],
     "__props": "22534bc1"
   },
-  "/mongodb-rag/blog/tags/rag-ca6": {
+  "/mongodb-rag/blog/tags/rag-2eb": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -116,11 +136,14 @@
     "items": [
       {
         "content": "3bfb5bbe"
+      },
+      {
+        "content": "2c1f5287"
       }
     ],
     "__props": "c5b9c88e"
   },
-  "/mongodb-rag/blog/tags/tutorial-204": {
+  "/mongodb-rag/blog/tags/tutorial-fc9": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -129,11 +152,14 @@
     "items": [
       {
         "content": "3bfb5bbe"
+      },
+      {
+        "content": "2c1f5287"
       }
     ],
     "__props": "62e462ce"
   },
-  "/mongodb-rag/blog/tags/vector-search-7a1": {
+  "/mongodb-rag/blog/tags/vector-search-2ac": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -142,11 +168,14 @@
     "items": [
       {
         "content": "3bfb5bbe"
+      },
+      {
+        "content": "2c1f5287"
       }
     ],
     "__props": "9db19e01"
   },
-  "/mongodb-rag/blog/tags/workshop-b3c": {
+  "/mongodb-rag/blog/tags/workshop-d8b": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -155,6 +184,9 @@
     "items": [
       {
         "content": "3bfb5bbe"
+      },
+      {
+        "content": "2c1f5287"
       }
     ],
     "__props": "7f853204"
