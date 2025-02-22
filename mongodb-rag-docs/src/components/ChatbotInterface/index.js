@@ -7,8 +7,8 @@ import remarkGfm from 'remark-gfm';
 import 'highlight.js/styles/github.css';
 import './ChatbotInterface.css'; // Using regular CSS instead of CSS modules for easier integration
 
-// Import the SampleQuestions component
-const SampleQuestions = () => {
+// Sample Questions component as a proper React component
+const SampleQuestions = ({ onSelectQuestion }) => {
   const [visible, setVisible] = useState(true);
   
   // Sample questions that will appear as clickable buttons
@@ -21,43 +21,11 @@ const SampleQuestions = () => {
   
   // Function to handle clicking a question
   const handleQuestionClick = (question) => {
-    // Get access to the parent component's setInput function
-    const setInputFunction = window.chatbotSetInput;
-    
-    if (typeof setInputFunction === 'function') {
-      // Update React state directly
-      setInputFunction(question);
-      
-      // Hide suggestions
-      setVisible(false);
-      
-      // Focus the input field
-      const inputField = document.querySelector('.chat-input');
-      if (inputField) {
-        inputField.focus();
-      }
-    }
+    // Call the callback with the selected question
+    onSelectQuestion(question);
+    // Hide suggestions
+    setVisible(false);
   };
-  
-  useEffect(() => {
-    const inputField = document.querySelector('.chat-input');
-    
-    if (!inputField) return;
-    
-    const handleInput = () => {
-      if (inputField.value.length > 0) {
-        setVisible(false);
-      } else {
-        setVisible(true);
-      }
-    };
-    
-    inputField.addEventListener('input', handleInput);
-    
-    return () => {
-      inputField.removeEventListener('input', handleInput);
-    };
-  }, []);
   
   if (!visible) return null;
   
@@ -89,18 +57,9 @@ export default function ChatbotInterface() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
+  const [showSampleQuestions, setShowSampleQuestions] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-  
-  // Make setInput available globally so the SampleQuestions component can access it
-  useEffect(() => {
-    window.chatbotSetInput = setInput;
-    
-    // Clean up when component unmounts
-    return () => {
-      window.chatbotSetInput = undefined;
-    };
-  }, []);
 
   // Auto-scroll to bottom when messages update
   useEffect(() => {
@@ -139,6 +98,23 @@ export default function ChatbotInterface() {
     }
   }, [sessionId, messages]);
 
+  // Handle input changes and control sample questions visibility
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInput(value);
+    
+    // Show sample questions only when input is empty
+    setShowSampleQuestions(value.length === 0);
+  };
+
+  // Handle selection of a sample question
+  const handleSelectQuestion = (question) => {
+    setInput(question);
+    setShowSampleQuestions(false);
+    // Focus the input field
+    inputRef.current?.focus();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -148,6 +124,7 @@ export default function ChatbotInterface() {
     setMessages((msgs) => [...msgs, userMessage]);
     setInput('');
     setIsLoading(true);
+    setShowSampleQuestions(true); // Show sample questions after sending
 
     try {
       // Call API with session support
@@ -205,6 +182,10 @@ export default function ChatbotInterface() {
     
     // Clear localStorage
     localStorage.removeItem('mongodbRagChatSession');
+    
+    // Clear input and show sample questions
+    setInput('');
+    setShowSampleQuestions(true);
     
     // Focus the input field
     inputRef.current?.focus();
@@ -276,15 +257,17 @@ export default function ChatbotInterface() {
             Clear Chat
           </button>
           
-          {/* Add the sample questions component here */}
-          <SampleQuestions />
+          {/* Show sample questions only when the flag is true */}
+          {showSampleQuestions && (
+            <SampleQuestions onSelectQuestion={handleSelectQuestion} />
+          )}
           
           <form onSubmit={handleSubmit} className="input-form">
             <input
               ref={inputRef}
               type="text"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={handleInputChange}
               placeholder="Ask about MongoDB-RAG..."
               className="chat-input"
               disabled={isLoading}
