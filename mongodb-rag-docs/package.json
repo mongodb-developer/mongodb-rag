@@ -8,7 +8,7 @@
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "GIT_USER=<GITHUB_USERNAME> docusaurus deploy",
+    "deploy": "GIT_USER=mrlynn docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
