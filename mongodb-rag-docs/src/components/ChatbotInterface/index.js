@@ -7,6 +7,77 @@ import remarkGfm from 'remark-gfm';
 import 'highlight.js/styles/github.css';
 import './ChatbotInterface.css'; // Using regular CSS instead of CSS modules for easier integration
 
+// Import the SampleQuestions component
+const SampleQuestions = () => {
+  const [visible, setVisible] = useState(true);
+  
+  // Sample questions that will appear as clickable buttons
+  const questions = [
+    "How do I configure MongoDB RAG with Ollama?",
+    "What's the difference between OpenAI and Ollama embeddings?",
+    "Can you fix my config file structure?",
+    "How do I troubleshoot connection issues?"
+  ];
+  
+  // Function to handle clicking a question
+  const handleQuestionClick = (question) => {
+    const inputField = document.querySelector('.chat-input');
+    if (inputField) {
+      // Set the value directly
+      inputField.value = question;
+      
+      // Dispatch an input event to trigger React's state update
+      const event = new Event('input', { bubbles: true });
+      inputField.dispatchEvent(event);
+      
+      // Focus the input
+      inputField.focus();
+      
+      // Hide suggestions
+      setVisible(false);
+    }
+  };
+  
+  useEffect(() => {
+    const inputField = document.querySelector('.chat-input');
+    
+    if (!inputField) return;
+    
+    const handleInput = () => {
+      if (inputField.value.length > 0) {
+        setVisible(false);
+      } else {
+        setVisible(true);
+      }
+    };
+    
+    inputField.addEventListener('input', handleInput);
+    
+    return () => {
+      inputField.removeEventListener('input', handleInput);
+    };
+  }, []);
+  
+  if (!visible) return null;
+  
+  return (
+    <div className="sample-questions">
+      <div className="sample-questions-label">Suggested questions:</div>
+      <div className="sample-questions-buttons">
+        {questions.map((question, index) => (
+          <button
+            key={index}
+            onClick={() => handleQuestionClick(question)}
+            className="sample-question-button"
+          >
+            {question}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export default function ChatbotInterface() {
   const [messages, setMessages] = useState([
     {
@@ -69,7 +140,7 @@ export default function ChatbotInterface() {
 
     try {
       // Call API with session support
-      const response = await fetch('http://localhost:5002/api/chat', {
+      const response = await fetch('https://mongodb-rag-docs-backend.vercel.app/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -193,6 +264,10 @@ export default function ChatbotInterface() {
           <button onClick={clearChat} className="clear-button">
             Clear Chat
           </button>
+          
+          {/* Add the sample questions component here */}
+          <SampleQuestions />
+          
           <form onSubmit={handleSubmit} className="input-form">
             <input
               ref={inputRef}

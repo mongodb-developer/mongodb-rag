@@ -295,3 +295,46 @@ html[data-theme='dark'] .send-button:disabled {
     padding: 0.5rem;
   }
 }
+
+
+.sample-questions {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.sample-questions-label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.sample-questions-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sample-question-button {
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.sample-question-button:hover {
+  background-color: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+/* When a question is selected, animate it out smoothly */
+.sample-questions.hiding {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s, transform 0.3s;
+}

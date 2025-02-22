@@ -12,10 +12,7 @@ export default function ChatbotPage() {
       wrapperClassName="chatbot-page-layout"
     >
       <div className="chatbot-page">
-        <header className="chatbot-header">
-          <h1>MongoDB-RAG Chatbot</h1>
-          <p>Ask questions about MongoDB-RAG, implementation details, or how to use the library</p>
-        </header>
+      
         
         <ChatbotInterface />
         
