@@ -1,8 +1,10 @@
-# **Building an Intelligent Documentation Assistant with MongoDB-RAG**
-
-### *by Michael Lynn, Developer Advocate @ MongoDB*  
-📌 [GitHub](https://github.com/mrlynn) | 🛠️ [MongoDB-RAG Docs](https://mongodb.github.io/mongo-rag/)
-
+---
+title: "Building an Intelligent Documentation Assistant with MongoDB-RAG"
+author: Michael Lynn
+author_title: Developer Advocate @ MongoDB
+author_url: https://github.com/mrlynn
+author_image_url: https://avatars.githubusercontent.com/u/192552?v=4
+tags: [mongodb, vector-search, rag, ai, workshop, tutorial]
 ---
 
 ## **📖 TL;DR**
