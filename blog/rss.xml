@@ -85,7 +85,7 @@
 <ol>
 <li>Make sure you have a <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank" rel="noopener noreferrer">MongoDB Atlas account</a></li>
 <li>Install Node.js on your development machine</li>
-<li>Head over to our <a href="https://mongodb-developer.github.io/mongodb-rag/docs/workshop/introduction">Workshop Introduction</a></li>
+<li>Head over to our <a href="https://mongodb-developer.github.io/mongodb-rag/docs/workshop/Introduction/introduction">Workshop Introduction</a></li>
 </ol>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="-looking-ahead">🔮 Looking Ahead<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-looking-ahead" class="hash-link" aria-label="Direct link to 🔮 Looking Ahead" title="Direct link to 🔮 Looking Ahead">​</a></h2>
 <p>This workshop represents the beginning of our commitment to helping developers build sophisticated AI applications. In the coming months, we'll be expanding the content with:</p>

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmongodb_rag_docs=self.webpackChunkmongodb_rag_docs||[]).push([[9720],{9720:function(e,c,r){r.d(c,{createArchitectureServices:function(){return n.S}});var n=r(9936);r(9369)}}]);
