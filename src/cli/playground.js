@@ -233,12 +233,9 @@ export async function startPlayground() {
 
     try {
       const client = await rag.getClient();
-      console.log("Using database:", rag.config.database);
-      console.log("Using collection:", rag.config.collection);
-
       const collection = client.db(rag.config.database).collection(rag.config.collection);
       const documents = await collection.find({}).toArray();
-      res.json(documents);
+      res.json({ documents });
     } catch (error) {
       console.error('Error fetching documents:', error);
       res.status(500).json({ error: error.message });
@@ -273,6 +270,27 @@ export async function startPlayground() {
       res.json({ regularIndexes, searchIndexes });
     } catch (error) {
       console.error('Error fetching indexes:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Add this endpoint to handle search queries
+  app.post('/api/search', async (req, res) => {
+    if (!rag) {
+      return res.status(503).json({ error: "MongoDB connection not available" });
+    }
+
+    const { query } = req.body;
+
+    try {
+      const client = await rag.getClient();
+      const collection = client.db(rag.config.database).collection(rag.config.collection);
+
+      // Perform a search using the query
+      const results = await collection.find({ $text: { $search: query } }).toArray();
+      res.json({ results });
+    } catch (error) {
+      console.error('Error performing search:', error);
       res.status(500).json({ error: error.message });
     }
   });
