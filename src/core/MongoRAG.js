@@ -152,8 +152,19 @@ class MongoRAG {
                 dimensions: this.config.embedding.dimensions
             });
 
+            // Construct the vector search query using the $vectorSearch operator
             const aggregation = query 
-                ? indexManager.buildSearchQuery(embedding, {}, { maxResults })
+                ? [{
+                    $vectorSearch: {
+                        exact: false, // or true, depending on your requirements
+                        filter: {}, // Add any filter specifications if needed
+                        index: this.config.indexName,
+                        limit: maxResults,
+                        numCandidates: 100, // Adjust based on your needs
+                        path: this.config.embeddingFieldPath,
+                        queryVector: embedding
+                    }
+                }]
                 : [{ $skip: skip }, { $limit: maxResults }]; // Simple aggregation for all documents
 
             log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
