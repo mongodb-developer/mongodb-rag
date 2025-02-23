@@ -516,7 +516,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{
-        minHeight: '100vh',
+        minHeight: '90vh',
         bgcolor: 'background.default',
         pb: 4
       }}>

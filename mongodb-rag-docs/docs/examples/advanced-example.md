@@ -52,13 +52,8 @@ async function createAdvancedRAGSystem() {
     embedding: {
       provider: 'openai',
       apiKey: process.env.OPENAI_API_KEY,
-      model: 'text-embedding-ada-002',
+      model: 'text-embedding-3-small',
       batchSize: 100  // Custom batch size for embeddings
-    },
-    preprocessing: {
-      documentPreprocessor,
-      chunkSize: 500,     // Split documents into 500-token chunks
-      chunkOverlap: 50    // 50-token overlap between chunks
     },
     search: {
       maxResults: 5,      // Return top 5 matches
