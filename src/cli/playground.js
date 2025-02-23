@@ -89,6 +89,10 @@ export async function startPlayground() {
       mongodbUrl = config.mongoUrl || mongodbUrl;
       databaseName = config.database || databaseName;
       collectionName = config.collection || collectionName;
+
+      console.log("📌 Loaded MongoDB URL:", mongodbUrl);
+      console.log("📌 Loaded Database Name:", databaseName);
+      console.log("📌 Loaded Collection Name:", collectionName);
     } catch (error) {
       console.error("❌ Error reading .mongodb-rag.json:", error.message);
     }
@@ -109,6 +113,7 @@ export async function startPlayground() {
     console.log("   📌 MongoDB URL:", mongodbUrl);
     console.log("   📌 Database Name:", databaseName);
     console.log("   📌 Collection Name:", collectionName);
+
     rag = new MongoRAG({
       mongoUrl: mongodbUrl,
       database: databaseName,
@@ -121,6 +126,7 @@ export async function startPlayground() {
         baseUrl: process.env.EMBEDDING_BASE_URL || 'http://localhost:11434'
       }
     });
+
     console.log("✅ MongoRAG Final Config:", JSON.stringify(rag.config, null, 2));
     console.log("✅ After initializing MongoRAG:");
     console.log("   📌 Database in rag.config:", rag.config.database);
@@ -145,10 +151,18 @@ export async function startPlayground() {
     }
 
     res.json({
+      mongoUrl: rag.config.mongoUrl || "Unknown",
       database: rag.config.database || "Unknown",
       collection: rag.config.collection || "Unknown",
-      embeddingFieldPath: rag.config.embeddingFieldPath || "embedding",
-      indexName: rag.config.indexName || "vector_index"
+      provider: rag.config.embedding.provider || "Unknown",
+      apiKey: rag.config.embedding.apiKey || "Unknown",
+      model: rag.config.embedding.model || "Unknown",
+      dimensions: rag.config.embedding.dimensions || 1536,
+      batchSize: rag.config.embedding.batchSize || 100,
+      maxResults: rag.config.search.maxResults || 5,
+      minScore: rag.config.search.minScore || 0.7,
+      indexName: rag.config.indexName || "vector_index",
+      embeddingFieldPath: rag.config.embeddingFieldPath || "embedding"
     });
   });
 
@@ -219,7 +233,10 @@ export async function startPlayground() {
 
     try {
       const client = await rag.getClient();
-      const collection = client.db(rag.database).collection(rag.collection);
+      console.log("Using database:", rag.config.database);
+      console.log("Using collection:", rag.config.collection);
+
+      const collection = client.db(rag.config.database).collection(rag.config.collection);
       const documents = await collection.find({}).toArray();
       res.json(documents);
     } catch (error) {
@@ -236,15 +253,22 @@ export async function startPlayground() {
 
     try {
       const client = await rag.getClient();
-      const collection = client.db(rag.database).collection(rag.collection);
+      console.log("Using database for indexes:", rag.config.database);
+      console.log("Using collection for indexes:", rag.config.collection);
+
+      const collection = client.db(rag.config.database).collection(rag.config.collection);
 
       // Fetch regular indexes
+      console.log("Fetching regular indexes...");
       const regularIndexes = await collection.listIndexes().toArray();
+      console.log("Regular indexes fetched:", regularIndexes);
 
       // Fetch search indexes
+      console.log("Fetching search indexes...");
       const searchIndexes = await collection.aggregate([
         { $listSearchIndexes: {} }
       ]).toArray();
+      console.log("Search indexes fetched:", searchIndexes);
 
       res.json({ regularIndexes, searchIndexes });
     } catch (error) {

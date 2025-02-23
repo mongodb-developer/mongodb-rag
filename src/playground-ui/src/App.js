@@ -129,7 +129,9 @@ function App() {
 
   const reloadConfig = async () => {
     const response = await fetch(`${BACKEND_URL}/api/config`);
+    console.log("Reloading config:", response);
     const data = await response.json();
+    console.log("Reloaded config:", data);
     setConfig(data);
     setFormConfig(data);
     setStatus('Configuration reloaded');
