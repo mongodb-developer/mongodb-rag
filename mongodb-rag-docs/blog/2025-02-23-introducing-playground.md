@@ -8,6 +8,10 @@ tags: [mongodb, vector-search, rag, ai, workshop, tutorial]
 ---
 # Introducing the MongoDB-RAG Playground: A Developer's Guide to Vector Search
 
+import Screenshot from '@site/src/components/Screenshot';
+
+<Screenshot url="https://cloud.mongodb.com" src={"img/screenshots/playground.png"} alt="Account creation form" />
+
 ## 🚀 What is the MongoDB-RAG Playground?
 
 The **MongoDB-RAG Playground** is an interactive UI built directly into the `mongodb-rag` library. Designed to provide developers with a **quick and easy** way to explore **vector search**, the Playground helps users visualize their documents, manage indexes, and run search queries—all without writing extra code.
