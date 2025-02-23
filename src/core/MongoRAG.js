@@ -152,6 +152,9 @@ class MongoRAG {
                 dimensions: this.config.embedding.dimensions
             });
 
+            // Ensure the index is created
+            await indexManager.ensureIndex();
+
             // Construct the vector search query using the $vectorSearch operator
             const aggregation = query 
                 ? [{
@@ -167,8 +170,12 @@ class MongoRAG {
                 }]
                 : [{ $skip: skip }, { $limit: maxResults }]; // Simple aggregation for all documents
 
+            console.log('[DEBUG] Aggregation query:', JSON.stringify(aggregation, null, 2));
+
             log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
             const results = await col.aggregate(aggregation).toArray();
+
+            console.log('[DEBUG] Search results:', results);
 
             return results.map(r => ({
                 content: r.content,

@@ -171,6 +171,7 @@ function App() {
 
     setSearching(true);
     try {
+      console.log("Searching for:", query);
       const response = await fetch(`${BACKEND_URL}/api/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
