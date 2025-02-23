@@ -211,6 +211,48 @@ export async function startPlayground() {
     }
   });
 
+  // Add this endpoint to fetch documents
+  app.get('/api/documents', async (req, res) => {
+    if (!rag) {
+      return res.status(503).json({ error: "MongoDB connection not available" });
+    }
+
+    try {
+      const client = await rag.getClient();
+      const collection = client.db(rag.database).collection(rag.collection);
+      const documents = await collection.find({}).toArray();
+      res.json(documents);
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Add this endpoint to fetch indexes
+  app.get('/api/indexes', async (req, res) => {
+    if (!rag) {
+      return res.status(503).json({ error: "MongoDB connection not available" });
+    }
+
+    try {
+      const client = await rag.getClient();
+      const collection = client.db(rag.database).collection(rag.collection);
+
+      // Fetch regular indexes
+      const regularIndexes = await collection.listIndexes().toArray();
+
+      // Fetch search indexes
+      const searchIndexes = await collection.aggregate([
+        { $listSearchIndexes: {} }
+      ]).toArray();
+
+      res.json({ regularIndexes, searchIndexes });
+    } catch (error) {
+      console.error('Error fetching indexes:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       console.log('User disconnected');
