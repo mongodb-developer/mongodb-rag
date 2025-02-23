@@ -94,8 +94,10 @@ function App() {
       try {
         const response = await fetch(`${BACKEND_URL}/api/config`);
         const data = await response.json();
+        console.log("Config data:", data);
         setConfig(data);
         setFormConfig(data);
+        console.log("Form config:", formConfig);
       } catch (error) {
         console.error('Error loading config:', error);
         setStatus('Failed to load configuration');

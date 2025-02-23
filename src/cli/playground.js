@@ -123,8 +123,8 @@ export async function startPlayground() {
     });
     console.log("✅ MongoRAG Final Config:", JSON.stringify(rag.config, null, 2));
     console.log("✅ After initializing MongoRAG:");
-    console.log("   📌 Database in rag.config:", rag.config.defaultDatabase);
-    console.log("   📌 Collection in rag.config:", rag.config.defaultCollection);
+    console.log("   📌 Database in rag.config:", rag.config.database);
+    console.log("   📌 Collection in rag.config:", rag.config.collection);
 
     await rag.connect();
     console.log('✅ Successfully connected to MongoDB');
