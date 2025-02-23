@@ -719,7 +719,7 @@ function App() {
 
                   <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
-                      <TextField fullWidth label="MongoDB URI" variant="outlined" value={formConfig.mongoUrl} onChange={(e) => setFormConfig({ ...formConfig, mongoUrl: e.target.value })} sx={{ mt: 2 }} />
+                      <TextField fullWidth label="MongoDB URI" variant="outlined" value={formConfig.mongoUrl ? '********' : ''} onChange={(e) => setFormConfig({ ...formConfig, mongoUrl: e.target.value })} sx={{ mt: 2 }} />
                     </Grid>
                     <Grid item xs={12} md={6}>
                       <TextField fullWidth label="Database" variant="outlined" value={formConfig.database} onChange={(e) => setFormConfig({ ...formConfig, database: e.target.value })} sx={{ mt: 2 }} />
