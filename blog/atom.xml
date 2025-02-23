@@ -109,6 +109,86 @@
         <category label="tutorial" term="tutorial"/>
     </entry>
     <entry>
+        <title type="html"><![CDATA[Introducing the MongoDB-RAG Playground]]></title>
+        <id>https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground</id>
+        <link href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground"/>
+        <updated>2025-02-23T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[🚀 What is the MongoDB-RAG Playground?]]></summary>
+        <content type="html"><![CDATA[<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-what-is-the-mongodb-rag-playground">🚀 What is the MongoDB-RAG Playground?<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-what-is-the-mongodb-rag-playground" class="hash-link" aria-label="Direct link to 🚀 What is the MongoDB-RAG Playground?" title="Direct link to 🚀 What is the MongoDB-RAG Playground?">​</a></h2>
+<p>The <strong>MongoDB-RAG Playground</strong> is an interactive UI built directly into the <code>mongodb-rag</code> library. Designed to provide developers with a <strong>quick and easy</strong> way to explore <strong>vector search</strong>, the Playground helps users visualize their documents, manage indexes, and run search queries—all without writing extra code.</p>
+<p>Once a developer has set up their MongoDB Atlas cluster and ingested data, they can launch the Playground with a single command:</p>
+<div class="language-sh codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-sh codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">npx mongodb-rag playground</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>This command spins up a UI where developers can <strong>view documents</strong>, <strong>manage vector indexes</strong>, and <strong>perform vector searches</strong>, making it a powerful tool for experimentation and debugging.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-getting-started-with-the-playground">🔧 Getting Started with the Playground<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-getting-started-with-the-playground" class="hash-link" aria-label="Direct link to 🔧 Getting Started with the Playground" title="Direct link to 🔧 Getting Started with the Playground">​</a></h2>
+<p>To take full advantage of the Playground, follow these steps:</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1️⃣-initialize-mongodb-rag">1️⃣ Initialize MongoDB-RAG<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#1%EF%B8%8F%E2%83%A3-initialize-mongodb-rag" class="hash-link" aria-label="Direct link to 1️⃣ Initialize MongoDB-RAG" title="Direct link to 1️⃣ Initialize MongoDB-RAG">​</a></h3>
+<p>First, install the <code>mongodb-rag</code> package if you haven’t already:</p>
+<div class="language-sh codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-sh codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">npm install mongodb-rag dotenv</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>Then, initialize a configuration file:</p>
+<div class="language-sh codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-sh codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">npx mongodb-rag init</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>This will generate a <code>.mongodb-rag.json</code> file where you can specify your <strong>MongoDB connection string</strong>, database name, and collection name.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="2️⃣-ingest-data">2️⃣ Ingest Data<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#2%EF%B8%8F%E2%83%A3-ingest-data" class="hash-link" aria-label="Direct link to 2️⃣ Ingest Data" title="Direct link to 2️⃣ Ingest Data">​</a></h3>
+<p>Before running vector search, you need to ingest documents. This can be done using:</p>
+<div class="language-sh codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-sh codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">npx mongodb-rag ingest --file data.json</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>or by uploading a document directly from the Playground UI.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="3️⃣-create-a-vector-search-index">3️⃣ Create a Vector Search Index<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#3%EF%B8%8F%E2%83%A3-create-a-vector-search-index" class="hash-link" aria-label="Direct link to 3️⃣ Create a Vector Search Index" title="Direct link to 3️⃣ Create a Vector Search Index">​</a></h3>
+<p>Once the data is loaded, create an <strong>Atlas Vector Search Index</strong> using:</p>
+<div class="language-sh codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-sh codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">npx mongodb-rag create-index</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>Alternatively, you can manage indexes from within the Playground UI.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="4️⃣-launch-the-playground">4️⃣ Launch the Playground<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#4%EF%B8%8F%E2%83%A3-launch-the-playground" class="hash-link" aria-label="Direct link to 4️⃣ Launch the Playground" title="Direct link to 4️⃣ Launch the Playground">​</a></h3>
+<p>With the dataset and vector index in place, start the Playground:</p>
+<div class="language-sh codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-sh codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">npx mongodb-rag playground</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>This command launches a <strong>local UI</strong>, allowing you to explore your data in real time.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-features-of-the-playground">🖥️ Features of the Playground<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#%EF%B8%8F-features-of-the-playground" class="hash-link" aria-label="Direct link to 🖥️ Features of the Playground" title="Direct link to 🖥️ Features of the Playground">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-document-viewer">📂 Document Viewer<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-document-viewer" class="hash-link" aria-label="Direct link to 📂 Document Viewer" title="Direct link to 📂 Document Viewer">​</a></h3>
+<ul>
+<li>Browse your stored documents with ease.</li>
+<li>Quickly inspect metadata, embeddings, and content.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-search-panel">🔍 Search Panel<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-search-panel" class="hash-link" aria-label="Direct link to 🔍 Search Panel" title="Direct link to 🔍 Search Panel">​</a></h3>
+<ul>
+<li>Run <strong>vector search queries</strong> directly from the UI.</li>
+<li>Experiment with different similarity metrics (cosine, dot-product, Euclidean).</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="️-index-management">⚙️ Index Management<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#%EF%B8%8F-index-management" class="hash-link" aria-label="Direct link to ⚙️ Index Management" title="Direct link to ⚙️ Index Management">​</a></h3>
+<ul>
+<li>View existing indexes.</li>
+<li>Create new <strong>vector search indexes</strong>.</li>
+<li>Configure embedding models and dimensions.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="-live-updates">📡 Live Updates<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-live-updates" class="hash-link" aria-label="Direct link to 📡 Live Updates" title="Direct link to 📡 Live Updates">​</a></h3>
+<ul>
+<li>Real-time indexing and search updates via <strong>WebSockets</strong>.</li>
+<li>Instant feedback on configuration changes.</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-why-use-the-playground">🔥 Why Use the Playground?<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-why-use-the-playground" class="hash-link" aria-label="Direct link to 🔥 Why Use the Playground?" title="Direct link to 🔥 Why Use the Playground?">​</a></h2>
+<ul>
+<li><strong>No need to build a frontend</strong> – The Playground provides an out-of-the-box UI for MongoDB vector search.</li>
+<li><strong>Debugging made easy</strong> – Quickly inspect documents and indexes without writing queries manually.</li>
+<li><strong>Seamless experimentation</strong> – Tweak search parameters and embeddings dynamically.</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-try-it-today">🎯 Try It Today<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-try-it-today" class="hash-link" aria-label="Direct link to 🎯 Try It Today" title="Direct link to 🎯 Try It Today">​</a></h2>
+<p>The <strong>MongoDB-RAG Playground</strong> is the fastest way to interact with <strong>MongoDB Atlas Vector Search</strong>. Whether you're building an <strong>AI-powered search</strong> engine or testing <strong>RAG (Retrieval-Augmented Generation)</strong> workflows, the Playground gives you full control over your data and indexes in a simple UI.</p>
+<p>Ready to get started?</p>
+<p>Run:</p>
+<div class="language-sh codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-sh codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">npx mongodb-rag playground</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>And start exploring the power of <strong>MongoDB Vector Search</strong> today! 🚀</p>]]></content>
+        <author>
+            <name>Michael Lynn</name>
+            <uri>https://github.com/mrlynn</uri>
+        </author>
+        <category label="mongodb" term="mongodb"/>
+        <category label="vector-search" term="vector-search"/>
+        <category label="rag" term="rag"/>
+        <category label="ai" term="ai"/>
+        <category label="workshop" term="workshop"/>
+        <category label="tutorial" term="tutorial"/>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Building an Intelligent Documentation Assistant with MongoDB-RAG]]></title>
         <id>https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot</id>
         <link href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot"/>
