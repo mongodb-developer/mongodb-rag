@@ -10,6 +10,7 @@ tags: [mongodb, vector-search, rag, ai, workshop, tutorial]
 Since releasing MongoDB-RAG earlier this year, I've received a consistent stream of questions from developers about best practices for building production-ready AI applications. While the library makes RAG implementation much simpler, many developers are looking for end-to-end guidance on the entire development journey.
 
 That's why I'm excited to announce our new **MongoDB-RAG Workshop** - a comprehensive, hands-on guide to building intelligent applications with MongoDB Atlas Vector Search.
+<!--truncate-->
 
 ## 🧠 Why We Created This Workshop
 
@@ -106,7 +107,7 @@ The workshop is available now in our documentation. To begin:
 
 1. Make sure you have a [MongoDB Atlas account](https://www.mongodb.com/cloud/atlas/register)
 2. Install Node.js on your development machine
-3. Head over to our [Workshop Introduction](/docs/workshop/Introduction/introduction)
+3. Head over to our [workshop](/docs/workshop/Introduction/introduction)
 
 ## 🔮 Looking Ahead
 

@@ -31,6 +31,9 @@ export default {
       }
     ]
   ],
+  "plugins": [
+    "docusaurus-search-local"
+  ],
   "markdown": {
     "mermaid": true,
     "format": "mdx",
@@ -302,7 +305,6 @@ export default {
     "static"
   ],
   "customFields": {},
-  "plugins": [],
   "scripts": [],
   "headTags": [],
   "stylesheets": [],

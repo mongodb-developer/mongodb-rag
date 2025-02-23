@@ -12,6 +12,7 @@ Over the past year, I\'ve spent a lot of time talking to developers about Retrie
 That\'s what inspired me to create MongoDB-RAG, an npm library that abstracts away the complexity of embedding generation, vector search, and document retrieval giving developers a plug-and-play way to build RAG-powered applications with MongoDB.
 
 Today, I want to introduce the library and share some of the exciting new features we\'ve recently added to make RAG with MongoDB even more intuitive and performant.
+<!--truncate-->
 
 📌 Why I Built MongoDB-RAG
 When I first started experimenting with vector search and large language models (LLMs), I found myself repeatedly writing boilerplate code for:

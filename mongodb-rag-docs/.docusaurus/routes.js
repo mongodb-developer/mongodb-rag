@@ -88,6 +88,11 @@ export default [
     exact: true
   },
   {
+    path: '/mongodb-rag/search',
+    component: ComponentCreator('/mongodb-rag/search', '276'),
+    exact: true
+  },
+  {
     path: '/mongodb-rag/docs',
     component: ComponentCreator('/mongodb-rag/docs', '5ba'),
     routes: [

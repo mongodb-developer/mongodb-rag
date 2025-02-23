@@ -12,8 +12,9 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <img src="img/logo-square.png" alt="MongoDB RAG" className={styles.logo} />
-        <h1 className="hero__title">{siteConfig.title}</h1>
+      <img src="img/logo-square.png" alt="MongoDB RAG" className={styles.logo} />
+
+      <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">Powerful Retrieval-Augmented Generation (RAG) for MongoDB</p>
         <div className={styles.buttons}>
           <Link className="button button--secondary button--lg" to="/docs/intro">
@@ -21,6 +22,9 @@ function HomepageHeader() {
           </Link> || 
           <Link className="button button--secondary button--lg" to="/chatbot">
             Chatbot →
+          </Link> || 
+          <Link className="button button--secondary button--lg" to="/blog">
+            Read the Blog →
           </Link>
         </div>
       </div>

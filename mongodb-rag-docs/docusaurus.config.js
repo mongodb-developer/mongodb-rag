@@ -28,6 +28,8 @@ const config = {
     ],
   ],
 
+  plugins: ['docusaurus-search-local'],
+
   markdown: {
     mermaid: true,
   },

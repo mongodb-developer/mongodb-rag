@@ -5,10 +5,15 @@
   overflow: hidden;
 }
 
-.heroBanner .logo {
-  width: 210px;
-  margin-bottom: 20px;
-}
+  .heroBanner .logo {
+    width: 210px;
+    margin-bottom: 20px;
+  }
+
+  .npmScreenshot {
+    width: 550px;
+    margin-bottom: 20px;
+  }
 
 .buttons {
   display: flex;

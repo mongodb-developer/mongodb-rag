@@ -12,6 +12,7 @@ Ever wished your documentation could just *answer questions* directly instead of
 
 ### **🤔 Why Build a Documentation Assistant?**
 Traditional documentation search is useful, but it often leaves users with *more questions than answers*. Developers need to read through entire pages, infer context, and piece together solutions. Instead, we wanted something:
+<!--truncate-->
 
 ✅ **Conversational** – Answers questions in natural language  
 ✅ **Context-aware** – Finds relevant documentation snippets instead of just keywords  
