@@ -15,8 +15,9 @@ const log = debug('mongodb-rag:core');
 class MongoRAG {
     constructor(config) {
         // Validate required embedding configuration
-        if (!config.embedding?.apiKey && config.embedding?.provider !== 'ollama') {
-            console.log("API Key failing: ", config.embedding?.apiKey);
+        const apiKey = config.embedding?.apiKey || process.env.EMBEDDING_API_KEY;
+        if (!apiKey && config.embedding?.provider !== 'ollama') {
+            console.log("API Key failing: ", apiKey);
             throw new Error('Embedding API key is required unless using Ollama.');
         }
 
@@ -27,17 +28,16 @@ class MongoRAG {
         safeConfig.database = safeConfig.database || "helpdesk";  // Provide a fallback
         safeConfig.collection = safeConfig.collection || "articles";  // Provide a fallback
 
-
         // Set up internal config structure
         this.config = {
             mongoUrl: safeConfig.mongoUrl,
-            database: safeConfig.database,  // <-- Use this consistently
-            collection: safeConfig.collection,  // <-- Use this consistently
+            database: safeConfig.database,
+            collection: safeConfig.collection,
             indexName: safeConfig.indexName || "vector_index",
             embeddingFieldPath: safeConfig.embeddingFieldPath || "embedding",
             embedding: {
                 provider: safeConfig.embedding.provider,
-                apiKey: safeConfig.embedding.apiKey,
+                apiKey: apiKey,  // Use the resolved apiKey
                 model: safeConfig.embedding.model || 'text-embedding-3-small',
                 baseUrl: safeConfig.embedding.baseUrl || 'http://localhost:11434',
                 batchSize: safeConfig.embedding.batchSize || 100,
@@ -51,7 +51,6 @@ class MongoRAG {
         };
 
         console.log("✅ MongoRAG Final Config:", JSON.stringify(this.config, null, 2));
-
 
         this.client = null;
         this.indexManager = null;
