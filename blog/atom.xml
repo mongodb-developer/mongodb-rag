@@ -83,7 +83,7 @@
 <ol>
 <li>Make sure you have a <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank" rel="noopener noreferrer">MongoDB Atlas account</a></li>
 <li>Install Node.js on your development machine</li>
-<li>Head over to our <a href="https://mongodb-developer.github.io/mongodb-rag/docs/workshop/Introduction/introduction">Workshop Introduction</a></li>
+<li>Head over to our <a href="https://mongodb-developer.github.io/mongodb-rag/docs/workshop/Introduction/introduction">workshop</a></li>
 </ol>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="-looking-ahead">🔮 Looking Ahead<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-looking-ahead" class="hash-link" aria-label="Direct link to 🔮 Looking Ahead" title="Direct link to 🔮 Looking Ahead">​</a></h2>
 <p>This workshop represents the beginning of our commitment to helping developers build sophisticated AI applications. In the coming months, we'll be expanding the content with:</p>
@@ -114,7 +114,7 @@
         <link href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground"/>
         <updated>2025-02-23T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[🚀 What is the MongoDB-RAG Playground?]]></summary>
-        <content type="html"><![CDATA[<div class="browser container"><div class="row"><div class="column left"><span class="dot" style="background:#ED594A"></span><span class="dot" style="background:#FDD800"></span><span class="dot" style="background:#5AC05A"></span></div><div class="column middle"><input type="text" value="https://cloud.mongodb.com"></div><div class="column right"><div style="float:right"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div></div></div><div class="content"><img src="https://mongodb-developer.github.io/mongodb-rag/img/screenshots/playground.png" alt="Account creation form"></div></div>
+        <content type="html"><![CDATA[<div class="browser container"><div class="row"><div class="column left"><span class="dot" style="background:#ED594A"></span><span class="dot" style="background:#FDD800"></span><span class="dot" style="background:#5AC05A"></span></div><div class="column middle"><input type="text" value="http://localhost:3000"></div><div class="column right"><div style="float:right"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div></div></div><div class="content"><img src="https://mongodb-developer.github.io/mongodb-rag/img/screenshots/playground.png" alt="Account creation form"></div></div>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="-what-is-the-mongodb-rag-playground">🚀 What is the MongoDB-RAG Playground?<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/23/introducing-playground#-what-is-the-mongodb-rag-playground" class="hash-link" aria-label="Direct link to 🚀 What is the MongoDB-RAG Playground?" title="Direct link to 🚀 What is the MongoDB-RAG Playground?">​</a></h2>
 <p>The <strong>MongoDB-RAG Playground</strong> is an interactive UI built directly into the <code>mongodb-rag</code> library. Designed to provide developers with a <strong>quick and easy</strong> way to explore <strong>vector search</strong>, the Playground helps users visualize their documents, manage indexes, and run search queries—all without writing extra code.</p>
 <p>Once a developer has set up their MongoDB Atlas cluster and ingested data, they can launch the Playground with a single command:</p>
