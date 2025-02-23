@@ -1,6 +1,6 @@
 {
   "name": "mongodb-rag",
-  "version": "0.74.0",
+  "version": "0.75.0",
   "author": "Michael Lynn <merlynn@gmail.com>",
   "repository": {
     "type": "git",
