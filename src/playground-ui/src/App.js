@@ -97,7 +97,6 @@ function App() {
         console.log("Config data:", data);
         setConfig(data);
         setFormConfig(data);
-        console.log("Form config:", formConfig);
       } catch (error) {
         console.error('Error loading config:', error);
         setStatus('Failed to load configuration');
@@ -123,6 +122,10 @@ function App() {
       socket.off('update');
     };
   }, []);
+
+  useEffect(() => {
+    console.log("Form config:", formConfig);
+  }, [formConfig]);
 
   const reloadConfig = async () => {
     const response = await fetch(`${BACKEND_URL}/api/config`);
