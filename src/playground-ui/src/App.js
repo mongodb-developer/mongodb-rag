@@ -16,7 +16,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000'
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#00ED64', // MongoDB green
+      main: '#12753c', // MongoDB green
     },
     secondary: {
       main: '#001E2B', // MongoDB dark
