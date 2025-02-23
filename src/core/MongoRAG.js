@@ -16,6 +16,7 @@ class MongoRAG {
     constructor(config) {
         // Validate required embedding configuration
         if (!config.embedding?.apiKey && config.embedding?.provider !== 'ollama') {
+            console.log("API Key failing: ", config.embedding?.apiKey);
             throw new Error('Embedding API key is required unless using Ollama.');
         }
 

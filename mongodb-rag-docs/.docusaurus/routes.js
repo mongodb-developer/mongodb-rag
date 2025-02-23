@@ -84,15 +84,15 @@ export default [
   },
   {
     path: '/mongodb-rag/docs',
-    component: ComponentCreator('/mongodb-rag/docs', 'f63'),
+    component: ComponentCreator('/mongodb-rag/docs', '5ba'),
     routes: [
       {
         path: '/mongodb-rag/docs',
-        component: ComponentCreator('/mongodb-rag/docs', '054'),
+        component: ComponentCreator('/mongodb-rag/docs', '9a5'),
         routes: [
           {
             path: '/mongodb-rag/docs',
-            component: ComponentCreator('/mongodb-rag/docs', 'c7a'),
+            component: ComponentCreator('/mongodb-rag/docs', 'a74'),
             routes: [
               {
                 path: '/mongodb-rag/docs/api-reference',
@@ -143,51 +143,147 @@ export default [
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/advanced-techniques',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/advanced-techniques', 'd05'),
+                path: '/mongodb-rag/docs/workshop/advanced-techniques/1-introduction',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/advanced-techniques/1-introduction', '7c4'),
                 exact: true,
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/build-rag-app',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/build-rag-app', 'ef1'),
+                path: '/mongodb-rag/docs/workshop/advanced-techniques/2-hybrid-search',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/advanced-techniques/2-hybrid-search', 'c94'),
                 exact: true,
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/create-embeddings',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/create-embeddings', 'ea7'),
+                path: '/mongodb-rag/docs/workshop/advanced-techniques/3-metadata-filtering',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/advanced-techniques/3-metadata-filtering', '1f1'),
                 exact: true,
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/introduction',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/introduction', '16d'),
+                path: '/mongodb-rag/docs/workshop/advanced-techniques/4-query-expansion',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/advanced-techniques/4-query-expansion', '217'),
                 exact: true,
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/production-deployment',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/production-deployment', 'ae0'),
+                path: '/mongodb-rag/docs/workshop/build-rag-app/2-ingest-documents',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/build-rag-app/2-ingest-documents', '660'),
                 exact: true,
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/rag-concepts',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/rag-concepts', '15a'),
+                path: '/mongodb-rag/docs/workshop/build-rag-app/4-integrate-llm',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/build-rag-app/4-integrate-llm', '6ac'),
                 exact: true,
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/setup-mongodb',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/setup-mongodb', 'fbf'),
+                path: '/mongodb-rag/docs/workshop/build-rag-app/5-cheat-script',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/build-rag-app/5-cheat-script', '10c'),
                 exact: true,
                 sidebar: "docs"
               },
               {
-                path: '/mongodb-rag/docs/workshop/understanding-hybrid-search',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/understanding-hybrid-search', 'eb6'),
+                path: '/mongodb-rag/docs/workshop/build-rag-app/advanced-techniques',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/build-rag-app/advanced-techniques', 'b21'),
                 exact: true
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/build-rag-app/build-rag-app',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/build-rag-app/build-rag-app', '78c'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/Introduction/2-prerequisites',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/Introduction/2-prerequisites', '507'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/Introduction/introduction',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/Introduction/introduction', '149'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/mongodb-atlas/1-what-is-mongodb',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/mongodb-atlas/1-what-is-mongodb', '4bd'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/mongodb-atlas/2-create-account',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/mongodb-atlas/2-create-account', '0cb'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/mongodb-atlas/setup-mongodb',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/mongodb-atlas/setup-mongodb', '08c'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/MongoDB-RAG/create-embeddings',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/MongoDB-RAG/create-embeddings', '1b8'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/MongoDB-RAG/install-configure',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/MongoDB-RAG/install-configure', 'da3'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/MongoDB-RAG/introduction',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/MongoDB-RAG/introduction', '7c3'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/production-deployment/2-scaling',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/production-deployment/2-scaling', 'e9e'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/production-deployment/3-monitoring',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/production-deployment/3-monitoring', '592'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/production-deployment/4-cost-optimization',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/production-deployment/4-cost-optimization', 'e47'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/production-deployment/production-deployment',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/production-deployment/production-deployment', 'be0'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge', '95b'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/RAG-Concepts/how-rag-works',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/how-rag-works', '4a3'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts', '77a'),
+                exact: true,
+                sidebar: "docs"
               }
             ]
           }

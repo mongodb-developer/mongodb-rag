@@ -31,7 +31,29 @@ export default {
       }
     ]
   ],
+  "markdown": {
+    "mermaid": true,
+    "format": "mdx",
+    "mdx1Compat": {
+      "comments": true,
+      "admonitions": true,
+      "headingIds": true
+    },
+    "anchors": {
+      "maintainCase": false
+    }
+  },
+  "themes": [
+    "@docusaurus/theme-mermaid"
+  ],
   "themeConfig": {
+    "mermaid": {
+      "theme": {
+        "light": "default",
+        "dark": "dark"
+      },
+      "options": {}
+    },
     "navbar": {
       "title": "MongoDB-RAG",
       "items": [
@@ -48,7 +70,7 @@ export default {
         },
         {
           "to": "/chatbot",
-          "label": "Chatbot",
+          "label": "🦉 Owlbert",
           "position": "right"
         },
         {
@@ -281,23 +303,10 @@ export default {
   ],
   "customFields": {},
   "plugins": [],
-  "themes": [],
   "scripts": [],
   "headTags": [],
   "stylesheets": [],
   "clientModules": [],
   "titleDelimiter": "|",
-  "noIndex": false,
-  "markdown": {
-    "format": "mdx",
-    "mermaid": false,
-    "mdx1Compat": {
-      "comments": true,
-      "admonitions": true,
-      "headingIds": true
-    },
-    "anchors": {
-      "maintainCase": false
-    }
-  }
+  "noIndex": false
 };

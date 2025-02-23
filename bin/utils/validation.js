@@ -7,7 +7,11 @@ export function validateMongoURI(uri) {
   }
   
   export function isConfigValid(config) {
-    if (!config || typeof config !== 'object') return false;
+    if (!config || typeof config !== 'object') {
+      console.error('Configuration is invalid: - not object - ', config);
+
+      return false;
+    }
     
     // Check MongoDB configuration
     if (!config.mongoUrl || !config.database || !config.collection) return false;

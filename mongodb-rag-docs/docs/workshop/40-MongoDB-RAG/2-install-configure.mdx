@@ -1,0 +1,78 @@
+---
+id: install-configure
+title: 🛠️ Install and Configure MongoDB-RAG
+---
+
+## Step 1: Initialize Your Project
+
+1. **Create a New Directory**: Start by creating a new directory for your project.
+   ```bash:mongodb-rag-docs/docs/workshop/40-MongoDB-RAG/2-setup-mongodb.mdx
+   mkdir my-rag-project
+   cd my-rag-project
+   ```
+
+2. **Initialize a Node.js Project**: Run the following command to initialize a new Node.js project.
+   ```bash
+   npm init -y
+   ```
+
+## Step 2: Install MongoDB-RAG
+
+1. **Install the Library**: Use npm to install the `mongodb-rag` library.
+   ```bash
+   npm install mongodb-rag
+   ```
+
+2. **Install Additional Dependencies**: Depending on your setup, you might need additional packages like `dotenv` for environment variables.
+   ```bash
+   npm install dotenv
+   ```
+
+## Step 3: Configure Environment Variables
+
+1. **Create a `.env` File**: In the root of your project, create a `.env` file to store your environment variables.
+   ```plaintext
+   MONGODB_URI=your_mongodb_connection_string
+   OPENAI_API_KEY=your_openai_api_key
+   ```
+
+2. **Load Environment Variables**: Ensure your application loads these variables. You can do this by requiring `dotenv` at the start of your main file.
+   ```javascript
+   require('dotenv').config();
+   ```
+
+## Step 4: Create a RAG Application
+
+1. **Set Up MongoDB Connection**: Use the `mongodb-rag` library to connect to your MongoDB instance.
+   ```javascript
+   const { MongoClient } = require('mongodb');
+   const client = new MongoClient(process.env.MONGODB_URI);
+
+   async function connectToDatabase() {
+     try {
+       await client.connect();
+       console.log("Connected to MongoDB");
+     } catch (error) {
+       console.error("Error connecting to MongoDB:", error);
+     }
+   }
+   ```
+
+2. **Initialize RAG Components**: Set up the components needed for RAG, such as vector search and augmentation.
+   ```javascript
+   const { RAG } = require('mongodb-rag');
+
+   async function createRAGApp() {
+     const rag = new RAG(client);
+     // Configure your RAG components here
+   }
+   ```
+
+3. **Run Your Application**: Execute your script to ensure everything is set up correctly.
+   ```bash
+   node index.js
+   ```
+
+## Conclusion
+
+By following these steps, you will have a basic setup for a RAG application using the `mongodb-rag` library. This setup will allow you to explore the capabilities of RAG and integrate MongoDB with language models effectively. For more advanced configurations and features, refer to the [official documentation](#).

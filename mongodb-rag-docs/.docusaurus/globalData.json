@@ -51,43 +51,123 @@
               "sidebar": "docs"
             },
             {
-              "id": "workshop/advanced-techniques",
-              "path": "/mongodb-rag/docs/workshop/advanced-techniques",
+              "id": "workshop/advanced-techniques/1-introduction",
+              "path": "/mongodb-rag/docs/workshop/advanced-techniques/1-introduction",
               "sidebar": "docs"
             },
             {
-              "id": "workshop/build-rag-app",
-              "path": "/mongodb-rag/docs/workshop/build-rag-app",
+              "id": "workshop/advanced-techniques/2-hybrid-search",
+              "path": "/mongodb-rag/docs/workshop/advanced-techniques/2-hybrid-search",
               "sidebar": "docs"
             },
             {
-              "id": "workshop/create-embeddings",
-              "path": "/mongodb-rag/docs/workshop/create-embeddings",
+              "id": "workshop/advanced-techniques/3-metadata-filtering",
+              "path": "/mongodb-rag/docs/workshop/advanced-techniques/3-metadata-filtering",
               "sidebar": "docs"
             },
             {
-              "id": "workshop/introduction",
-              "path": "/mongodb-rag/docs/workshop/introduction",
+              "id": "workshop/advanced-techniques/4-query-expansion",
+              "path": "/mongodb-rag/docs/workshop/advanced-techniques/4-query-expansion",
               "sidebar": "docs"
             },
             {
-              "id": "workshop/production-deployment",
-              "path": "/mongodb-rag/docs/workshop/production-deployment",
+              "id": "workshop/build-rag-app/2-ingest-documents",
+              "path": "/mongodb-rag/docs/workshop/build-rag-app/2-ingest-documents",
               "sidebar": "docs"
             },
             {
-              "id": "workshop/rag-concepts",
-              "path": "/mongodb-rag/docs/workshop/rag-concepts",
+              "id": "workshop/build-rag-app/4-integrate-llm",
+              "path": "/mongodb-rag/docs/workshop/build-rag-app/4-integrate-llm",
               "sidebar": "docs"
             },
             {
-              "id": "workshop/setup-mongodb",
-              "path": "/mongodb-rag/docs/workshop/setup-mongodb",
+              "id": "workshop/build-rag-app/5-cheat-script",
+              "path": "/mongodb-rag/docs/workshop/build-rag-app/5-cheat-script",
               "sidebar": "docs"
             },
             {
-              "id": "workshop/understanding-hybrid-search",
-              "path": "/mongodb-rag/docs/workshop/understanding-hybrid-search"
+              "id": "workshop/build-rag-app/advanced-techniques",
+              "path": "/mongodb-rag/docs/workshop/build-rag-app/advanced-techniques"
+            },
+            {
+              "id": "workshop/build-rag-app/build-rag-app",
+              "path": "/mongodb-rag/docs/workshop/build-rag-app/build-rag-app",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/Introduction/2-prerequisites",
+              "path": "/mongodb-rag/docs/workshop/Introduction/2-prerequisites",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/Introduction/introduction",
+              "path": "/mongodb-rag/docs/workshop/Introduction/introduction",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/mongodb-atlas/1-what-is-mongodb",
+              "path": "/mongodb-rag/docs/workshop/mongodb-atlas/1-what-is-mongodb",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/mongodb-atlas/2-create-account",
+              "path": "/mongodb-rag/docs/workshop/mongodb-atlas/2-create-account",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/mongodb-atlas/setup-mongodb",
+              "path": "/mongodb-rag/docs/workshop/mongodb-atlas/setup-mongodb",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/MongoDB-RAG/create-embeddings",
+              "path": "/mongodb-rag/docs/workshop/MongoDB-RAG/create-embeddings",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/MongoDB-RAG/install-configure",
+              "path": "/mongodb-rag/docs/workshop/MongoDB-RAG/install-configure",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/MongoDB-RAG/introduction",
+              "path": "/mongodb-rag/docs/workshop/MongoDB-RAG/introduction",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/production-deployment/2-scaling",
+              "path": "/mongodb-rag/docs/workshop/production-deployment/2-scaling",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/production-deployment/3-monitoring",
+              "path": "/mongodb-rag/docs/workshop/production-deployment/3-monitoring",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/production-deployment/4-cost-optimization",
+              "path": "/mongodb-rag/docs/workshop/production-deployment/4-cost-optimization",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/production-deployment/production-deployment",
+              "path": "/mongodb-rag/docs/workshop/production-deployment/production-deployment",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/RAG-Concepts/check-rag-knowledge",
+              "path": "/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/RAG-Concepts/how-rag-works",
+              "path": "/mongodb-rag/docs/workshop/RAG-Concepts/how-rag-works",
+              "sidebar": "docs"
+            },
+            {
+              "id": "workshop/RAG-Concepts/rag-concepts",
+              "path": "/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts",
+              "sidebar": "docs"
             }
           ],
           "draftIds": [],

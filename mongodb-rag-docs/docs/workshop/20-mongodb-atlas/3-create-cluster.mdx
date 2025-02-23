@@ -1,22 +1,10 @@
 ---
 id: setup-mongodb
-title: 👐 Setting up MongoDB Atlas
+title: 👐 Creating a Cluster
 ---
 
 import BrowserWindow from '@site/src/components/BrowserWindow';
 import Screenshot from '@site/src/components/Screenshot';
-
-# Setting up MongoDB Atlas for Vector Search
-
-In this section, you'll create and configure a MongoDB Atlas cluster with Vector Search capabilities to serve as the foundation for your RAG application.
-
-## Creating a MongoDB Atlas Account
-
-If you don't already have a MongoDB Atlas account, you'll need to create one:
-
-1. Go to [MongoDB Atlas](https://mdb.link/rag-signup)
-2. Sign up for a free account
-3. Complete the initial setup process
 
 ## Deploying a MongoDB Atlas Cluster
 
@@ -29,7 +17,7 @@ Once you have an account, follow these steps to create a new cluster:
 5. Choose a region close to your location
 6. Click "Create" to deploy your cluster
 
-insert screenshot here
+<Screenshot url="https://cloud.mongodb.com" src={"img/screenshots/20-mongodb-atlas/cluster-overview.png"} alt="Account creation form" />
 
 While your cluster is being created (which takes a few minutes), let's configure access settings.
 
@@ -64,9 +52,12 @@ MongoDB Atlas provides sample datasets that you can use for this workshop:
 2. Click "Load Sample Dataset"
 3. Wait for the sample data to be loaded
 
-insert screenshot here
+<Screenshot url="https://cloud.mongodb.com" src={"img/screenshots/20-mongodb-atlas/load-sample-data.png"} alt="Account creation form" />
 
 ## Getting Your Connection String
+
+<Screenshot url="https://cloud.mongodb.com" src={"img/screenshots/20-mongodb-atlas/connect.gif"} alt="Connection" />
+
 
 To connect to your cluster from your application, you'll need your connection string:
 

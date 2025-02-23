@@ -205,17 +205,17 @@
     },
     "config": "5e9f5e1a"
   },
-  "/mongodb-rag/docs-f63": {
+  "/mongodb-rag/docs-5ba": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/mongodb-rag/docs-054": {
+  "/mongodb-rag/docs-9a5": {
     "__comp": "a7bd4aaa",
     "__props": "15313aa8"
   },
-  "/mongodb-rag/docs-c7a": {
+  "/mongodb-rag/docs-a74": {
     "__comp": "a94703ab"
   },
   "/mongodb-rag/docs/api-reference-d42": {
@@ -250,37 +250,101 @@
     "__comp": "17896441",
     "content": "6476eba6"
   },
-  "/mongodb-rag/docs/workshop/advanced-techniques-d05": {
+  "/mongodb-rag/docs/workshop/advanced-techniques/1-introduction-7c4": {
     "__comp": "17896441",
-    "content": "49d2a30b"
+    "content": "dac8ef43"
   },
-  "/mongodb-rag/docs/workshop/build-rag-app-ef1": {
+  "/mongodb-rag/docs/workshop/advanced-techniques/2-hybrid-search-c94": {
     "__comp": "17896441",
-    "content": "049fdc41"
+    "content": "20d095ad"
   },
-  "/mongodb-rag/docs/workshop/create-embeddings-ea7": {
+  "/mongodb-rag/docs/workshop/advanced-techniques/3-metadata-filtering-1f1": {
     "__comp": "17896441",
-    "content": "8919650a"
+    "content": "91c61b6b"
   },
-  "/mongodb-rag/docs/workshop/introduction-16d": {
+  "/mongodb-rag/docs/workshop/advanced-techniques/4-query-expansion-217": {
     "__comp": "17896441",
-    "content": "91f7acf5"
+    "content": "957909aa"
   },
-  "/mongodb-rag/docs/workshop/production-deployment-ae0": {
+  "/mongodb-rag/docs/workshop/build-rag-app/2-ingest-documents-660": {
     "__comp": "17896441",
-    "content": "03c70627"
+    "content": "821b44a7"
   },
-  "/mongodb-rag/docs/workshop/rag-concepts-15a": {
+  "/mongodb-rag/docs/workshop/build-rag-app/4-integrate-llm-6ac": {
     "__comp": "17896441",
-    "content": "d8761489"
+    "content": "32afc5c8"
   },
-  "/mongodb-rag/docs/workshop/setup-mongodb-fbf": {
+  "/mongodb-rag/docs/workshop/build-rag-app/5-cheat-script-10c": {
     "__comp": "17896441",
-    "content": "97e70658"
+    "content": "c24f6541"
   },
-  "/mongodb-rag/docs/workshop/understanding-hybrid-search-eb6": {
+  "/mongodb-rag/docs/workshop/build-rag-app/advanced-techniques-b21": {
     "__comp": "17896441",
-    "content": "85b7951c"
+    "content": "42923e31"
+  },
+  "/mongodb-rag/docs/workshop/build-rag-app/build-rag-app-78c": {
+    "__comp": "17896441",
+    "content": "63050582"
+  },
+  "/mongodb-rag/docs/workshop/Introduction/2-prerequisites-507": {
+    "__comp": "17896441",
+    "content": "fd0a893a"
+  },
+  "/mongodb-rag/docs/workshop/Introduction/introduction-149": {
+    "__comp": "17896441",
+    "content": "3ba1e983"
+  },
+  "/mongodb-rag/docs/workshop/mongodb-atlas/1-what-is-mongodb-4bd": {
+    "__comp": "17896441",
+    "content": "598820d3"
+  },
+  "/mongodb-rag/docs/workshop/mongodb-atlas/2-create-account-0cb": {
+    "__comp": "17896441",
+    "content": "4955fd8a"
+  },
+  "/mongodb-rag/docs/workshop/mongodb-atlas/setup-mongodb-08c": {
+    "__comp": "17896441",
+    "content": "8165d649"
+  },
+  "/mongodb-rag/docs/workshop/MongoDB-RAG/create-embeddings-1b8": {
+    "__comp": "17896441",
+    "content": "7baa1493"
+  },
+  "/mongodb-rag/docs/workshop/MongoDB-RAG/install-configure-da3": {
+    "__comp": "17896441",
+    "content": "cef97810"
+  },
+  "/mongodb-rag/docs/workshop/MongoDB-RAG/introduction-7c3": {
+    "__comp": "17896441",
+    "content": "303b941b"
+  },
+  "/mongodb-rag/docs/workshop/production-deployment/2-scaling-e9e": {
+    "__comp": "17896441",
+    "content": "11a98936"
+  },
+  "/mongodb-rag/docs/workshop/production-deployment/3-monitoring-592": {
+    "__comp": "17896441",
+    "content": "e3257881"
+  },
+  "/mongodb-rag/docs/workshop/production-deployment/4-cost-optimization-e47": {
+    "__comp": "17896441",
+    "content": "1c9cb984"
+  },
+  "/mongodb-rag/docs/workshop/production-deployment/production-deployment-be0": {
+    "__comp": "17896441",
+    "content": "eb812e1d"
+  },
+  "/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge-95b": {
+    "__comp": "17896441",
+    "content": "9a0170f3"
+  },
+  "/mongodb-rag/docs/workshop/RAG-Concepts/how-rag-works-4a3": {
+    "__comp": "17896441",
+    "content": "bad1fddd"
+  },
+  "/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts-77a": {
+    "__comp": "17896441",
+    "content": "cbcc596d"
   },
   "/mongodb-rag/-2ae": {
     "__comp": "c4f5d8e4",

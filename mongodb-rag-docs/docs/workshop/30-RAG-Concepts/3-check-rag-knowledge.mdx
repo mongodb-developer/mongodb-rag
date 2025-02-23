@@ -1,0 +1,49 @@
+---
+id: check-rag-knowledge
+title: 📝 Check Your Knowledge
+---
+
+import Quiz from '../../../src/components/Quiz';
+
+# Check Your Knowledge
+
+Test your understanding of the concepts covered in this workshop with the following quiz. Answer the questions to see how well you've grasped the material.
+
+<Quiz 
+  title="MongoDB-RAG Knowledge Check"
+  questions={[
+    {
+      question: "What is the primary purpose of the MongoDB-RAG library?",
+      options: [
+        "To manage MongoDB databases",
+        "To integrate MongoDB with RAG workflows",
+        "To provide a GUI for MongoDB",
+        "To replace MongoDB with a new database"
+      ],
+      correctIndex: 1,
+      explanation: "The MongoDB-RAG library is designed to integrate MongoDB with Retrieval-Augmented Generation workflows, enhancing language model capabilities."
+    },
+    {
+      question: "Which component is responsible for retrieving relevant documents in RAG?",
+      options: [
+        "User Query",
+        "Vector Search",
+        "Augmentation",
+        "Language Model Response"
+      ],
+      correctIndex: 1,
+      explanation: "Vector Search is responsible for retrieving documents that are semantically similar to the user query."
+    },
+    {
+      question: "What is the role of augmentation in RAG?",
+      options: [
+        "To store data in MongoDB",
+        "To convert text to vector embeddings",
+        "To inject retrieved documents into the language model's prompt",
+        "To generate the final response"
+      ],
+      correctIndex: 2,
+      explanation: "Augmentation involves injecting retrieved documents into the language model's prompt to provide context for generating accurate responses."
+    }
+  ]}
+/>

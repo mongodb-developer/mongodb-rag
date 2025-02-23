@@ -106,7 +106,7 @@ The workshop is available now in our documentation. To begin:
 
 1. Make sure you have a [MongoDB Atlas account](https://www.mongodb.com/cloud/atlas/register)
 2. Install Node.js on your development machine
-3. Head over to our [Workshop Introduction](/docs/workshop/introduction)
+3. Head over to our [Workshop Introduction](/docs/workshop/Introduction/introduction)
 
 ## 🔮 Looking Ahead
 
