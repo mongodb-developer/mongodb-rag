@@ -7,6 +7,8 @@ author_image_url: https://avatars.githubusercontent.com/u/192552?v=4
 tags: [mongodb, vector-search, rag, ai, workshop, tutorial]
 ---
 
+import Screenshot from '@site/src/components/Screenshot';
+
 We're thrilled to announce the launch of [MongoDB-RAG.com](http://mongodb-rag.com/), a comprehensive marketing landing page showcasing the power and flexibility of our MongoDB-RAG npm library. This new site not only provides detailed information about the library's capabilities but also features an interactive demonstration that lets visitors experience Retrieval Augmented Generation (RAG) with MongoDB Vector Search firsthand.
 
 <Screenshot url="https://mongodb-rag.com" src={"img/screenshots/mongodb-rag-com.png"} alt="Landing Page" />
