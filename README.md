@@ -39,7 +39,7 @@ npm install mongodb-rag dotenv
    ```
    This will guide you through setting up your MongoDB connection and save the configuration to `.mongodb-rag.json`. Make sure to add `.mongodb-rag.json` to your `.gitignore` file to keep your credentials secure.
 
-   ```bash
+```bash
    % npx mongodb-rag init
 ✔ Enter your MongoDB connection string: · mongodb+srv://<username>:<password>@cluster0.mongodb.net/
 ✔ Enter the database name: · mongodb-rag
