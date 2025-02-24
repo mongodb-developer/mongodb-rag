@@ -5,7 +5,6 @@
 # MongoDB-RAG
 
 ![NPM Version](https://img.shields.io/npm/v/mongodb-rag?color=blue&label=npm)
-![Build Status](https://github.com/mongodb-developer/mongodb-rag/actions/workflows/test.yml/badge.svg)
 ![License](https://img.shields.io/github/license/mongodb-developer/mongodb-rag)
 ![Issues](https://img.shields.io/github/issues/mongodb-developer/mongodb-rag)
 ![Pull Requests](https://img.shields.io/github/issues-pr/mongodb-developer/mongodb-rag)
@@ -34,8 +33,31 @@ npm install mongodb-rag dotenv
 ```
 
 ### **2️⃣ Set Up MongoDB Atlas**
-1. **Create a MongoDB Atlas Cluster** ([MongoDB Atlas](https://www.mongodb.com/atlas))
-2. **Enable Vector Search** under Indexes:
+1. **Initialize Your App** using the CLI:
+   ```sh
+   npx mongodb-rag init
+   ```
+   This will guide you through setting up your MongoDB connection and save the configuration to `.mongodb-rag.json`. Make sure to add `.mongodb-rag.json` to your `.gitignore` file to keep your credentials secure.
+
+   ```bash
+   % npx mongodb-rag init
+✔ Enter your MongoDB connection string: · mongodb+srv://<username>:<password>@cluster0.mongodb.net/
+✔ Enter the database name: · mongodb-rag
+✔ Enter the collection name: · documents
+✔ Select an embedding provider: · openai
+✔ Enter your API key (skip if using Ollama): · your-embedding-api-key
+✔ Enter the model name: · text-embedding-3-small
+✔ Enter the embedding dimensions: · 1536
+✅ Configuration saved to .mongodb-rag.json
+
+🔍 Next steps:
+1. Run `npx mongodb-rag test-connection` to verify your setup
+2. Run `npx mongodb-rag create-index` to create your vector search index
+```
+
+2. **Create a MongoDB Atlas Cluster** ([MongoDB Atlas](https://www.mongodb.com/atlas))
+
+3. **Enable Vector Search** under Indexes:
    ```json
    {
      "definition": {
@@ -45,14 +67,15 @@ npm install mongodb-rag dotenv
      }
    }
    ```
-3. **Get Your Connection String** and store it in `.env`:
-   ```env
-   MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/
-   EMBEDDING_PROVIDER=openai  # Options: openai, deepseek
-   EMBEDDING_API_KEY=your-embedding-api-key
-   EMBEDDING_MODEL=text-embedding-3-small  # Change based on provider
-   VECTOR_INDEX=default
+or, use the CLI to create the index:
+   ```sh
+   npx mongodb-rag create-index
    ```
+4. **Create a `.env` File** using:
+   ```sh
+   npx mongodb-rag create-env
+   ```
+   This command reads the `.mongodb-rag.json` file and generates a `.env` file with the necessary environment variables.
 
 ### **3️⃣ Quick Start with CLI**
 You can generate a fully working RAG-enabled app with **MongoDB Atlas Vector Search** using:
