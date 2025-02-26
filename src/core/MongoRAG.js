@@ -153,7 +153,7 @@ class MongoRAG {
             });
 
             // Ensure the index is created
-            await indexManager.ensureIndex();
+            await indexManager.ensureIndexes();
 
             // Construct the vector search query using the $vectorSearch operator
             const aggregation = query 

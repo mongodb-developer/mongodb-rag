@@ -56,6 +56,10 @@ class IndexManager {
         }
     }
 
+    async ensureIndex() {
+        return this.ensureIndexes();
+    }
+
     async createSupportingIndexes() {
         try {
             await this.collection.createIndex(
