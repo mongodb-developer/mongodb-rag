@@ -1,3 +1,11 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { formatSuccess } from '../../utils/formatting.js';  // Add the .js extension
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export async function createEnvFile() {
   try {
     // Check if .mongodb-rag.json exists
