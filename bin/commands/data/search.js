@@ -23,12 +23,22 @@ export async function searchDocuments(config, query, options = {}) {
 
     await rag.connect();
 
+    const indexName = config.indexName || 'vector_index';
+
+    const existingIndexes = await rag.collection.listIndexes().toArray();
+    const hasIndex = existingIndexes.some(index => index.name === indexName);
+
+    if (!hasIndex) {
+      throw new Error(`Index '${indexName}' does not exist. Please ensure the index is created.`);
+    }
+
     const searchOptions = {
       database: options.database || config.database,
       collection: options.collection || config.collection,
       maxResults: options.maxResults || config.search?.maxResults || 5,
       minScore: options.minScore || config.search?.minScore || 0.7,
-      includeMetadata: true
+      includeMetadata: true,
+      indexName
     };
 
     if (isDevelopment) {
