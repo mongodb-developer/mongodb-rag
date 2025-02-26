@@ -20,6 +20,7 @@ export async function init(configPath) {
       provider: embeddingConfig.provider,
       model: embeddingConfig.model,
       dimensions: embeddingConfig.dimensions,
+      apiKey: embeddingConfig.apiKey,
       baseUrl: embeddingConfig.baseUrl,
       batchSize: 100
     },
