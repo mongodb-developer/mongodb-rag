@@ -26,6 +26,7 @@ export async function searchDocuments(config, query, options = {}) {
     const indexName = config.indexName || 'vector_index';
 
     const existingIndexes = await rag.collection.listIndexes().toArray();
+    console.log('Existing indexes:', existingIndexes);
     const hasIndex = existingIndexes.some(index => index.name === indexName);
 
     if (!hasIndex) {

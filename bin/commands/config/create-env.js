@@ -30,6 +30,6 @@ export async function createEnvFile() {
 
     console.log(formatSuccess('.env file created successfully!'));
   } catch (error) {
-    handleError(error);
+    console.error(error);
   }
 }
