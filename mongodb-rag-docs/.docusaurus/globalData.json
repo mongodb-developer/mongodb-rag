@@ -168,6 +168,11 @@
               "id": "workshop/RAG-Concepts/rag-concepts",
               "path": "/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts",
               "sidebar": "docs"
+            },
+            {
+              "id": "workshop/RAG-Concepts/rag-introduction",
+              "path": "/mongodb-rag/docs/workshop/RAG-Concepts/rag-introduction",
+              "sidebar": "docs"
             }
           ],
           "draftIds": [],

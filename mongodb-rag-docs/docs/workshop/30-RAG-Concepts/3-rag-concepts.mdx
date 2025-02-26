@@ -1,9 +1,14 @@
 ---
-id: rag-introduction
+id: rag-concepts
 title: 📗 Understanding RAG Concepts
 ---
 
 import Quiz from '@site/src/components/Quiz';
+import InteractiveChunking from '@site/src/components/InteractiveChunking';
+import EmbeddingGenerator from '@site/src/components/EmbeddingGenerator';
+import VectorSearchDemo from '@site/src/components/VectorSearchDemo';
+import RagPromptBuilder from '@site/src/components/RagPromptBuilder';
+import CodeChallenge from '@site/src/components/CodeChallenge';
 
 # Understanding Retrieval-Augmented Generation (RAG)
 
@@ -12,6 +17,8 @@ Before diving into implementation, let's understand what RAG is and why it's bec
 ## What is RAG?
 
 **Retrieval-Augmented Generation (RAG)** is an AI architecture pattern that enhances large language models (LLMs) by retrieving relevant information from external knowledge sources before generating responses.
+
+<RagPromptBuilder />
 
 The core workflow consists of:
 
@@ -44,6 +51,8 @@ Stores document embeddings and enables semantic search. MongoDB Atlas Vector Sea
 - Hybrid filtering (combining vector similarity with traditional queries)
 - Horizontal scaling for large collections
 
+<VectorSearchDemo />
+
 ### 2. Document Processing Pipeline
 Transforms raw documents into searchable chunks and embeddings:
 - Document loading from various sources
@@ -51,12 +60,118 @@ Transforms raw documents into searchable chunks and embeddings:
 - Embedding generation
 - Metadata extraction
 
+<InteractiveChunking />
+
+Let's try implementing your own document chunking function:
+
+<CodeChallenge 
+  title="Implement a Document Chunker" 
+  description="Complete the chunkDocument function to split the document into chunks using a sliding window approach"
+  initialCode={`async function chunkDocument(document, maxChunkSize = 500, overlap = 50) {
+  const chunks = [];
+  const content = document.content;
+  
+  // CODE_BLOCK_1: Your chunking logic here
+  // Implement sliding window chunking
+
+  return chunks;
+}`}
+  solution={`async function chunkDocument(document, maxChunkSize = 500, overlap = 50) {
+  const chunks = [];
+  const content = document.content;
+  
+  // Implement sliding window chunking
+  for (let i = 0; i < content.length; i += (maxChunkSize - overlap)) {
+    const chunk = content.substring(i, i + maxChunkSize);
+    chunks.push({
+      documentId: document.id,
+      content: chunk,
+      metadata: {
+        ...document.metadata,
+        chunkIndex: chunks.length
+      }
+    });
+    
+    // Stop if we've reached the end of the content
+    if (i + maxChunkSize >= content.length) break;
+  }
+
+  return chunks;
+}`}
+  placeholders={["// CODE_BLOCK_1: Your chunking logic here"]}
+/>
+
 ### 3. Retrieval Mechanism
 Finds the most relevant information given a query:
 - Vector similarity search
 - Re-ranking for relevance
 - Metadata filtering
 - Results fusion (combining multiple retrieval methods)
+
+Let's explore how vector search works with this interactive demo:
+
+<CodeChallenge 
+  title="Implement Vector Search" 
+  description="Complete the vectorSearch function to perform a semantic search using MongoDB's $vectorSearch stage"
+  initialCode={`async function vectorSearch(query) {
+  // Generate embedding for query
+  const queryEmbedding = await getEmbedding(query);
+  
+  // CODE_BLOCK_2: Create the aggregation pipeline
+  const pipeline = [
+    // Add the $vectorSearch stage here
+    
+    {
+      $project: {
+        _id: 0,
+        content: 1,
+        metadata: 1,
+        score: { $meta: "vectorSearchScore" }
+      }
+    },
+    {
+      $limit: 5
+    }
+  ];
+  
+  // Execute the pipeline
+  const results = await collection.aggregate(pipeline).toArray();
+  return results;
+}`}
+  solution={`async function vectorSearch(query) {
+  // Generate embedding for query
+  const queryEmbedding = await getEmbedding(query);
+  
+  // Create the aggregation pipeline
+  const pipeline = [
+    {
+      $vectorSearch: {
+        index: "vector_search_index",
+        queryVector: queryEmbedding,
+        path: "embedding",
+        numCandidates: 100,
+        limit: 10
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        content: 1,
+        metadata: 1,
+        score: { $meta: "vectorSearchScore" }
+      }
+    },
+    {
+      $limit: 5
+    }
+  ];
+  
+  // Execute the pipeline
+  const results = await collection.aggregate(pipeline).toArray();
+  return results;
+}`}
+  placeholders={["// CODE_BLOCK_2: Create the aggregation pipeline"]}
+/>
 
 ### 4. Augmentation Strategy
 How retrieved content is added to the prompt:
@@ -94,6 +209,8 @@ Similar concepts have similar vector representations, enabling "similarity searc
 For example, these sentences would have similar embeddings:
 - "The dog chased the ball"
 - "A canine pursued a round toy"
+
+<EmbeddingGenerator />
 
 ### Vector Similarity Metrics
 Different distance functions measure similarity between vectors:
@@ -165,6 +282,47 @@ For large vector collections, exact search is inefficient. ANN algorithms like H
       explanation: "For large vector collections, exact search is inefficient. ANN algorithms like HNSW (Hierarchical Navigable Small Worlds) provide faster results with minimal accuracy trade-offs."
     }
   ]}
+/>
+
+## Try It Yourself
+
+Now that you've learned about the fundamentals of RAG, try building your own prompt construction function:
+
+<CodeChallenge 
+  title="Implement a RAG Prompt Builder" 
+  description="Complete the function to create a prompt that includes context from retrieved documents"
+  initialCode={`function createRagPrompt(query, retrievedDocuments) {
+  // CODE_BLOCK_3: Format the retrieved documents into context
+  
+  // Create the prompt with the formatted context
+  const prompt = \`Answer the question based on the following context.
+If the context doesn't contain relevant information, say "I don't have enough information to answer that question."
+
+Context:
+\${context}
+
+Question: \${query}\`;
+
+  return prompt;
+}`}
+  solution={`function createRagPrompt(query, retrievedDocuments) {
+  // Format the retrieved documents into context
+  const context = retrievedDocuments
+    .map(doc => \`Source: \${doc.source}\\nContent: \${doc.content}\`)
+    .join('\\n\\n');
+  
+  // Create the prompt with the formatted context
+  const prompt = \`Answer the question based on the following context.
+If the context doesn't contain relevant information, say "I don't have enough information to answer that question."
+
+Context:
+\${context}
+
+Question: \${query}\`;
+
+  return prompt;
+}`}
+  placeholders={["// CODE_BLOCK_3: Format the retrieved documents into context"]}
 />
 
 ## Moving Forward

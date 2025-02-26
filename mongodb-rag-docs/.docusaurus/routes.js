@@ -4,12 +4,17 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 export default [
   {
     path: '/mongodb-rag/blog',
-    component: ComponentCreator('/mongodb-rag/blog', '95b'),
+    component: ComponentCreator('/mongodb-rag/blog', '5aa'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/2025/02/01/simplifying',
     component: ComponentCreator('/mongodb-rag/blog/2025/02/01/simplifying', '0bb'),
+    exact: true
+  },
+  {
+    path: '/mongodb-rag/blog/2025/02/15/workshop-introduction',
+    component: ComponentCreator('/mongodb-rag/blog/2025/02/15/workshop-introduction', '9cb'),
     exact: true
   },
   {
@@ -23,8 +28,8 @@ export default [
     exact: true
   },
   {
-    path: '/mongodb-rag/blog/2025/03/15/workshop-introduction',
-    component: ComponentCreator('/mongodb-rag/blog/2025/03/15/workshop-introduction', '08b'),
+    path: '/mongodb-rag/blog/2025/02/24/announcing-mongodb-rag-dot-com',
+    component: ComponentCreator('/mongodb-rag/blog/2025/02/24/announcing-mongodb-rag-dot-com', '272'),
     exact: true
   },
   {
@@ -39,7 +44,7 @@ export default [
   },
   {
     path: '/mongodb-rag/blog/tags/ai',
-    component: ComponentCreator('/mongodb-rag/blog/tags/ai', '1f9'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/ai', '08b'),
     exact: true
   },
   {
@@ -54,27 +59,27 @@ export default [
   },
   {
     path: '/mongodb-rag/blog/tags/mongodb',
-    component: ComponentCreator('/mongodb-rag/blog/tags/mongodb', 'd08'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/mongodb', '29e'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/rag',
-    component: ComponentCreator('/mongodb-rag/blog/tags/rag', 'a8b'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/rag', '446'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/tutorial',
-    component: ComponentCreator('/mongodb-rag/blog/tags/tutorial', '39b'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/tutorial', 'abd'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/vector-search',
-    component: ComponentCreator('/mongodb-rag/blog/tags/vector-search', 'e94'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/vector-search', 'bb1'),
     exact: true
   },
   {
     path: '/mongodb-rag/blog/tags/workshop',
-    component: ComponentCreator('/mongodb-rag/blog/tags/workshop', '50f'),
+    component: ComponentCreator('/mongodb-rag/blog/tags/workshop', 'c50'),
     exact: true
   },
   {
@@ -94,15 +99,15 @@ export default [
   },
   {
     path: '/mongodb-rag/docs',
-    component: ComponentCreator('/mongodb-rag/docs', '5ba'),
+    component: ComponentCreator('/mongodb-rag/docs', '22b'),
     routes: [
       {
         path: '/mongodb-rag/docs',
-        component: ComponentCreator('/mongodb-rag/docs', '9a5'),
+        component: ComponentCreator('/mongodb-rag/docs', '103'),
         routes: [
           {
             path: '/mongodb-rag/docs',
-            component: ComponentCreator('/mongodb-rag/docs', 'a74'),
+            component: ComponentCreator('/mongodb-rag/docs', '8b0'),
             routes: [
               {
                 path: '/mongodb-rag/docs/api-reference',
@@ -279,7 +284,7 @@ export default [
               },
               {
                 path: '/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge', '95b'),
+                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge', '98e'),
                 exact: true,
                 sidebar: "docs"
               },
@@ -291,7 +296,13 @@ export default [
               },
               {
                 path: '/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts',
-                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts', '77a'),
+                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts', '96e'),
+                exact: true,
+                sidebar: "docs"
+              },
+              {
+                path: '/mongodb-rag/docs/workshop/RAG-Concepts/rag-introduction',
+                component: ComponentCreator('/mongodb-rag/docs/workshop/RAG-Concepts/rag-introduction', 'dc3'),
                 exact: true,
                 sidebar: "docs"
               }

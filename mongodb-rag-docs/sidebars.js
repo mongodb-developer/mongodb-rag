@@ -40,8 +40,9 @@ module.exports = {
           type: "category",
           label: "RAG Concepts",
           items: [
-            "workshop/RAG-Concepts/rag-concepts",
+            "workshop/RAG-Concepts/rag-introduction",
             "workshop/RAG-Concepts/how-rag-works",
+            "workshop/RAG-Concepts/rag-concepts",
             "workshop/RAG-Concepts/check-rag-knowledge"
           ]
         },

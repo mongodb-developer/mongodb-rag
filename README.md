@@ -168,23 +168,6 @@ const results = await rag.search('AI topics', {
 
 ---
 
-## **🧪 Testing**
-Run tests using:
-```sh
-npm test
-```
-Run in watch mode:
-```sh
-npm run test:watch
-```
-Check test coverage:
-```sh
-npm run test:coverage
-```
-
----
-
-
 ## **🤝 Contributing**
 Contributions are welcome! Please fork the repository and submit a pull request.
 

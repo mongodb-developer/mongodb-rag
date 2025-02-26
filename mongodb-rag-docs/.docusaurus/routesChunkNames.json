@@ -1,5 +1,5 @@
 {
-  "/mongodb-rag/blog-95b": {
+  "/mongodb-rag/blog-5aa": {
     "__comp": "a6aa9e1f",
     "__context": {
       "plugin": "36994c47"
@@ -7,13 +7,16 @@
     "sidebar": "814f3328",
     "items": [
       {
-        "content": "3bfb5bbe"
+        "content": "0e3f2a7f"
       },
       {
         "content": "a5b040d6"
       },
       {
         "content": "2c1f5287"
+      },
+      {
+        "content": "ded00c6a"
       },
       {
         "content": "c838fc4d"
@@ -31,6 +34,17 @@
     },
     "sidebar": "814f3328",
     "content": "5dcd886a"
+  },
+  "/mongodb-rag/blog/2025/02/15/workshop-introduction-9cb": {
+    "__comp": "ccc49370",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "81d14a8e"
   },
   "/mongodb-rag/blog/2025/02/22/building-the-docs-chatbot-3d8": {
     "__comp": "ccc49370",
@@ -54,7 +68,7 @@
     "sidebar": "814f3328",
     "content": "14dba412"
   },
-  "/mongodb-rag/blog/2025/03/15/workshop-introduction-08b": {
+  "/mongodb-rag/blog/2025/02/24/announcing-mongodb-rag-dot-com-272": {
     "__comp": "ccc49370",
     "__context": {
       "data": {
@@ -63,7 +77,7 @@
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
-    "content": "828685db"
+    "content": "52edb346"
   },
   "/mongodb-rag/blog/archive-ff7": {
     "__comp": "9e4087bc",
@@ -80,7 +94,7 @@
     "sidebar": "814f3328",
     "__props": "8b1cd5a3"
   },
-  "/mongodb-rag/blog/tags/ai-1f9": {
+  "/mongodb-rag/blog/tags/ai-08b": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -88,13 +102,16 @@
     "sidebar": "814f3328",
     "items": [
       {
-        "content": "3bfb5bbe"
+        "content": "0e3f2a7f"
       },
       {
         "content": "a5b040d6"
       },
       {
         "content": "2c1f5287"
+      },
+      {
+        "content": "ded00c6a"
       }
     ],
     "__props": "a5c9065c"
@@ -125,7 +142,7 @@
     ],
     "__props": "bd95f5f6"
   },
-  "/mongodb-rag/blog/tags/mongodb-d08": {
+  "/mongodb-rag/blog/tags/mongodb-29e": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -133,13 +150,16 @@
     "sidebar": "814f3328",
     "items": [
       {
-        "content": "3bfb5bbe"
+        "content": "0e3f2a7f"
       },
       {
         "content": "a5b040d6"
       },
       {
         "content": "2c1f5287"
+      },
+      {
+        "content": "ded00c6a"
       },
       {
         "content": "c838fc4d"
@@ -147,7 +167,7 @@
     ],
     "__props": "22534bc1"
   },
-  "/mongodb-rag/blog/tags/rag-a8b": {
+  "/mongodb-rag/blog/tags/rag-446": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -155,18 +175,21 @@
     "sidebar": "814f3328",
     "items": [
       {
-        "content": "3bfb5bbe"
+        "content": "0e3f2a7f"
       },
       {
         "content": "a5b040d6"
       },
       {
         "content": "2c1f5287"
+      },
+      {
+        "content": "ded00c6a"
       }
     ],
     "__props": "c5b9c88e"
   },
-  "/mongodb-rag/blog/tags/tutorial-39b": {
+  "/mongodb-rag/blog/tags/tutorial-abd": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -174,18 +197,21 @@
     "sidebar": "814f3328",
     "items": [
       {
-        "content": "3bfb5bbe"
+        "content": "0e3f2a7f"
       },
       {
         "content": "a5b040d6"
       },
       {
         "content": "2c1f5287"
+      },
+      {
+        "content": "ded00c6a"
       }
     ],
     "__props": "62e462ce"
   },
-  "/mongodb-rag/blog/tags/vector-search-e94": {
+  "/mongodb-rag/blog/tags/vector-search-bb1": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -193,18 +219,21 @@
     "sidebar": "814f3328",
     "items": [
       {
-        "content": "3bfb5bbe"
+        "content": "0e3f2a7f"
       },
       {
         "content": "a5b040d6"
       },
       {
         "content": "2c1f5287"
+      },
+      {
+        "content": "ded00c6a"
       }
     ],
     "__props": "9db19e01"
   },
-  "/mongodb-rag/blog/tags/workshop-50f": {
+  "/mongodb-rag/blog/tags/workshop-c50": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -212,13 +241,16 @@
     "sidebar": "814f3328",
     "items": [
       {
-        "content": "3bfb5bbe"
+        "content": "0e3f2a7f"
       },
       {
         "content": "a5b040d6"
       },
       {
         "content": "2c1f5287"
+      },
+      {
+        "content": "ded00c6a"
       }
     ],
     "__props": "7f853204"
@@ -243,17 +275,17 @@
       "plugin": "f0d8dd69"
     }
   },
-  "/mongodb-rag/docs-5ba": {
+  "/mongodb-rag/docs-22b": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/mongodb-rag/docs-9a5": {
+  "/mongodb-rag/docs-103": {
     "__comp": "a7bd4aaa",
     "__props": "15313aa8"
   },
-  "/mongodb-rag/docs-a74": {
+  "/mongodb-rag/docs-8b0": {
     "__comp": "a94703ab"
   },
   "/mongodb-rag/docs/api-reference-d42": {
@@ -372,15 +404,19 @@
     "__comp": "17896441",
     "content": "eb812e1d"
   },
-  "/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge-95b": {
+  "/mongodb-rag/docs/workshop/RAG-Concepts/check-rag-knowledge-98e": {
     "__comp": "17896441",
-    "content": "9a0170f3"
+    "content": "a58685bf"
   },
   "/mongodb-rag/docs/workshop/RAG-Concepts/how-rag-works-4a3": {
     "__comp": "17896441",
     "content": "bad1fddd"
   },
-  "/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts-77a": {
+  "/mongodb-rag/docs/workshop/RAG-Concepts/rag-concepts-96e": {
+    "__comp": "17896441",
+    "content": "ed4e2622"
+  },
+  "/mongodb-rag/docs/workshop/RAG-Concepts/rag-introduction-dc3": {
     "__comp": "17896441",
     "content": "cbcc596d"
   },

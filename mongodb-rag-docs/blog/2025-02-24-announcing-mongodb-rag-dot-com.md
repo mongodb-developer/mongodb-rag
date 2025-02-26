@@ -17,6 +17,8 @@ We're thrilled to announce the launch of [MongoDB-RAG.com](http://mongodb-rag.co
 
 The new landing page serves as a central hub for everything related to the MongoDB-RAG library, with several exciting features:
 
+<!--truncate-->
+
 ### Enhanced Documentation and Resources
 
 The site provides clear, concise information about the MongoDB-RAG library, including its core features:
