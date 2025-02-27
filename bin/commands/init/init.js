@@ -46,6 +46,7 @@ export async function init(configPath) {
     console.log(chalk.cyan('\n🔍 Next steps:'));
     console.log(chalk.cyan('1. Run `npx mongodb-rag test-connection` to verify your setup'));
     console.log(chalk.cyan('2. Run `npx mongodb-rag create-index` to create your vector search index'));
+    console.log(chalk.cyan('2. Run `npx mongodb-rag create-env` to create a .env file from your .mongodb-rag.json file'));
   }
 
   return config;
