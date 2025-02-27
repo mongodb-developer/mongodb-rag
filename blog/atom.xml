@@ -2,112 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://mongodb-developer.github.io/mongodb-rag/blog</id>
     <title>MongoDB-RAG Blog</title>
-    <updated>2025-03-15T00:00:00.000Z</updated>
+    <updated>2025-02-24T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://mongodb-developer.github.io/mongodb-rag/blog"/>
     <subtitle>MongoDB-RAG Blog</subtitle>
-    <entry>
-        <title type="html"><![CDATA[Build AI Applications with MongoDB: A Complete RAG Workshop]]></title>
-        <id>https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction</id>
-        <link href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction"/>
-        <updated>2025-03-15T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Since releasing MongoDB-RAG earlier this year, I've received a consistent stream of questions from developers about best practices for building production-ready AI applications. While the library makes RAG implementation much simpler, many developers are looking for end-to-end guidance on the entire development journey.]]></summary>
-        <content type="html"><![CDATA[<p>Since releasing MongoDB-RAG earlier this year, I've received a consistent stream of questions from developers about best practices for building production-ready AI applications. While the library makes RAG implementation much simpler, many developers are looking for end-to-end guidance on the entire development journey.</p>
-<p>That's why I'm excited to announce our new <strong>MongoDB-RAG Workshop</strong> - a comprehensive, hands-on guide to building intelligent applications with MongoDB Atlas Vector Search.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-why-we-created-this-workshop">🧠 Why We Created This Workshop<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-why-we-created-this-workshop" class="hash-link" aria-label="Direct link to 🧠 Why We Created This Workshop" title="Direct link to 🧠 Why We Created This Workshop">​</a></h2>
-<p>Building modern AI applications isn't just about connecting to an LLM API. It requires:</p>
-<ul>
-<li>Understanding vector embeddings and semantic search</li>
-<li>Organizing and storing your knowledge base efficiently</li>
-<li>Implementing retrieval mechanisms that deliver relevant context</li>
-<li>Creating a scalable architecture that performs well in production</li>
-</ul>
-<p>This workshop addresses all these challenges, providing a clear path from concept to production.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-what-youll-learn">📚 What You'll Learn<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-what-youll-learn" class="hash-link" aria-label="Direct link to 📚 What You'll Learn" title="Direct link to 📚 What You'll Learn">​</a></h2>
-<p>Our new workshop walks you through the complete process of building a production-ready RAG application:</p>
-<ol>
-<li>
-<p><strong>Understanding RAG Fundamentals</strong><br>
-<!-- -->Before diving into code, we explore how vector search works, why embeddings matter, and the core RAG architecture patterns.</p>
-</li>
-<li>
-<p><strong>Setting Up MongoDB Atlas</strong><br>
-<!-- -->Learn how to create and configure a MongoDB Atlas cluster with Vector Search capabilities - the foundation of your AI application.</p>
-</li>
-<li>
-<p><strong>Creating Vector Embeddings</strong><br>
-<!-- -->Master techniques for generating and managing vector embeddings from various text sources, including handling different providers (OpenAI, Ollama, and more).</p>
-</li>
-<li>
-<p><strong>Building a Complete RAG Application</strong><br>
-<!-- -->Develop a full-featured application that ingests documents, performs semantic search, and generates contextually relevant responses.</p>
-</li>
-<li>
-<p><strong>Advanced Techniques</strong><br>
-<!-- -->Take your application to the next level with hybrid search, re-ranking, query expansion, and other advanced retrieval strategies.</p>
-</li>
-<li>
-<p><strong>Production Deployment</strong><br>
-<!-- -->Learn best practices for scaling, monitoring, and optimizing your RAG application in production.</p>
-</li>
-</ol>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-who-should-take-this-workshop">💡 Who Should Take This Workshop?<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-who-should-take-this-workshop" class="hash-link" aria-label="Direct link to 💡 Who Should Take This Workshop?" title="Direct link to 💡 Who Should Take This Workshop?">​</a></h2>
-<p>This workshop is perfect for:</p>
-<ul>
-<li><strong>Backend Developers</strong> looking to add AI capabilities to existing applications</li>
-<li><strong>AI Engineers</strong> who want to build more robust retrieval systems</li>
-<li><strong>Technical Leaders</strong> evaluating RAG architecture patterns</li>
-<li><strong>Full-Stack Developers</strong> building end-to-end AI applications</li>
-</ul>
-<p>No prior experience with vector databases is required, though basic familiarity with MongoDB and Node.js will help you get the most out of the material.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-a-hands-on-approach">🚀 A Hands-On Approach<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-a-hands-on-approach" class="hash-link" aria-label="Direct link to 🚀 A Hands-On Approach" title="Direct link to 🚀 A Hands-On Approach">​</a></h2>
-<p>What makes this workshop special is its hands-on nature. You won't just read about concepts - you'll implement them step-by-step:</p>
-<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// By the end of the workshop, you'll be writing code like this</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token keyword" style="font-style:italic">async</span><span class="token plain"> </span><span class="token keyword" style="font-style:italic">function</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">advancedRAGPipeline</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token parameter">query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 1: Expand query with variations</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> expandedQueries </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">expandQuery</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 2: Retrieve from multiple collections</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> initialResults </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">retrieveFromMultipleSources</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">expandedQueries</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 3: Rerank results</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> rerankedResults </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">rerankResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">initialResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 4: Generate response with the LLM</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> response </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">generateResponse</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> rerankedResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword control-flow" style="font-style:italic">return</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token literal-property property">answer</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> response</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token literal-property property">sources</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> rerankedResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token method function property-access" style="color:rgb(130, 170, 255)">map</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token parameter">r</span><span class="token plain"> </span><span class="token arrow operator" style="color:rgb(137, 221, 255)">=&gt;</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">      </span><span class="token literal-property property">document</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> r</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token property-access">documentId</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">      </span><span class="token literal-property property">source</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> r</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token property-access">metadata</span><span class="token operator" style="color:rgb(137, 221, 255)">?.</span><span class="token plain">source</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">      </span><span class="token literal-property property">score</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> r</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token property-access">score</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
-<p>You'll build real components that solve common challenges:</p>
-<ul>
-<li>Document chunking strategies for optimal retrieval</li>
-<li>Caching mechanisms for performance optimization</li>
-<li>Hybrid search implementations</li>
-<li>Microservice architectures for production deployment</li>
-</ul>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-real-world-applications">📈 Real-World Applications<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-real-world-applications" class="hash-link" aria-label="Direct link to 📈 Real-World Applications" title="Direct link to 📈 Real-World Applications">​</a></h2>
-<p>The workshop focuses on practical applications that solve real business problems:</p>
-<ul>
-<li><strong>Customer Support Systems</strong> that retrieve accurate information from knowledge bases</li>
-<li><strong>Research Assistants</strong> that can analyze and retrieve information from scientific literature</li>
-<li><strong>Content Recommendation Engines</strong> powered by semantic similarity</li>
-<li><strong>Intelligent Document Search</strong> across enterprise content</li>
-</ul>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-getting-started">🛠️ Getting Started<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#%EF%B8%8F-getting-started" class="hash-link" aria-label="Direct link to 🛠️ Getting Started" title="Direct link to 🛠️ Getting Started">​</a></h2>
-<p>The workshop is available now in our documentation. To begin:</p>
-<ol>
-<li>Make sure you have a <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank" rel="noopener noreferrer">MongoDB Atlas account</a></li>
-<li>Install Node.js on your development machine</li>
-<li>Head over to our <a href="https://mongodb-developer.github.io/mongodb-rag/docs/workshop/Introduction/introduction">workshop</a></li>
-</ol>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-looking-ahead">🔮 Looking Ahead<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-looking-ahead" class="hash-link" aria-label="Direct link to 🔮 Looking Ahead" title="Direct link to 🔮 Looking Ahead">​</a></h2>
-<p>This workshop represents the beginning of our commitment to helping developers build sophisticated AI applications. In the coming months, we'll be expanding the content with:</p>
-<ul>
-<li>Multi-modal RAG implementations (text + images)</li>
-<li>Enterprise-scale architectures</li>
-<li>Performance optimization techniques</li>
-<li>Integration with popular AI frameworks</li>
-</ul>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-your-feedback-matters">🤔 Your Feedback Matters<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/03/15/workshop-introduction#-your-feedback-matters" class="hash-link" aria-label="Direct link to 🤔 Your Feedback Matters" title="Direct link to 🤔 Your Feedback Matters">​</a></h2>
-<p>As you work through the workshop, we'd love to hear your feedback. What challenges are you facing? What additional topics would you like to see covered? Your input will help shape future content.</p>
-<p>Building AI applications doesn't have to be complicated. With MongoDB-RAG and this workshop, you have everything you need to create intelligent, context-aware applications that deliver real value.</p>
-<p>Happy building!</p>]]></content>
-        <author>
-            <name>Michael Lynn</name>
-            <uri>https://github.com/mrlynn</uri>
-        </author>
-        <category label="mongodb" term="mongodb"/>
-        <category label="vector-search" term="vector-search"/>
-        <category label="rag" term="rag"/>
-        <category label="ai" term="ai"/>
-        <category label="workshop" term="workshop"/>
-        <category label="tutorial" term="tutorial"/>
-    </entry>
     <entry>
         <title type="html"><![CDATA[Introducing MongoDB-RAG.com]]></title>
         <id>https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/24/announcing-mongodb-rag-dot-com</id>
@@ -349,6 +247,108 @@
 <p>📘 <a href="https://mongodb.github.io/mongo-rag/" target="_blank" rel="noopener noreferrer">MongoDB-RAG Docs</a><br>
 <!-- -->🔗 <a href="https://github.com/mongodb-developer/mongodb-rag" target="_blank" rel="noopener noreferrer">GitHub Repository</a><br>
 <!-- -->📦 <a href="https://www.npmjs.com/package/mongodb-rag" target="_blank" rel="noopener noreferrer">NPM Package</a></p>]]></content>
+        <author>
+            <name>Michael Lynn</name>
+            <uri>https://github.com/mrlynn</uri>
+        </author>
+        <category label="mongodb" term="mongodb"/>
+        <category label="vector-search" term="vector-search"/>
+        <category label="rag" term="rag"/>
+        <category label="ai" term="ai"/>
+        <category label="workshop" term="workshop"/>
+        <category label="tutorial" term="tutorial"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Build AI Applications with MongoDB: A Complete RAG Workshop]]></title>
+        <id>https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction</id>
+        <link href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction"/>
+        <updated>2025-02-15T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Since releasing MongoDB-RAG earlier this year, I've received a consistent stream of questions from developers about best practices for building production-ready AI applications. While the library makes RAG implementation much simpler, many developers are looking for end-to-end guidance on the entire development journey.]]></summary>
+        <content type="html"><![CDATA[<p>Since releasing MongoDB-RAG earlier this year, I've received a consistent stream of questions from developers about best practices for building production-ready AI applications. While the library makes RAG implementation much simpler, many developers are looking for end-to-end guidance on the entire development journey.</p>
+<p>That's why I'm excited to announce our new <strong>MongoDB-RAG Workshop</strong> - a comprehensive, hands-on guide to building intelligent applications with MongoDB Atlas Vector Search.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-why-we-created-this-workshop">🧠 Why We Created This Workshop<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#-why-we-created-this-workshop" class="hash-link" aria-label="Direct link to 🧠 Why We Created This Workshop" title="Direct link to 🧠 Why We Created This Workshop">​</a></h2>
+<p>Building modern AI applications isn't just about connecting to an LLM API. It requires:</p>
+<ul>
+<li>Understanding vector embeddings and semantic search</li>
+<li>Organizing and storing your knowledge base efficiently</li>
+<li>Implementing retrieval mechanisms that deliver relevant context</li>
+<li>Creating a scalable architecture that performs well in production</li>
+</ul>
+<p>This workshop addresses all these challenges, providing a clear path from concept to production.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-what-youll-learn">📚 What You'll Learn<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#-what-youll-learn" class="hash-link" aria-label="Direct link to 📚 What You'll Learn" title="Direct link to 📚 What You'll Learn">​</a></h2>
+<p>Our new workshop walks you through the complete process of building a production-ready RAG application:</p>
+<ol>
+<li>
+<p><strong>Understanding RAG Fundamentals</strong><br>
+<!-- -->Before diving into code, we explore how vector search works, why embeddings matter, and the core RAG architecture patterns.</p>
+</li>
+<li>
+<p><strong>Setting Up MongoDB Atlas</strong><br>
+<!-- -->Learn how to create and configure a MongoDB Atlas cluster with Vector Search capabilities - the foundation of your AI application.</p>
+</li>
+<li>
+<p><strong>Creating Vector Embeddings</strong><br>
+<!-- -->Master techniques for generating and managing vector embeddings from various text sources, including handling different providers (OpenAI, Ollama, and more).</p>
+</li>
+<li>
+<p><strong>Building a Complete RAG Application</strong><br>
+<!-- -->Develop a full-featured application that ingests documents, performs semantic search, and generates contextually relevant responses.</p>
+</li>
+<li>
+<p><strong>Advanced Techniques</strong><br>
+<!-- -->Take your application to the next level with hybrid search, re-ranking, query expansion, and other advanced retrieval strategies.</p>
+</li>
+<li>
+<p><strong>Production Deployment</strong><br>
+<!-- -->Learn best practices for scaling, monitoring, and optimizing your RAG application in production.</p>
+</li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-who-should-take-this-workshop">💡 Who Should Take This Workshop?<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#-who-should-take-this-workshop" class="hash-link" aria-label="Direct link to 💡 Who Should Take This Workshop?" title="Direct link to 💡 Who Should Take This Workshop?">​</a></h2>
+<p>This workshop is perfect for:</p>
+<ul>
+<li><strong>Backend Developers</strong> looking to add AI capabilities to existing applications</li>
+<li><strong>AI Engineers</strong> who want to build more robust retrieval systems</li>
+<li><strong>Technical Leaders</strong> evaluating RAG architecture patterns</li>
+<li><strong>Full-Stack Developers</strong> building end-to-end AI applications</li>
+</ul>
+<p>No prior experience with vector databases is required, though basic familiarity with MongoDB and Node.js will help you get the most out of the material.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-a-hands-on-approach">🚀 A Hands-On Approach<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#-a-hands-on-approach" class="hash-link" aria-label="Direct link to 🚀 A Hands-On Approach" title="Direct link to 🚀 A Hands-On Approach">​</a></h2>
+<p>What makes this workshop special is its hands-on nature. You won't just read about concepts - you'll implement them step-by-step:</p>
+<div class="language-javascript codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-javascript codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// By the end of the workshop, you'll be writing code like this</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token keyword" style="font-style:italic">async</span><span class="token plain"> </span><span class="token keyword" style="font-style:italic">function</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">advancedRAGPipeline</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token parameter">query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 1: Expand query with variations</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> expandedQueries </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">expandQuery</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 2: Retrieve from multiple collections</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> initialResults </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">retrieveFromMultipleSources</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">expandedQueries</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 3: Rerank results</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> rerankedResults </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">rerankResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">initialResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic">// Step 4: Generate response with the LLM</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword" style="font-style:italic">const</span><span class="token plain"> response </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> </span><span class="token keyword control-flow" style="font-style:italic">await</span><span class="token plain"> </span><span class="token function" style="color:rgb(130, 170, 255)">generateResponse</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">query</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> rerankedResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token keyword control-flow" style="font-style:italic">return</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token literal-property property">answer</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> response</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token literal-property property">sources</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> rerankedResults</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token method function property-access" style="color:rgb(130, 170, 255)">map</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token parameter">r</span><span class="token plain"> </span><span class="token arrow operator" style="color:rgb(137, 221, 255)">=&gt;</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">      </span><span class="token literal-property property">document</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> r</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token property-access">documentId</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">      </span><span class="token literal-property property">source</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> r</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token property-access">metadata</span><span class="token operator" style="color:rgb(137, 221, 255)">?.</span><span class="token plain">source</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">      </span><span class="token literal-property property">score</span><span class="token operator" style="color:rgb(137, 221, 255)">:</span><span class="token plain"> r</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token property-access">score</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">  </span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>You'll build real components that solve common challenges:</p>
+<ul>
+<li>Document chunking strategies for optimal retrieval</li>
+<li>Caching mechanisms for performance optimization</li>
+<li>Hybrid search implementations</li>
+<li>Microservice architectures for production deployment</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-real-world-applications">📈 Real-World Applications<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#-real-world-applications" class="hash-link" aria-label="Direct link to 📈 Real-World Applications" title="Direct link to 📈 Real-World Applications">​</a></h2>
+<p>The workshop focuses on practical applications that solve real business problems:</p>
+<ul>
+<li><strong>Customer Support Systems</strong> that retrieve accurate information from knowledge bases</li>
+<li><strong>Research Assistants</strong> that can analyze and retrieve information from scientific literature</li>
+<li><strong>Content Recommendation Engines</strong> powered by semantic similarity</li>
+<li><strong>Intelligent Document Search</strong> across enterprise content</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-getting-started">🛠️ Getting Started<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#%EF%B8%8F-getting-started" class="hash-link" aria-label="Direct link to 🛠️ Getting Started" title="Direct link to 🛠️ Getting Started">​</a></h2>
+<p>The workshop is available now in our documentation. To begin:</p>
+<ol>
+<li>Make sure you have a <a href="https://www.mongodb.com/cloud/atlas/register" target="_blank" rel="noopener noreferrer">MongoDB Atlas account</a></li>
+<li>Install Node.js on your development machine</li>
+<li>Head over to our <a href="https://mongodb-developer.github.io/mongodb-rag/docs/workshop/Introduction/introduction">workshop</a></li>
+</ol>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-looking-ahead">🔮 Looking Ahead<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#-looking-ahead" class="hash-link" aria-label="Direct link to 🔮 Looking Ahead" title="Direct link to 🔮 Looking Ahead">​</a></h2>
+<p>This workshop represents the beginning of our commitment to helping developers build sophisticated AI applications. In the coming months, we'll be expanding the content with:</p>
+<ul>
+<li>Multi-modal RAG implementations (text + images)</li>
+<li>Enterprise-scale architectures</li>
+<li>Performance optimization techniques</li>
+<li>Integration with popular AI frameworks</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="-your-feedback-matters">🤔 Your Feedback Matters<a href="https://mongodb-developer.github.io/mongodb-rag/blog/2025/02/15/workshop-introduction#-your-feedback-matters" class="hash-link" aria-label="Direct link to 🤔 Your Feedback Matters" title="Direct link to 🤔 Your Feedback Matters">​</a></h2>
+<p>As you work through the workshop, we'd love to hear your feedback. What challenges are you facing? What additional topics would you like to see covered? Your input will help shape future content.</p>
+<p>Building AI applications doesn't have to be complicated. With MongoDB-RAG and this workshop, you have everything you need to create intelligent, context-aware applications that deliver real value.</p>
+<p>Happy building!</p>]]></content>
         <author>
             <name>Michael Lynn</name>
             <uri>https://github.com/mrlynn</uri>
