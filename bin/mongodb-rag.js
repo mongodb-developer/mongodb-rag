@@ -24,6 +24,8 @@ import {
   editConfig,
   clearConfig,
   resetConfig,
+  askQuestion,
+  startChatSession,
   setIndexName
 } from './commands/index.js';
 import { createRagApp } from './commands/init/createRagApp.js';
@@ -210,6 +212,31 @@ program
     console.log("Starting MongoDB-RAG Playground...");
     startPlayground();
   });
+
+program
+  .command('ask <query>')
+  .description('Ask a question and get an answer using RAG')
+  .option('--model <name>', 'Language model to use (provider-specific)')
+  .option('--max-results <number>', 'Maximum documents to retrieve', parseInt, 5)
+  .option('--min-score <number>', 'Minimum similarity score (0.0-1.0)', parseFloat, 0.7)
+  .option('--show-sources', 'Display source documents', false)
+  .option('--cite-sources', 'Include citations in the response', false)
+  .option('--fallback-to-general', 'Use general knowledge if no documents match', false)
+  .action(wrapCommand(async (query, options) => {
+    await askQuestion(config, query, options);
+  }));
+
+  program
+  .command('chat')
+  .description('Start an interactive RAG-powered chat session')
+  .option('--model <name>', 'Language model to use (provider-specific)')
+  .option('--max-results <number>', 'Maximum documents to retrieve per message', parseInt, 5)
+  .option('--min-score <number>', 'Minimum similarity score (0.0-1.0)', parseFloat, 0.7)
+  .option('--show-sources', 'Display source documents after each response', false)
+  .option('--cite-sources', 'Include citations in responses', false)
+  .action(wrapCommand(async (options) => {
+    await startChatSession(config, options);
+  }));
 
 // Parse command line arguments
 program.parse();

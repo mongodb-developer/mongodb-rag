@@ -72,6 +72,28 @@ npx mongodb-rag search <query>
 
 - `query`: The search query to retrieve semantically similar documents.
 
+### **Ask a Question About Your Documents**
+
+```
+npx mongodb-rag ask <question>
+```
+
+- `question`: Ask a natural language question and get an answer based on your documents.
+- Options:
+  - `--show-sources`: Display the source documents used to generate the answer
+  - `--cite-sources`: Include citations in the generated answer
+
+### **Start an Interactive Chat Session**
+
+```
+npx mongodb-rag chat
+```
+
+Start an interactive chat session powered by your document knowledge base.
+- Options:
+  - `--show-sources`: Display the source documents used to generate each response
+  - `--cite-sources`: Include citations in the generated responses
+
 ### **Show All Indexes in the Configured MongoDB Collection**
 
 ```
@@ -126,5 +148,38 @@ Creates a `.env` file from your `.mongodb-rag.json` configuration. This command 
 - VECTOR_INDEX
 - MONGODB_DATABASE
 - MONGODB_COLLECTION
+
+## 🔍 Search vs Ask vs Chat - When to Use Each
+
+MongoDB-RAG offers three different ways to interact with your document knowledge base:
+
+- **Search**: Use when you need to see the raw documents that match your query
+  ```sh
+  npx mongodb-rag search "MongoDB vector search capabilities"
+  ```
+
+- **Ask**: Use when you want a direct answer to a specific question
+  ```sh
+  npx mongodb-rag ask "What are the key features of MongoDB Atlas Vector Search?"
+  ```
+
+- **Chat**: Use when you need an interactive conversation with context retention
+  ```sh
+  npx mongodb-rag chat --show-sources --cite-sources
+  ```
+
+## 🗣️ Conversational RAG Capabilities
+
+MongoDB-RAG goes beyond vector search to provide true conversational capabilities with your data:
+
+1. **Natural Language Answers**: Get complete, synthesized answers to your questions instead of just document snippets
+
+2. **Context-Aware Chat**: Have multi-turn conversations that reference your document knowledge base
+
+3. **Provider Flexibility**: Works with both OpenAI and Ollama for embedding and chat generation
+
+4. **Source Attribution**: Optionally cite document sources in responses with the `--cite-sources` flag
+
+5. **Transparent Results**: View the underlying documents with the `--show-sources` flag
 
 For more details, refer to the MongoDB-RAG API Reference.

@@ -146,14 +146,16 @@ class MongoRAG {
             
             const embedding = query ? await this.getEmbedding(query) : null;
             
-            const indexManager = new IndexManager(col, {
-                indexName: this.config.indexName,
-                embeddingFieldPath: this.config.embeddingFieldPath,
-                dimensions: this.config.embedding.dimensions
-            });
-
-            // Ensure the index is created
-            await indexManager.ensureIndexes();
+            const indexManager = new IndexManager(col, this.config);
+            
+            // Check if the index exists without trying to create it
+            const existingIndexes = await col.listIndexes().toArray();
+            const indexName = options.indexName || this.config.indexName || 'vector_index';
+            const hasIndex = existingIndexes.some(index => index.name === indexName);
+            
+            if (!hasIndex) {
+                throw new Error(`Vector search index '${indexName}' does not exist. Please create it using 'npx mongodb-rag init'.`);
+            }
 
             // Construct the vector search query using the $vectorSearch operator
             const aggregation = query 

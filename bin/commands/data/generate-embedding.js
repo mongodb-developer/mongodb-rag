@@ -28,7 +28,7 @@ export async function generateEmbedding(config, text) {
     }
 
     await rag.connect();
-    const embedding = await rag.createEmbedding(text);
+    const embedding = await rag.getEmbedding(text);
     
     if (isDevelopment) {
       console.log(chalk.cyan("🔢 Generated Embedding:"), embedding);

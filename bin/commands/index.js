@@ -20,7 +20,9 @@ export {
   export {
     searchDocuments,
     ingestData,
-    generateEmbedding
+    generateEmbedding,
+    askQuestion,
+    startChatSession
   } from './data/index.js';
   
   // Initialization commands

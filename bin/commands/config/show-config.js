@@ -19,6 +19,7 @@ export function showConfig(configPath) {
     console.log(chalk.gray('URL:'), maskSensitiveInfo(config.mongoUrl));
     console.log(chalk.gray('Database:'), config.database);
     console.log(chalk.gray('Collection:'), config.collection);
+    console.log(chalk.gray('Index:'), config.indexName);
     
     // Embedding settings
     console.log(chalk.yellow('\nEmbedding Settings:'));
