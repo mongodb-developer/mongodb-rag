@@ -50,6 +50,7 @@
   "dependencies": {
     "@langchain/community": "^0.3.30",
     "axios": "^1.6.0",
+    "voyageai": "^0.0.4",
     "chalk": "^5.4.1",
     "columnify": "^1.6.0",
     "commander": "^10.0.0",

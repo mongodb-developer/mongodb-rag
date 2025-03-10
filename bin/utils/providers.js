@@ -20,6 +20,7 @@ export async function testProvider(config) {
       return await testOllamaProvider(config);
     case 'openai':
     case 'deepseek':
+    case 'voyage':
       return await testApiProvider(config);
     default:
       throw new Error(`Unknown provider: ${config.embedding.provider}`);
@@ -80,6 +81,8 @@ export function getDefaultDimensions(provider) {
       return 1536;  // For text-embedding-3-small
     case 'deepseek':
       return 1024;
+    case 'voyage':
+      return 1024;  // For voyage models
     case 'ollama':
       return 4096;  // For llama2 models
     default:
@@ -93,6 +96,8 @@ export function getProviderModels(provider) {
       return ['text-embedding-3-small', 'text-embedding-3-large'];
     case 'deepseek':
       return ['deepseek-embedding'];
+    case 'voyage':
+      return ['voyage-3', 'voyage-3-large', 'voyage-3-lite', 'voyage-code-3', 'voyage-finance-2', 'voyage-law-2'];
     case 'ollama':
       return getOllamaModels();
     default:

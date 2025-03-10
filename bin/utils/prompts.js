@@ -71,7 +71,7 @@ export async function promptForConfigEdits(currentConfig) {
       type: 'select',
       name: 'provider',
       message: 'Select an Embedding Provider:',
-      choices: ['openai', 'deepseek', 'ollama'],
+      choices: ['voyage','openai', 'deepseek', 'ollama'],
       initial: currentConfig.embedding.provider
     }
   ]);
@@ -140,7 +140,7 @@ export async function promptForProviderConfig() {
       type: 'select',
       name: 'provider',
       message: 'Select an embedding provider:',
-      choices: ['openai', 'ollama', 'anthropic', 'deepseek'],
+      choices: ['voyage','openai', 'ollama', 'anthropic', 'deepseek'],
       initial: 'openai'
     });
 
@@ -165,7 +165,8 @@ export async function promptForProviderConfig() {
       modelChoices = {
         'openai': ['text-embedding-3-small', 'text-embedding-3-large'],
         'anthropic': ['claude-3-opus-20240229', 'claude-3-sonnet-20240229'],
-        'deepseek': ['deepseek-coder', 'deepseek-chat']
+        'deepseek': ['deepseek-coder', 'deepseek-chat'],
+        'voyage': ['voyage-3', 'voyage-3-large', 'voyage-3-lite', 'voyage-code-3', 'voyage-finance-2', 'voyage-law-2']
       }[providerResponse.provider] || [];
       defaultModel = modelChoices[0];
     }
@@ -204,7 +205,13 @@ export async function promptForProviderConfig() {
             'llama2': '4096',
             'mistral': '4096',
             'mixtral': '4096',
-            'codellama': '4096'
+            'codellama': '4096',
+            'voyage-3': '1024',
+            'voyage-3-large': '1024',
+            'voyage-3-lite': '1024',
+            'voyage-code-3': '1024',
+            'voyage-finance-2': '1024',
+            'voyage-law-2': '1024'
           }[answers.model] || '4096';
           return dims.toString();
         },

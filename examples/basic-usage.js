@@ -35,7 +35,7 @@ async function runExample() {
     embedding: {
       provider: process.env.EMBEDDING_PROVIDER || 'openai',
       apiKey: process.env.EMBEDDING_API_KEY,
-      dimensions: 1536,
+      dimensions: 1024,
       model: process.env.EMBEDDING_MODEL || 'text-embedding-3-small'
     }
   });
@@ -65,7 +65,7 @@ async function runExample() {
 
     console.log('\nSearch results:');
     results.forEach((result, i) => {
-      console.log(`\n${i + 1}. Score: ${result.score.toFixed(3)}`);
+      //console.log(`\n${i + 1}. Score: ${result.score.toFixed(3)}`);
       console.log(`Content: ${result.content}`);
       console.log(`Metadata: ${JSON.stringify(result.metadata)}`);
     });

@@ -38,9 +38,13 @@ const rag = new MongoRAG({
 - `config.database` (string, required): Default MongoDB database name.
 - `config.collection` (string, required): Default MongoDB collection name.
 - `config.embedding` (object, required):
-    - `provider` (string, required): Embedding provider (`openai` is supported).
-    - `apiKey` (string, required): API key for the embedding provider.
-    - `model` (string, optional): Model name (default: `'text-embedding-3-small'`).
+    - `provider` (string, required): Embedding provider (`openai`, `ollama`, or `voyage` are supported).
+    - `apiKey` (string, required): API key for the embedding provider (not required for `ollama`).
+    - `model` (string, optional): Model name. Defaults depend on provider:
+      - OpenAI: `'text-embedding-3-small'`
+      - Voyage: `'voyage-3'` (other options: `voyage-3-large`, `voyage-3-lite`, `voyage-code-3`, `voyage-finance-2`, `voyage-law-2`)
+      - Ollama: requires model specification
+    - `baseUrl` (string, optional): Base URL for Ollama API (default: `'http://localhost:11434'`).
     - `batchSize` (number, optional): Batch size for embedding generation (default: `100`).
     - `dimensions` (number, optional): Number of dimensions in the embedding space (default: `1536`).
 - `config.search` (object, optional):
