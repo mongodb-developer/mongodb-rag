@@ -5,6 +5,7 @@ import debug from 'debug';
 import IndexManager from './IndexManager.js';
 import OpenAIEmbeddingProvider from '../providers/OpenAIEmbeddingProvider.js';
 import OllamaEmbeddingProvider from '../providers/OllamaEmbeddingProvider.js';
+import VoyageEmbeddingProvider from '../providers/VoyageEmbeddingProvider.js';
 
 const log = debug('mongodb-rag:core');
 
@@ -76,6 +77,11 @@ class MongoRAG {
                 return new OllamaEmbeddingProvider({
                     baseUrl,
                     model: options.model
+                });
+            case 'voyage':
+                return new VoyageEmbeddingProvider({
+                    apiKey,
+                    model: options.model || 'voyage-3'
                 });
             default:
                 throw new Error(`Unknown embedding provider: ${provider}`);
@@ -149,7 +155,7 @@ class MongoRAG {
             const indexManager = new IndexManager(col, this.config);
             
             // Check if the index exists without trying to create it
-            const existingIndexes = await col.listIndexes().toArray();
+            const existingIndexes = await col.listSearchIndexes().toArray();
             const indexName = options.indexName || this.config.indexName || 'vector_index';
             const hasIndex = existingIndexes.some(index => index.name === indexName);
             
@@ -157,6 +163,7 @@ class MongoRAG {
                 throw new Error(`Vector search index '${indexName}' does not exist. Please create it using 'npx mongodb-rag init'.`);
             }
 
+            const projectStage = { $project: { [this.config.embeddingFieldPath]: 0 } };
             // Construct the vector search query using the $vectorSearch operator
             const aggregation = query 
                 ? [{
@@ -169,15 +176,17 @@ class MongoRAG {
                         path: this.config.embeddingFieldPath,
                         queryVector: embedding
                     }
-                }]
+                }, 
+                projectStage
+                ]
                 : [{ $skip: skip }, { $limit: maxResults }]; // Simple aggregation for all documents
 
-            console.log('[DEBUG] Aggregation query:', JSON.stringify(aggregation, null, 2));
+            //console.log('[DEBUG] Aggregation query:', JSON.stringify(aggregation, null, 2));
 
-            log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
+           // console.log(`Running vector search in ${database || this.config.defaultDatabase}.${collection || this.config.defaultCollection}`);
             const results = await col.aggregate(aggregation).toArray();
 
-            console.log('[DEBUG] Search results:', results);
+            //console.log('[DEBUG] Search results:', results);
 
             return results.map(r => ({
                 content: r.content,
@@ -219,6 +228,12 @@ class MongoRAG {
                         provider: 'ollama',
                         baseUrl, 
                         model: options.model
+                    });
+                    break;
+                case 'voyage':
+                    this.provider = new VoyageEmbeddingProvider({
+                        apiKey,
+                        model: options.model || 'voyage-3'
                     });
                     break;
                 default:

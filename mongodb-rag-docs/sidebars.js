@@ -11,6 +11,7 @@ module.exports = {
       items: [
         "examples/basic-example",
         "examples/advanced-example",
+        "examples/voyage-example",
       ],
     },
     "create-rag-app",

@@ -63,23 +63,26 @@ export async function init(configPath) {
     type: 'select',
     name: 'provider',
     message: 'Select an Embedding Provider:',
-    choices: ['openai', 'deepseek', 'ollama'],
+    choices: ['voyage','openai', 'deepseek', 'ollama'],
     helpMessage: "Available embedding providers:\n" +
+      "- Voyage: Best MongoDB compatible, requires API key\n" +
       "- OpenAI: Most popular, requires API key\n" +
       "- DeepSeek: Alternative provider, requires API key\n" +
       "- Ollama: Local deployment, no API key needed"
   });
 
   // Provider-specific configuration
-  if (responses.provider === 'openai' || responses.provider === 'deepseek') {
+  if (responses.provider === 'openai' || responses.provider === 'deepseek' || responses.provider === 'voyage') {
     responses.apiKey = await promptWithValidation({
       type: 'password',
       name: 'apiKey',
-      message: `Enter your ${responses.provider === 'openai' ? 'OpenAI' : 'DeepSeek'} API Key:`,
+      message: `Enter your ${responses.provider === 'openai' ? 'OpenAI' : responses.provider === 'voyage' ? 'Voyage' : 'DeepSeek'} API Key:`,
       validate: (input) => input && input.length > 0 ? true : 'API key is required',
       helpMessage: responses.provider === 'openai' 
         ? "OpenAI API key format: sk-....\n- Get your key from: https://platform.openai.com/api-keys"
-        : "DeepSeek API key format: dk-....\n- Get your key from DeepSeek's platform"
+        : (responses.provider === 'voyage'
+          ? "VoyageAI API key format: pa-....\n- Get your key from VoyageAI's platform"
+          : "DeepSeek API key format: dk-....\n- Get your key from DeepSeek's platform")
     });
   } else if (responses.provider === 'ollama') {
     const availableModels = getOllamaModels();
@@ -104,7 +107,7 @@ export async function init(configPath) {
       provider: responses.provider,
       ...(responses.apiKey && { apiKey: responses.apiKey }),
       ...(responses.model && { model: responses.model }),
-      dimensions: 1536,
+      dimensions: responses.provider === 'voyage' ? 1024 : 1536,
       batchSize: 100
     },
     search: {

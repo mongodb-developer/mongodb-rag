@@ -15,7 +15,7 @@ class BaseEmbeddingProvider {
    * @param {number} [options.batchSize=100] - Number of texts to process in each batch
    * @param {number} [options.maxRetries=3] - Maximum number of retry attempts
    * @param {number} [options.retryDelay=1000] - Delay between retries in milliseconds
-   * @param {string} [options.provider] - Provider name ('openai', 'ollama', etc.)
+   * @param {string} [options.provider] - Provider name ('voyage','openai', 'ollama', etc.)
    * @param {string} [options.apiKey] - API key for the provider (required except for Ollama)
    * @throws {Error} If API key is missing for non-Ollama providers
    */
